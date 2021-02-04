@@ -78,18 +78,20 @@ io.on('connection', (socket) => {
 			//console.log('Añadiendo: ' + socket.id);
 			game.rooms.push({
 				'roomCode' : message['roomCode'], 
-				'users' : [{'userName' : message['userName'], 'userSurname' : message['userSurname']}], 
+				'users' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : undefined}], 
 				'usersIds' : [socket.id], 
 				'usersPoints' : [0], 
-				'usersTurns' : [{'userName' : message['userName'], 'userSurname' : message['userSurname']}], 
+				'usersTurns' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : undefined}], 
 				'usersUsed' : [], 
 				'private' : private, 
 				'full' : false, 
 				'selectedUser' : '', 
-				'round' : [1, rounds]
+				'round' : [1, rounds], 
+        'teams' : []
 			});
       console.log(game.rooms[game.rooms.length - 1]['users']);
 			message['usersInRoom'] = [...game.rooms[game.rooms.length - 1]['users']];
+      message['requestTeamName'] = true;
 		}
 		else
 		{
@@ -107,18 +109,13 @@ io.on('connection', (socket) => {
             i = game.rooms[index]['users'].length;
           }
         }
-				//if (game.rooms[index]['users'].indexOf(message['userName']) != -1)
-				{//Pendiente revisar en todos los rooms si está el usuario.
-					//message['type'] = 'error';
-					//message['error'] = 'Error: The player \'' + message['userName'] + '\' is in the game.';
-				}
 				if (!flag)
 				{
 					if ((message['userName'] != undefined) && (message['userName'] != '') && 
             (message['userSurname'] != undefined) && (message['userSurname'] != ''))
 					{
 						//game.rooms[index]['users'].push(message['userName']);//Esto se hace cuando hay más de un usuario.
-            game.rooms[index]['users'].push({'userName' : message['userName'], 'userSurname' : message['userSurname']});
+            game.rooms[index]['users'].push({'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : message['userType']});
 						if (game.rooms[index]['users'].length == maxUsers)
 						{
 							game.rooms[index]['full'] = true;
@@ -153,53 +150,36 @@ io.on('connection', (socket) => {
 						}
 					}
 				}
+        message['teams'] = game.rooms[index]['teams'];
 			}
 		}
     message['id'] = socket.id;
     console.log('Line 158.');
     socket.emit('update', message);
     socket.broadcast.emit('update', message);
-		//console.log(message);
-		//console.log(game.rooms);
 	});
-  /*socket.on('rematch', (data) => {
+  socket.on('newTeamName', (data) => {
     var message = JSON.parse(data);
-    index = game.searchRoomCode(message['roomCode'], false, message['type']);
-    for (var i = 0; i < game.rooms[index]['usersPoints'].length; i++)
-    {
-      game.rooms[index]['usersPoints'][i] = 0;
-    }
-    game.rooms[index]['usersUsed'] = [];
-    game.rooms[index]['usersTurns'] = [];
-    game.rooms[index]['selectedUser'] = '';
-    message['usersInRoom'] = [...game.rooms[index]['users']];
-    game.rooms[index]['usersUsed'] = [];
-    game.rooms[index]['round'] = [1, rounds];
-    game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
-    game.rooms[index]['selectedUser'] = game.rooms[index]['usersTurns'][Math.floor(Math.random() * Math.floor(game.rooms[index]['usersTurns'].length))];
-    game.rooms[index]['usersUsed'].push(game.rooms[index]['selectedUser']);
-    game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
-    message['selectedUser'] = game.rooms[index]['selectedUser'];
-    var aux = [];
-    while (aux.length < 5)
-    {
-      var w = words[(Math.floor(Math.random() * Math.floor(words.length)))];
-      if (aux.indexOf(w) == -1)
+    index = game.searchRoomCode(message['roomCode'], false);
+    index2 = game.searchTeam(message['userName'], message['userSurname'], message['teamName'], index);
+    if (index2 == -1)
+    {//Se debe agregar el team a la sala y al usuario.
+      game.rooms[index]['teams'].push({'teamName' : message['teamName'], 'users' : [{'userName' : message['userName'], 'userSurname' : message['userSurname']}]});
+      var index3 = game.searchUserInRoom(message['userName'], message['userSurname'], index);
+      if (index3 != -1)
       {
-        aux.push(w);
+        game.rooms[index]['users'][index3]['team'] = message['teamName'];
+        message['teamOk'] = true;
       }
     }
-    message['words'] = aux;
-    message['round'] = [...game.rooms[index]['round']];
-    message['type'] = 'rematch';
-    if (game.rooms[index]['users'].length < maxUsers)
-    {
-      game.rooms[index]['full'] = false;
-    }
-    message['full'] = game.rooms[index]['full'];
-    socket.emit('rematch', message);
-    socket.broadcast.emit('rematch', message);
-  });*/
+    socket.emit('newTeamName', message);
+    socket.broadcast.emit('newTeamName', message);
+  });
+  socket.on('rollDice', (data) => {
+    var message = JSON.parse(data);
+    socket.emit('rollDice', message);
+    socket.broadcast.emit('rollDice', message);
+  });
   socket.on('newUserNeedsInfo', (data) => {
     var message = JSON.parse(data);
     index = game.searchRoomCode(message['roomCode'], false);
@@ -211,7 +191,7 @@ io.on('connection', (socket) => {
     socket.emit('returningGameInfo', message);
     socket.broadcast.emit('returningGameInfo', message);
   });
-  socket.on('wordSelected', (data) => {
+  socket.on('wordSelected', (data) => {//Pendiente ver si sirve para cuando se elije un lider.
     var message = JSON.parse(data);
     index = game.searchRoomCode(message['roomCode'], false);
     game.rooms[index]['word'] = message['word'];
@@ -223,8 +203,6 @@ io.on('connection', (socket) => {
     message['type'] = 'startDrawing';
     socket.emit('startDrawing', message);
     socket.broadcast.emit('startDrawing', message);
-    //console.log(message);
-    //console.log(game.rooms);
   });
   socket.on('drawing', (data) => {
     var message = JSON.parse(data);
@@ -248,27 +226,27 @@ io.on('connection', (socket) => {
         message['puntuation'] = game.rooms[index]['usersPoints'];
         game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
         var aux = [];
-                  while (aux.length < 5)
-                  {
-                    var w = words[(Math.floor(Math.random() * Math.floor(words.length)))];
-                    if (aux.indexOf(w) == -1)
-                    {
-                      aux.push(w);
-                    }
-                  }
+        while (aux.length < 5)
+        {
+          var w = words[(Math.floor(Math.random() * Math.floor(words.length)))];
+          if (aux.indexOf(w) == -1)
+          {
+            aux.push(w);
+          }
+        }
         if (game.rooms[index]['usersTurns'].length)
-                  {
-                    game.rooms[index]['selectedUser'] = game.rooms[index]['usersTurns'][Math.floor(Math.random() * Math.floor(game.rooms[index]['usersTurns'].length))];
-                    game.rooms[index]['usersUsed'].push(game.rooms[index]['selectedUser']);
-                    game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
+        {
+          game.rooms[index]['selectedUser'] = game.rooms[index]['usersTurns'][Math.floor(Math.random() * Math.floor(game.rooms[index]['usersTurns'].length))];
+          game.rooms[index]['usersUsed'].push(game.rooms[index]['selectedUser']);
+          game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
 
-                    message['selectedUser'] = game.rooms[index]['selectedUser'];
-              message['words'] = aux;
-              message['word'] = game.rooms[index]['word'];
-              message['full'] = game.rooms[index]['full'];
-              message['type'] = 'nextTurn';
-              message['round'] = [...game.rooms[index]['round']];
-                  }
+          message['selectedUser'] = game.rooms[index]['selectedUser'];
+          message['words'] = aux;
+          message['word'] = game.rooms[index]['word'];
+          message['full'] = game.rooms[index]['full'];
+          message['type'] = 'nextTurn';
+          message['round'] = [...game.rooms[index]['round']];
+        }
         else
         {
           if (game.rooms[index]['round'][0] < game.rooms[index]['round'][1])
@@ -277,21 +255,21 @@ io.on('connection', (socket) => {
             message['round'] = [...game.rooms[index]['round']];
             message['word'] = game.rooms[index]['word'];
             message['full'] = game.rooms[index]['full'];
-                      message['type'] = 'nextTurn';
-                      message['round'] = [...game.rooms[index]['round']];
+            message['type'] = 'nextTurn';
+            message['round'] = [...game.rooms[index]['round']];
 
-                      game.rooms[index]['usersUsed'] = [];
+            game.rooms[index]['usersUsed'] = [];
             game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
             if (game.rooms[index]['usersTurns'].length)
-                      {
-                        game.rooms[index]['selectedUser'] = game.rooms[index]['usersTurns'][Math.floor(Math.random() * Math.floor(game.rooms[index]['usersTurns'].length))];
-                        game.rooms[index]['usersUsed'].push(game.rooms[index]['selectedUser']);
-                        game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
+            {
+              game.rooms[index]['selectedUser'] = game.rooms[index]['usersTurns'][Math.floor(Math.random() * Math.floor(game.rooms[index]['usersTurns'].length))];
+              game.rooms[index]['usersUsed'].push(game.rooms[index]['selectedUser']);
+              game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
 
-                        message['selectedUser'] = game.rooms[index]['selectedUser'];
-                  message['words'] = aux;
-                  message['round'] = [...game.rooms[index]['round']];
-                      }
+              message['selectedUser'] = game.rooms[index]['selectedUser'];
+              message['words'] = aux;
+              message['round'] = [...game.rooms[index]['round']];
+            }
           }
           else
           {

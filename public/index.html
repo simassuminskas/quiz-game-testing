@@ -9,42 +9,47 @@
 </head>
 <body id="body" onload="document.getElementById('timeInfo').innerHTML = 'Time remaining: ' + time;">
     <div>
+        <label id="timeInfo" style="display: none;"></label>
+        <label id="lblRoomCode"></label>
+        <label id="lblUsersInfo" style="display: none;">Users without team<br></label>
+        <div id="users"></div>
+        <label id="lblTeamsInfo" style="display: none;">Teams<br></label>
+        <div id="teams"></div>
+        <div id="inputTeamName" style="display: none;">
+            <label>New team name</label><input type="text" id="teamName"><button onclick="handleNewTeamName();">Send</button>
+        </div>
+        <button id="rollDiceBtn" onclick="rollDice();" style="display: none;">Roll dice</button>
         <div>
-            <label id="timeInfo" style="display: none;"></label>
-            <label id="lblRoomCode"></label>
-            <div id="users"></div>
-            <div>
-                <div id="panelMessages" style="display: none;">
-                    <div id="panel" class="panel-body"></div>
-                    <div>
-                        <input id="message" type="text" class="form-control" aria-describedby="basic-addon1" maxlength="768">
-                        <button id="send" onclick="handleMsg();">Send</button>
-                    </div>
+            <div id="panelMessages" style="display: none;">
+                <div id="panel" class="panel-body"></div>
+                <div>
+                    <input id="message" type="text" class="form-control" aria-describedby="basic-addon1" maxlength="768">
+                    <button id="send" onclick="handleMsg();">Send</button>
                 </div>
-                <p id="typing"><br></p>
-                <div id="divLogin">
+            </div>
+            <p id="typing"><br></p>
+            <div id="divLogin">
+                <div class="input-group">
+                    <span class="input-group-addon"><span id="icon" class="mdi mdi-social-person"></span></span>
+                    <label id="lblName">Name</label>
+                    <input id="nameInput" type="text" aria-describedby="basic-addon1" maxlength="768">
+                    <br>
+                    <label id="lblSurname">Surname</label>
+                    <input id="surnameInput" type="text" aria-describedby="basic-addon1" maxlength="768">
+                    <br>
+                    <label id="lblRoomCode1">Game code (empty for random)</label>
+                    <input id="roomCode" type="text" class="form-control" aria-describedby="basic-addon1" maxlength="768">
+                </div>
+                <div id="inputAndButtons">
                     <div class="input-group">
-                        <span class="input-group-addon"><span id="icon" class="mdi mdi-social-person"></span></span>
-                        <label id="lblName">Name</label>
-                        <input id="nameInput" type="text" aria-describedby="basic-addon1" maxlength="768">
-                        <br>
-                        <label id="lblSurname">Surname</label>
-                        <input id="surnameInput" type="text" aria-describedby="basic-addon1" maxlength="768">
-                        <br>
-                        <label id="lblRoomCode1">Game code (empty for random)</label>
-                        <input id="roomCode" type="text" class="form-control" aria-describedby="basic-addon1" maxlength="768">
+                        <span class="input-group-btn">
+                            <button id="sendUserName" class="btn btn-primary btn-flat" onclick="handleLogin();">Play</button>
+                        </span>
                     </div>
-                    <div id="inputAndButtons">
-                        <div class="input-group">
-                            <span class="input-group-btn">
-                                <button id="sendUserName" class="btn btn-primary btn-flat" onclick="handleLogin();">Play</button>
-                            </span>
-                        </div>
-                        <div class="input-group">
-                            <span class="input-group-btn">
-                                <button id="privateRoom" class="btn btn-primary btn-flat" onclick="handleLogin(true);">Create Private Room</button>
-                            </span>
-                        </div>
+                    <div class="input-group">
+                        <span class="input-group-btn">
+                            <button id="privateRoom" class="btn btn-primary btn-flat" onclick="handleLogin(true);">Create Private Room</button>
+                        </span>
                     </div>
                 </div>
             </div>

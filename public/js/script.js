@@ -10,6 +10,7 @@ var roundInfo = 'roundInfo';
 var wordsInfo = 'wordsInfo';
 var drawingToolsDiv = 'drawingToolsDiv';
 var usersDiv = 'users';
+var teamsDiv = 'teams';
 var panelMessages = 'panelMessages';
 var panel = 'panel';
 var send = 'send';
@@ -77,16 +78,67 @@ function initTime()
 }
 function updateUsersInfo()
 {
+    //teams.push({'teamName' : data['teamName'], 'users' : [{'userName' : data['userName'], 'userSurname' : data['userSurname']}]});
     var ul = document.getElementById(usersDiv);
     var html = '';
+    var tl = document.getElementById(teamsDiv);
+    var html2 = '';
     var tmp = [];
     for (var i = 0; i < users.length; i++)
     {
-        console.log(users);
-        var subHtml = users[i]['userName'] + ' ' + users[i]['userSurname'] + ', ' + users[i]['puntuation'];
-        html += '<div id="u_' + i + '">' + subHtml + '</div>';
+        var add = true;
+        for (var j = 0; j < teams.length; j++)
+        {
+            for (var k = 0; k < teams[j]['users'].length; k++)
+            {
+                if ((teams[j]['users'][k]['userName'] == userName) && 
+                    (teams[j]['users'][k]['userSurname'] == userSurname))
+                {
+                    document.getElementById('inputTeamName').style.display = 'none';
+                }
+                if ((teams[j]['users'][k]['userName'] == users[i]['userName']) || 
+                    (teams[j]['users'][k]['userSurname'] == users[i]['userSurname']))
+                {
+                    add = false;
+                }
+            }
+        }
+        //console.log(users);
+        if (add)
+        {
+            document.getElementById('lblUsersInfo').style.display = 'block';
+            var subHtml = users[i]['userName'] + ' ' + users[i]['userSurname'];
+            html += '<div id="u_' + i + '">' + subHtml + '</div>';
+        }
+    }
+    for (var j = 0; j < teams.length; j++)
+    {
+        document.getElementById('lblTeamsInfo').style.display = 'block';
+        html2 += '<div id="t_' + j + '">' + teams[j]['teamName'];
+        for (var k = 0; k < teams[j]['users'].length; k++)
+        {
+            html2 += '<br>' + teams[j]['users'][k]['userName'] + ' ' + teams[j]['users'][k]['userSurname'];
+        }
+        html2 += '</div>';
     }
     ul.innerHTML = html;
+    tl.innerHTML = html2;
+}
+/*function verifyNewTeam(data)
+{
+    if (data['requestTeamName'])
+    {
+        document.getElementById('inputTeamName').style.display = 'block';
+    }
+}*/
+function rollDice()
+{
+    socket.emit('rollDice', JSON.stringify({
+        type: 'rollDice',
+        userName: userName, 
+        userSurname: userSurname, 
+        roomCode: roomCode
+    }));
 }
 function rematch()
 {
