@@ -84,6 +84,7 @@ function updateUsersInfo()
     var tl = document.getElementById(teamsDiv);
     var html2 = '';
     var tmp = [];
+    var userInTeam = false;
     for (var i = 0; i < users.length; i++)
     {
         var add = true;
@@ -95,6 +96,7 @@ function updateUsersInfo()
                     (teams[j]['users'][k]['userSurname'] == userSurname))
                 {
                     document.getElementById('inputTeamName').style.display = 'none';
+                    userInTeam = true;
                 }
                 if ((teams[j]['users'][k]['userName'] == users[i]['userName']) || 
                     (teams[j]['users'][k]['userSurname'] == users[i]['userSurname']))
@@ -111,13 +113,37 @@ function updateUsersInfo()
             html += '<div id="u_' + i + '">' + subHtml + '</div>';
         }
     }
+    if (!userInTeam)
+    {//No está en un team.
+        document.getElementById('inputTeamName').style.display = 'block';
+    }
     for (var j = 0; j < teams.length; j++)
     {
         document.getElementById('lblTeamsInfo').style.display = 'block';
         html2 += '<div id="t_' + j + '">' + teams[j]['teamName'];
+        if (!userInTeam)
+        {//No está en un team.
+            html2 += '<button id="jt_' + j + '" onclick="joinTeam(userName, userSurname, roomCode, ' + j + ');">Join</button>';
+        }
+        var indexLeaderElected = -1;
+        for (var k = 0; k < teams[j]['users'].length; k++)
+        {
+            if (teams[j]['users'][k]['leader'])
+            {
+                indexLeaderElected = k;
+            }
+        }
         for (var k = 0; k < teams[j]['users'].length; k++)
         {
             html2 += '<br>' + teams[j]['users'][k]['userName'] + ' ' + teams[j]['users'][k]['userSurname'];
+            if (k == indexLeaderElected)
+            {
+                html2 += ' (leader)';
+            }
+            if ((teams[j]['users'].length > 1) && (indexLeaderElected == -1))
+            {//Se debe habilitar la elección de lider.
+                html2 += '<button id="vl_' + j + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + j + ', \'' + teams[j]['users'][k]['userName'] + '\', \'' + teams[j]['users'][k]['userSurname'] + '\');document.getElementById(this.id).style.display = \'none\';">Vote for leader</button>';
+            }
         }
         html2 += '</div>';
     }

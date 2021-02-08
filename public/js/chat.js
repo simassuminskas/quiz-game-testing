@@ -13,7 +13,7 @@ var userSurname;
 var roomCode;
 var privateRoom = false;
 var typeTimer;
-var clients = [];
+//var clients = [];
 var dev = true;
 var unread = 0;
 var focus = true;
@@ -49,14 +49,15 @@ socket.on('update', (data) => {
                     updateUsersInfo();
                 }
             }
-            if (data['requestTeamName'])
+            /*if (data['requestTeamName'])
             {
                 document.getElementById('inputTeamName').style.display = 'block';
             }
             else
-            {console.log('Line 57.');
+            {
                 updateUsersInfo();
-            }
+            }*/
+            updateUsersInfo();
             if (users.length > 1)
             {
                 document.getElementById(panelMessages).style.display = 'block';
@@ -195,33 +196,11 @@ socket.on('update', (data) => {
             if (index == -1)
             {
                 teams.push({'teamName' : data['teams'][i]['teamName'], 'users' : data['teams'][i]['users']});
-                //teams.push({'teamName' : data['teams'][i]['teamName'], 'users' : [{'userName' : data['userName'], 'userSurname' : data['userSurname']}]});
             }
             else
             {
                 teams[index]['users'] = data['teams'][i]['users'];
-                /*for (var j = 0; j < data['teams'][i]['users'].length; j++)
-                {
-                    var index2 = -1;
-                    for (var k = 0; k < teams[index]['users'].length; k++)
-                    {
-                        if ((data['teams'][i]['users'][j]['userName'] == teams[index]['users'][k]['userName']) && 
-                            (data['teams'][i]['users'][j]['userSurname'] == teams[index]['users'][k]['userSurname']))
-                        {
-                            index2 = false;
-                        }
-                    }
-                    if (index2)
-                    {
-                        teams[index]['users'][k].push()
-                    }
-                }*/
             }
-            /*for (var j = 0; j < data['teams'][i]['users'].length; j++)
-            {
-                teams.push({'teamName' : data['teams'][i]['teamName'], 'users' : [{'userName' : data['userName'], 'userSurname' : data['userSurname']}]});
-            }*/
-            //teams data['teams'][i]
         }
         updateUsersInfo();
     }
@@ -237,6 +216,21 @@ socket.on('newTeamName', (data) => {
     }
     if ((data['userName'] != undefined) && (data['userSurname'] != undefined))
     {
+    }
+});
+socket.on('joinTeam', (data) => {
+    if (data['roomCode'] == roomCode)
+    {
+        teams = data['teams'];
+        updateUsersInfo();
+    }
+});
+socket.on('voteLeader', (data) => {
+    if (data['roomCode'] == roomCode)
+    {
+        teams = data['teams'];
+        console.log(teams);
+        updateUsersInfo();
     }
 });
 socket.on('userDisconected', (data) => {
@@ -590,6 +584,29 @@ function handleNewUserNeedsInfo()
         type: 'newUserNeedsInfo',
         userName: userName, 
         userSurname: userSurname, 
+        roomCode: roomCode
+    }));
+}
+function joinTeam(userName, userSurname, roomCode, index)
+{
+    socket.emit('joinTeam', JSON.stringify({
+        type: 'joinTeam',
+        userName: userName, 
+        userSurname: userSurname, 
+        teamName: teams[index]['teamName'], 
+        roomCode: roomCode
+    }));
+}
+function voteLeader(userNameVoting, userSurnameVoting, roomCode, teamIndex, userNameVoted, userSurnameVoted)
+{
+    console.log(userNameVoting, userSurnameVoting, roomCode, teamIndex, userNameVoted, userSurnameVoted);
+    socket.emit('voteLeader', JSON.stringify({
+        type: 'voteLeader',
+        userNameVoted: userNameVoted, 
+        userSurnameVoted: userSurnameVoted, 
+        userNameVoting: userNameVoting, 
+        userSurnameVoting: userSurnameVoting, 
+        teamName: teams[teamIndex]['teamName'], 
         roomCode: roomCode
     }));
 }

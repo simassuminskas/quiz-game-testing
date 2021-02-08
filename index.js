@@ -1,25 +1,39 @@
-//var log = require('./lib/log.js');
-//var utils = require('./lib/utils.js');
 var game = require('./lib/game.js');
-//var internal = require('./lib/internal.js');
 var express = require('express');
 var app = express();
 var path = require('path');
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var port = process.env.PORT || 5000;
-var rooms = [];
-var words = ['Ape','Ants','Badger','Bat','Bear','Bee','Buffalo','Butterfly','Bug','Camel','Cat','Cobra','Crocodile','Crow','Cricket','Dog','Donkey','Eagle','Elephant','Elk','Falcon','Ferret','Fish','Flamingo','Fox','Frog','Fly','Goose','Giraffe','Gorilla','Hippo','Hyena','Hopper','Jaguar','Jellyfish','Kangaroo','Kitten','Lemur','Leopard','Lion','Lice','Monkey','Mule','Otter','Ox','Owl','Parrot','Pig','Rabbit','Rat','Raven','Rhino','Shark','Skunk','Snake','Squirrel','Stingray','Swan','Scorpion','Spider','Seagull','Sparrow','Swallow','Tiger','Turkey','Turtle','Weasel','Whale','Wolf','Worm','Zebra','Açaí','Apple','Apricot','Avocado','Banana','Bilberry','Blackberry','Blueberry','Cactus pear','Currant','Cherry','Cloudberry','Coconut','Cranberry','Date','Dragonfruit','Durian','Elderberry','Fig','Goji berry','Gooseberry','Grape','Raisin','Grapefruit','Guava','Jackfruit','Jambul','Kiwifruit','Kumquat','Lemon','Lime','Lychee','Mango','Mangosteen','Melon','Watermelon','Nectarine','Orange','Mandarine','Tangerine','Papaya','Passionfruit','Peach','Pear','Plum','Pineapple','Pomegranate','Pomelo','Raspberry','Rambutan','Redcurrant','Strawberry','Volcano','Mountain','Hill','Sea','Ocean','Lake','River','Waterfall','Jungle','Forest','Rainforest','Tsunami','Rose','Tulip','Calla Lilies','Peony','Gardenia','Sunflower','Daisy','Dandelion','Cosmos','Solar system','Milky way','Galaxy','Sun','Moon','Meteoroid','Northern lights','Stars','Pine','Oak','Birch','Spruce','Chestnut tree','Willow tree','Mold','Grass'];
 var rounds = 10;
 var puntuation = 10;
 var maxUsers = 10;
+var admin;
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
 });
 app.use(express.static(path.join(__dirname, 'public')));
 io.on('connection', (socket) => {
-  console.log(socket.id);
+  //console.log(socket.id);
 	var addedUser = false;
+  socket.on('adminLogin', (data) => {
+    var message = JSON.parse(data);
+    if ((message['password'] == 'Password123') && (admin == undefined))
+    {
+      admin = socket.id;
+      message['password'] = undefined;
+      message['rooms'] = game.rooms;
+      message['questions'] = game.questions;
+      socket.emit('adminLogged', message);
+    }
+    else
+    {
+      socket.emit('error', {});
+    }
+    //message['password'] = undefined;
+    //socket.emit('adminLogged', message);
+    console.log(socket.id);
+  });
 	socket.on('new message', (data) => {
 		socket.broadcast.emit('new message', {
 			username: socket.username,
@@ -78,10 +92,10 @@ io.on('connection', (socket) => {
 			//console.log('Añadiendo: ' + socket.id);
 			game.rooms.push({
 				'roomCode' : message['roomCode'], 
-				'users' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : undefined}], 
+				'users' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : undefined, 'votes' : 0, 'vote' : false}], 
 				'usersIds' : [socket.id], 
 				'usersPoints' : [0], 
-				'usersTurns' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : undefined}], 
+				'usersTurns' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : undefined, 'votes' : 0, 'vote' : false}], 
 				'usersUsed' : [], 
 				'private' : private, 
 				'full' : false, 
@@ -115,7 +129,7 @@ io.on('connection', (socket) => {
             (message['userSurname'] != undefined) && (message['userSurname'] != ''))
 					{
 						//game.rooms[index]['users'].push(message['userName']);//Esto se hace cuando hay más de un usuario.
-            game.rooms[index]['users'].push({'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : message['userType']});
+            game.rooms[index]['users'].push({'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : message['userType'], 'votes' : message['votes'], 'vote' : message['vote']});
 						if (game.rooms[index]['users'].length == maxUsers)
 						{
 							game.rooms[index]['full'] = true;
@@ -135,7 +149,7 @@ io.on('connection', (socket) => {
 								game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
 
 								message['selectedUser'] = game.rooms[index]['selectedUser'];
-								var aux = [];
+								/*var aux = [];
 								while (aux.length < 5)
 								{
 									var w = words[(Math.floor(Math.random() * Math.floor(words.length)))];
@@ -144,7 +158,7 @@ io.on('connection', (socket) => {
 										aux.push(w);
 									}
 								}
-								message['words'] = aux;
+								message['words'] = aux;*/
 								message['round'] = [...game.rooms[index]['round']];
 							}
 						}
@@ -161,10 +175,21 @@ io.on('connection', (socket) => {
   socket.on('newTeamName', (data) => {
     var message = JSON.parse(data);
     index = game.searchRoomCode(message['roomCode'], false);
-    index2 = game.searchTeam(message['userName'], message['userSurname'], message['teamName'], index);
+    //index2 = game.searchUserInTeam(message['userName'], message['userSurname'], message['teamName'], index);
+    index2 = game.searchTeam(message['teamName'], index);
     if (index2 == -1)
     {//Se debe agregar el team a la sala y al usuario.
-      game.rooms[index]['teams'].push({'teamName' : message['teamName'], 'users' : [{'userName' : message['userName'], 'userSurname' : message['userSurname']}]});
+      game.rooms[index]['teams'].push({
+        'teamName' : message['teamName'], 
+        'users' : [
+          {
+            'userName' : message['userName'], 
+            'userSurname' : message['userSurname'], 
+            'votes' : message['votes'], 
+            'vote' : message['vote']
+          }
+        ]
+      });
       var index3 = game.searchUserInRoom(message['userName'], message['userSurname'], index);
       if (index3 != -1)
       {
@@ -174,6 +199,95 @@ io.on('connection', (socket) => {
     }
     socket.emit('newTeamName', message);
     socket.broadcast.emit('newTeamName', message);
+  });
+  socket.on('joinTeam', (data) => {
+    var message = JSON.parse(data);
+    index = game.searchRoomCode(message['roomCode'], false);
+    //index2 = game.searchUserInTeam(message['userName'], message['userSurname'], message['teamName'], index);
+    index2 = game.searchTeam(message['teamName'], index);
+    /*type: 'joinTeam',
+      userName: userName, 
+      userSurname: userSurname, 
+      teamName: teams[index]['teamName'], 
+      roomCode: roomCode*/
+    if (index2 != -1)
+    {//
+      game.rooms[index]['teams'][index2]['users'].push({
+        'userName' : message['userName'], 
+        'userSurname' : message['userSurname'], 
+        'votes' : message['votes'], 
+        'vote' : message['vote']
+      });
+      message['teams'] = game.rooms[index]['teams'];
+    }
+    socket.emit('joinTeam', message);
+    socket.broadcast.emit('joinTeam', message);
+  });
+  socket.on('voteLeader', (data) => {
+    var message = JSON.parse(data);
+    index = game.searchRoomCode(message['roomCode'], false);
+    index2 = game.searchTeam(message['teamName'], index);
+    /*type: 'voteLeader',
+    userNameVoted: userNameVoted, 
+    userSurnameVoted: userSurnameVoted, 
+    userNameVoting: userNameVoting, 
+    userSurnameVoting: userSurnameVoting, 
+    teamName: teams[teamIndex]['teamName'], 
+    roomCode: roomCode*/
+    if (index2 != -1)
+    {//
+      console.log('Line 239');
+      //game.rooms[index]['teams'][index2]['votes'].push({'userName' : message['userName'], 'userSurname' : message['userSurname']});
+      console.log(message['userNameVoting'], message['userSurnameVoting']);
+      for (var i = 0; i < game.rooms[index]['teams'][index2]['users'].length; i++)
+      {
+        if ((game.rooms[index]['teams'][index2]['users'][i]['userName'] == message['userNameVoted']) && 
+          (game.rooms[index]['teams'][index2]['users'][i]['userSurname'] == message['userSurnameVoted']))
+        {
+          game.rooms[index]['teams'][index2]['users'][i]['votes'] += 1;
+        }
+        if ((game.rooms[index]['teams'][index2]['users'][i]['userName'] == message['userNameVoting']) && 
+          (game.rooms[index]['teams'][index2]['users'][i]['userSurname'] == message['userSurnameVoting']))
+        {
+          game.rooms[index]['teams'][index2]['users'][i]['vote'] = true;
+          console.log(game.rooms[index]['teams'][index2]['users'][i]['userName'] + ' ' + game.rooms[index]['teams'][index2]['users'][i]['userSurname'] + ' ha votado.');
+        }
+      }
+      var votationComplete = true;
+      for (var i = 0; i < game.rooms[index]['teams'][index2]['users'].length; i++)
+      {//Ver si ya votaron todos en el team.
+        if (!game.rooms[index]['teams'][index2]['users'][i]['vote'])
+        {
+          votationComplete = false;
+          i = game.rooms[index]['teams'][index2]['users'].length;
+        }
+      }
+      if (votationComplete)
+      {//Ver si hay algún ganador.
+        var maxVotesIndex = 0;
+        for (var i = 1; i < game.rooms[index]['teams'][index2]['users'].length; i++)
+        {
+          if (game.rooms[index]['teams'][index2]['users'][i]['votes'] > game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['votes'])
+          {
+            maxVotesIndex = i;
+          }
+        }
+        for (var i = 0; i < game.rooms[index]['teams'][index2]['users'].length; i++)
+        {
+          if (game.rooms[index]['teams'][index2]['users'][i]['votes'] == game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['votes'])
+          {
+            maxVotesIndex = -1;
+          }
+        }
+        if (maxVotesIndex != -1)
+        {//Hay un ganador.
+          game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['leader'] = true;
+        }
+        message['teams'] = game.rooms[index]['teams'];
+        socket.emit('voteLeader', message);
+        socket.broadcast.emit('voteLeader', message);
+      }
+    }
   });
   socket.on('rollDice', (data) => {
     var message = JSON.parse(data);
@@ -226,14 +340,14 @@ io.on('connection', (socket) => {
         message['puntuation'] = game.rooms[index]['usersPoints'];
         game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
         var aux = [];
-        while (aux.length < 5)
+        /*while (aux.length < 5)
         {
           var w = words[(Math.floor(Math.random() * Math.floor(words.length)))];
           if (aux.indexOf(w) == -1)
           {
             aux.push(w);
           }
-        }
+        }*/
         if (game.rooms[index]['usersTurns'].length)
         {
           game.rooms[index]['selectedUser'] = game.rooms[index]['usersTurns'][Math.floor(Math.random() * Math.floor(game.rooms[index]['usersTurns'].length))];
@@ -318,14 +432,14 @@ io.on('connection', (socket) => {
     message['timeOut'] = true;
     game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
     var aux = [];
-          while (aux.length < 5)
-          {
-            var w = words[(Math.floor(Math.random() * Math.floor(words.length)))];
-            if (aux.indexOf(w) == -1)
-            {
-              aux.push(w);
-            }
-          }
+    /*while (aux.length < 5)
+    {
+      var w = words[(Math.floor(Math.random() * Math.floor(words.length)))];
+      if (aux.indexOf(w) == -1)
+      {
+        aux.push(w);
+      }
+    }*/
     if (game.rooms[index]['usersTurns'].length)
     {
       game.rooms[index]['selectedUser'] = game.rooms[index]['usersTurns'][Math.floor(Math.random() * Math.floor(game.rooms[index]['usersTurns'].length))];
@@ -421,14 +535,14 @@ io.on('connection', (socket) => {
                 message['selectedUser'] = game.rooms[index]['selectedUser'];
                 game.rooms[index]['usersUsed'].push(game.rooms[index]['selectedUser']);
                 var aux = [];
-                while (aux.length < 5)
+                /*while (aux.length < 5)
                 {
                   var w = words[(Math.floor(Math.random() * Math.floor(words.length)))];
                   if (aux.indexOf(w) == -1)
                   {
                     aux.push(w);
                   }
-                }
+                }*/
                 message['words'] = aux;
                 message['round'] = [...game.rooms[index]['round']];
                 message['full'] = game.rooms[index]['full'];
