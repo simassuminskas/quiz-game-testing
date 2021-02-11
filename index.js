@@ -7,7 +7,7 @@ var io = require('socket.io')(server);
 var port = process.env.PORT || 5000;
 var rounds = 10;
 var puntuation = 10;
-var maxUsers = 10;
+var maxUsers = 100;
 var admin;
 server.listen(port, () => {
   console.log('Server listening at port %d', port);
@@ -128,8 +128,7 @@ io.on('connection', (socket) => {
 					if ((message['userName'] != undefined) && (message['userName'] != '') && 
             (message['userSurname'] != undefined) && (message['userSurname'] != ''))
 					{
-						//game.rooms[index]['users'].push(message['userName']);//Esto se hace cuando hay más de un usuario.
-            game.rooms[index]['users'].push({'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : message['userType'], 'votes' : message['votes'], 'vote' : message['vote']});
+						game.rooms[index]['users'].push({'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : message['userType'], 'votes' : 0, 'vote' : message['vote']});
 						if (game.rooms[index]['users'].length == maxUsers)
 						{
 							game.rooms[index]['full'] = true;
@@ -179,23 +178,19 @@ io.on('connection', (socket) => {
     index2 = game.searchTeam(message['teamName'], index);
     if (index2 == -1)
     {//Se debe agregar el team a la sala y al usuario.
-      game.rooms[index]['teams'].push({
+      game.rooms[index]['teams'].push({//Pendiente ver que no se repita el nombre.
         'teamName' : message['teamName'], 
         'users' : [
           {
             'userName' : message['userName'], 
             'userSurname' : message['userSurname'], 
-            'votes' : message['votes'], 
+            'votes' : 0, 
             'vote' : message['vote']
           }
-        ]
+        ], 
+        'sendedQuestions' : []
       });
-      var index3 = game.searchUserInRoom(message['userName'], message['userSurname'], index);
-      if (index3 != -1)
-      {
-        game.rooms[index]['users'][index3]['team'] = message['teamName'];
-        message['teamOk'] = true;
-      }
+      message['teamOk'] = true;
     }
     socket.emit('newTeamName', message);
     socket.broadcast.emit('newTeamName', message);
@@ -215,15 +210,45 @@ io.on('connection', (socket) => {
       game.rooms[index]['teams'][index2]['users'].push({
         'userName' : message['userName'], 
         'userSurname' : message['userSurname'], 
-        'votes' : message['votes'], 
+        'votes' : 0, 
         'vote' : message['vote']
       });
-      message['teams'] = game.rooms[index]['teams'];
+      message['rooms'] = game.rooms;
+      socket.emit('joinTeam', message);
+      socket.broadcast.emit('joinTeam', message);
     }
-    socket.emit('joinTeam', message);
-    socket.broadcast.emit('joinTeam', message);
   });
-  socket.on('voteLeader', (data) => {
+  socket.on('authorizeStart', (data) => {
+    var message = JSON.parse(data);
+    index = game.searchRoomCode(message['roomCode'], false);
+    if (index != -1)
+    {//Hay que lanzar el dado.
+      for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+      {
+        for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+        {
+          game.rooms[index]['teams'][i]['users'][j]['rolledDice'] = false;
+        }
+      }
+      for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+      {
+        for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+        {
+          if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
+          {
+            message['userName'] = game.rooms[index]['teams'][i]['users'][j]['userName'];
+            message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
+            message['rooms'] = game.rooms;
+            socket.broadcast.emit('startGame', message);
+            j = game.rooms[index]['teams'][i]['users'].length;
+          }
+        }
+      }
+      //socket.emit('authorizeStart', message);
+      //socket.broadcast.emit('authorizeStart', message);
+    }
+  });
+  socket.on('voteLeader', (data) => {//Pendiente asegurarse de que no pueda votar sin estar en ese team.
     var message = JSON.parse(data);
     index = game.searchRoomCode(message['roomCode'], false);
     index2 = game.searchTeam(message['teamName'], index);
@@ -236,21 +261,20 @@ io.on('connection', (socket) => {
     roomCode: roomCode*/
     if (index2 != -1)
     {//
-      console.log('Line 239');
-      //game.rooms[index]['teams'][index2]['votes'].push({'userName' : message['userName'], 'userSurname' : message['userSurname']});
       console.log(message['userNameVoting'], message['userSurnameVoting']);
       for (var i = 0; i < game.rooms[index]['teams'][index2]['users'].length; i++)
       {
-        if ((game.rooms[index]['teams'][index2]['users'][i]['userName'] == message['userNameVoted']) && 
-          (game.rooms[index]['teams'][index2]['users'][i]['userSurname'] == message['userSurnameVoted']))
-        {
-          game.rooms[index]['teams'][index2]['users'][i]['votes'] += 1;
-        }
         if ((game.rooms[index]['teams'][index2]['users'][i]['userName'] == message['userNameVoting']) && 
           (game.rooms[index]['teams'][index2]['users'][i]['userSurname'] == message['userSurnameVoting']))
         {
           game.rooms[index]['teams'][index2]['users'][i]['vote'] = true;
           console.log(game.rooms[index]['teams'][index2]['users'][i]['userName'] + ' ' + game.rooms[index]['teams'][index2]['users'][i]['userSurname'] + ' ha votado.');
+        }
+        if ((game.rooms[index]['teams'][index2]['users'][i]['userName'] == message['userNameVoted']) && 
+          (game.rooms[index]['teams'][index2]['users'][i]['userSurname'] == message['userSurnameVoted']))
+        {
+          game.rooms[index]['teams'][index2]['users'][i]['votes'] += 1;
+          console.log(game.rooms[index]['teams'][index2]['users'][i]['userName'] + ' ' + game.rooms[index]['teams'][index2]['users'][i]['userSurname'] + ' tiene ' + game.rooms[index]['teams'][index2]['users'][i]['votes'] + ' votos.');
         }
       }
       var votationComplete = true;
@@ -264,6 +288,7 @@ io.on('connection', (socket) => {
       }
       if (votationComplete)
       {//Ver si hay algún ganador.
+        console.log('Todos votaron en el equipo: ' + game.rooms[index]['teams'][index2]['teamName']);
         var maxVotesIndex = 0;
         for (var i = 1; i < game.rooms[index]['teams'][index2]['users'].length; i++)
         {
@@ -274,25 +299,100 @@ io.on('connection', (socket) => {
         }
         for (var i = 0; i < game.rooms[index]['teams'][index2]['users'].length; i++)
         {
-          if (game.rooms[index]['teams'][index2]['users'][i]['votes'] == game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['votes'])
+          if ((game.rooms[index]['teams'][index2]['users'][i]['votes'] == game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['votes']) && (i != maxVotesIndex))
           {
             maxVotesIndex = -1;
+            i = game.rooms[index]['teams'][index2]['users'].length;
           }
         }
         if (maxVotesIndex != -1)
         {//Hay un ganador.
+          console.log(game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['userName'] + ' ' + game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['userSurname'] + ' es el lider del equipo: ' + game.rooms[index]['teams'][index2]['teamName']);
           game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['leader'] = true;
+          var allUsersInTeams = true;
+          for (var i = 0; i < game.rooms[index]['users'].length; i++)
+          {
+            var found = false;
+            for (var j = 0; j < game.rooms[index]['teams'].length; j++)
+            {
+                for (var k = 0; k < game.rooms[index]['teams'][j]['users'].length; k++)
+                {
+                    if ((game.rooms[index]['teams'][j]['users'][k]['userName'] == game.rooms[index]['users'][i]['userName']) || 
+                        (game.rooms[index]['teams'][j]['users'][k]['userSurname'] == game.rooms[index]['users'][i]['userSurname']))
+                    {
+                        found = true;
+                    }
+                }
+            }
+            if (!found)
+            {
+              allUsersInTeams = false;
+            }
+          }
+          if (allUsersInTeams)
+          {
+            game.rooms[index]['readyToStartGame'] = true;
+            message['rooms'] = game.rooms;
+            
+            socket.emit('readyToStartGame', message);
+            socket.broadcast.emit('readyToStartGame', message);
+          }
         }
-        message['teams'] = game.rooms[index]['teams'];
-        socket.emit('voteLeader', message);
-        socket.broadcast.emit('voteLeader', message);
+        else
+        {
+          message['rooms'] = game.rooms;
+          socket.emit('voteLeader', message);
+          socket.broadcast.emit('voteLeader', message);
+        }
       }
     }
   });
-  socket.on('rollDice', (data) => {
+  socket.on('rollingDice', (data) => {
     var message = JSON.parse(data);
-    socket.emit('rollDice', message);
-    socket.broadcast.emit('rollDice', message);
+    var index = game.searchRoomCode(message['roomCode'], false);
+    if (index != -1)
+    {
+      var area = Math.floor(Math.random() * Math.floor(3)) + 1;
+      area = 1;//tmp_code
+      if (area == 1)
+      {//Enviar de a una pregunta.
+        //message['questions'] = game.questions;
+        //userSurname: userSurname, 
+        for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+        {
+          for (var j = 0; j < game.questions.length; j++)
+          {
+            var sended = false;
+            for (var k = 0; k < game.rooms[index]['teams'][i]['sendedQuestions'].length; k++)
+            {
+              if (game.rooms[index]['teams'][i]['sendedQuestions'][j] == game.questions[j]['question'])
+              {
+                sended = true;
+                k = game.rooms[index]['teams'][i]['sendedQuestions'].length;
+              }
+            }
+            if (!sended)
+            {
+              game.rooms[index]['teams'][i]['sendedQuestions'].push(game.questions[j]['question']);
+              message['question'] = game.questions[j];
+              message['rooms'] = game.rooms;
+              socket.emit('question', message);
+              socket.broadcast.emit('question', message);
+              j = game.questions.length;
+            }
+          }
+          /*for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+          {
+            if ((game.rooms[index]['teams'][i]['users'][j]['userName'] == message['userName']) && 
+              (game.rooms[index]['teams'][i]['users'][j]['userSurname'] == message['userSurname']))
+            {
+              j = game.rooms[index]['teams'][i]['users'].length;
+              i = game.rooms[index]['teams'].length;
+            }
+          }*/
+        }
+      }
+    }
   });
   socket.on('newUserNeedsInfo', (data) => {
     var message = JSON.parse(data);

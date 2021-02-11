@@ -7,11 +7,11 @@
     <link rel="icon" type="image/png" href="img/favicon.png"/>
     <title>Quiz Game - Admin Panel</title>
 </head>
-<body onload="document.getElementById('adminPassword').value = 'Password123'; adminLogin();">
+<body onload="//document.getElementById('adminPassword').value = 'Password123'; adminLogin();">
     <div id="loginDiv"><input id="adminPassword" type="text" placeholder="password..."><button onclick="adminLogin()">log in</button></div>
     <label id="lblQuestionsInfo">Questions<br></label>
     <div id="questionsDiv"></div>
-    <!--<label id="lblRoomsInfo">Rooms<br></label>-->
+    <label id="lblRoomsInfo">Rooms<br></label>
     <div id="roomsDiv"></div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="../js/admin.js"></script>

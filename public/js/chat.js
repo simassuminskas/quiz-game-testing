@@ -211,26 +211,127 @@ socket.on('newTeamName', (data) => {
         if (data['teamOk'])
         {
             teams.push({'teamName' : data['teamName'], 'users' : [{'userName' : data['userName'], 'userSurname' : data['userSurname']}]});
+            console.log('Se añadió un team:');
+            console.log(teams[teams.length - 1]);
             updateUsersInfo();
         }
-    }
-    if ((data['userName'] != undefined) && (data['userSurname'] != undefined))
-    {
     }
 });
 socket.on('joinTeam', (data) => {
     if (data['roomCode'] == roomCode)
     {
-        teams = data['teams'];
+        teams = getTeams(data['rooms']);
         updateUsersInfo();
     }
 });
+function getTeams(rooms)
+{
+    for (var i = 0; i < rooms.length; i++)
+    {
+        if (rooms[i]['roomCode'] == roomCode)
+        {
+            return rooms[i]['teams'];
+        }
+    }
+}
 socket.on('voteLeader', (data) => {
     if (data['roomCode'] == roomCode)
     {
-        teams = data['teams'];
-        console.log(teams);
+        //searchRoomCode(rc, newUser = true, type = null)
+        teams = getTeams(data['rooms']);
         updateUsersInfo();
+    }
+});
+socket.on('readyToStartGame', (data) => {
+    if (data['roomCode'] == roomCode)
+    {
+        document.getElementById('statusInfo').innerHTML = 'Waiting for admin.';
+        teams = getTeams(data['rooms']);
+        /*for (var j = 0; j < teams.length; j++)
+        {
+            //var indexLeaderElected = -1;
+            for (var k = 0; k < teams[j]['users'].length; k++)
+            {
+                if (teams[j]['users'][k]['leader'] && 
+                    (teams[j]['users'][k]['userName'] == userName) && 
+                    (teams[j]['users'][k]['userSurname'] == userSurname))
+                {
+                    document.getElementById('startGameButton').style.display = 'block';
+                    //indexLeaderElected = k;
+                }
+            }
+        }*/
+        updateUsersInfo();
+    }
+});
+socket.on('startGame', (data) => {
+    if (data['roomCode'] == roomCode)
+    {
+        console.log('startGame');
+        document.getElementById('statusInfo').innerHTML = 'Starting game.';
+        teams = getTeams(data['rooms']);
+        /*for (var j = 0; j < teams.length; j++)
+        {
+            for (var k = 0; k < teams[j]['users'].length; k++)
+            {
+                if ((teams[j]['users'][k]['userName'] == userName) && 
+                    (teams[j]['users'][k]['userSurname'] == userSurname))
+                {
+                    document.getElementById('startGameButton').style.display = 'block';
+                    //indexLeaderElected = k;
+                }
+            }
+        }*/
+        updateUsersInfo();
+        if ((data['userName'] == userName) && 
+            (data['userSurname'] == userSurname))
+        {
+            document.getElementById('rollDiceButton').style.display = 'block';
+        }
+    }
+});
+socket.on('question', (data) => {
+    if (data['roomCode'] == roomCode)
+    {
+        //document.getElementById('statusInfo').innerHTML = 'Starting game.';
+        teams = getTeams(data['rooms']);
+        if ((data['userName'] == userName) && 
+            (data['userSurname'] == userSurname))
+        {
+            document.getElementById('questionsDiv').innerHTML = '';
+            var html = '';
+            html += '<label id="question">' + data['question']['question'] + '</label><br>';
+            html += '<label class="lblOptions">Options<br></label>';
+            /*<p>Please select your gender:</p>
+              <input type="radio" id="male" name="gender" value="male">
+              <label for="male">Male</label><br>*/
+            for (var j = 0; j < data['question']['options'].length; j++)
+            {
+                html += '<input type="radio" id="question_option_' + j + '" name="answer">';
+                html += '<label for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
+                //html += '<input id="question_' + i + '_option_' + j + '" type="text" value="' + data['question']['options'][j]['option'] + '"><br>';
+            }
+            html += '<button onclick="submitAnswer();">Submit answer</button>';
+            document.getElementById('questionsDiv').innerHTML = html;
+        }
+        /*for (var j = 0; j < teams.length; j++)
+        {
+            for (var k = 0; k < teams[j]['users'].length; k++)
+            {
+                if ((teams[j]['users'][k]['userName'] == userName) && 
+                    (teams[j]['users'][k]['userSurname'] == userSurname))
+                {
+                    document.getElementById('startGameButton').style.display = 'block';
+                    //indexLeaderElected = k;
+                }
+            }
+        }*/
+        updateUsersInfo();
+        if ((data['userName'] == userName) && 
+            (data['userSurname'] == userSurname))
+        {
+            document.getElementById('rollDiceButton').style.display = 'block';
+        }
     }
 });
 socket.on('userDisconected', (data) => {
@@ -599,6 +700,11 @@ function joinTeam(userName, userSurname, roomCode, index)
 }
 function voteLeader(userNameVoting, userSurnameVoting, roomCode, teamIndex, userNameVoted, userSurnameVoted)
 {
+    for (var i = 0; i < teams[teamIndex]['users'].length; i++)
+    {
+        console.log('vl_' + teamIndex + '_' + i);
+        document.getElementById('vl_' + teamIndex + '_' + i).style.display = 'none';
+    }
     console.log(userNameVoting, userSurnameVoting, roomCode, teamIndex, userNameVoted, userSurnameVoted);
     socket.emit('voteLeader', JSON.stringify({
         type: 'voteLeader',
@@ -607,6 +713,15 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, teamIndex, user
         userNameVoting: userNameVoting, 
         userSurnameVoting: userSurnameVoting, 
         teamName: teams[teamIndex]['teamName'], 
+        roomCode: roomCode
+    }));
+}
+function submitAnswer()
+{
+    socket.emit('answer', JSON.stringify({
+        userName: userName, 
+        userSurname: userSurname, 
+        teamName: document.getElementById('teamName').value, 
         roomCode: roomCode
     }));
 }
