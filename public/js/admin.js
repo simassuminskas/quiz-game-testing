@@ -13,13 +13,14 @@ socket.on('adminLogged', (data) => {
     document.getElementById('loginDiv').style.display = 'none';
     rooms = data['rooms'];
     questions = data['questions'];
-    updateQuestionsList();
+    //updateQuestionsList();
     updateRoomsList();
 });
-socket.on('readyToStartGame', (data) => {
-    console.log(data);
+socket.on('update', (data) => {
     rooms = data['rooms'];
     updateRoomsList();
+    /*console.log(data);
+    updateRoomsList();*/
     //document.getElementById('statusInfo').innerHTML = 'Waiting for admin.';
     /*for (var j = 0; j < teams.length; j++)
     {
@@ -36,6 +37,35 @@ socket.on('readyToStartGame', (data) => {
         }
     }*/
 });
+socket.on('newTeamName', (data) => {
+    rooms = data['rooms'];
+    updateRoomsList();
+});
+socket.on('joinTeam', (data) => {
+    rooms = data['rooms'];
+    updateRoomsList();
+});
+socket.on('startGame', (data) => {
+    rooms = data['rooms'];
+    updateRoomsList();
+});
+socket.on('startGame', (data) => {
+    rooms = data['rooms'];
+    updateRoomsList();
+});
+socket.on('allUsersVotationAdmin', (data) => {
+    rooms = data['rooms'];
+    updateRoomsList();
+});
+socket.on('personalEvaluation', (data) => {
+    rooms = data['rooms'];
+    updateRoomsList();
+});
+socket.on('personalEvaluationAdmin', (data) => {
+    rooms = data['rooms'];
+    updateRoomsList();
+});
+//Pendiente ver si hace falta con 'question'.
 function updateQuestionsList()
 {
     document.getElementById('questionsDiv').innerHTML = '';
@@ -71,12 +101,6 @@ function editQuestions()
         questions: questions
     }));
 }
-function authorizeStart(i)
-{
-    socket.emit('authorizeStart', JSON.stringify({
-        'roomCode': rooms[i]['roomCode']
-    }));
-}
 function updateRoomsList()
 {
     document.getElementById('roomsDiv').innerHTML = '';
@@ -85,47 +109,38 @@ function updateRoomsList()
     for (var i = 0; i < rooms.length; i++)
     {
         //<button onclick="//editQuestion();">Submit</button>';
-        html += '<label id="room_' + i + '">Room code: ' + rooms[i]['roomCode'] + '<br></label>';
-        if (rooms[i]['readyToStartGame'])
-        {
-            html += '<button id="s_' + i + '" onclick="authorizeStart(' + i + ');">Authorize Start</button>';
-        }
+        html += '<label id="room_' + i + '">Room code: ' + rooms[i]['roomCode'] + '</label><br>';
         html += '<label class="lblTeams">Teams<br></label>';
         for (var j = 0; j < rooms[i]['teams'].length; j++)
         {
-            html += '<label id="room_' + i + '">Team name: ' + rooms[i]['teams'][j]['teamName'] + '<br></label>';
-            var indexLeaderElected = -1;
-            for (var k = 0; k < rooms[i]['teams'][j]['users'].length; k++)
-            {
-                if (rooms[i]['teams'][j]['users'][k]['leader'])
-                {
-                    indexLeaderElected = k;
-                }
-            }
+            html += '<label id="room_' + i + '_team_' + j + '">Team name: ' + rooms[i]['teams'][j]['teamName'] + '</label>';
+            html += '<label>Team score: Area 1: ' + rooms[i]['teams'][j]['scoreArea1'] + ' Area 2: ' + rooms[i]['teams'][j]['scoreArea2'] + 'Area 3: ' + rooms[i]['teams'][j]['scoreArea3'] + '</label><br>';
             html += '<label class="lblUsers">Users<br></label>';
             for (var k = 0; k < rooms[i]['teams'][j]['users'].length; k++)
             {
                 html += '<br>' + rooms[i]['teams'][j]['users'][k]['userName'] + ' ' + rooms[i]['teams'][j]['users'][k]['userSurname'];
-                if (k == indexLeaderElected)
+                if (rooms[i]['teams'][j]['users'][k]['leader'])
                 {
                     html += ' (leader)';
                 }
-                if ((rooms[i]['teams'][j]['users'].length > 1) && (indexLeaderElected == -1) && (userInTeamIndex != k))
-                {//Se debe habilitar la elección de lider.
-                    html += '<button id="vl_' + j + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + j + ', \'' + teams[j]['users'][k]['userName'] + '\', \'' + teams[j]['users'][k]['userSurname'] + '\');">Vote for leader</button>';
+            }
+            //Falta agregar las respuestas y evaluacionces del Área 1.
+            //html += '<input id="room_' + i + '_team_' + j + '_option_' + j + '" type="text" value="' + questions[i]['options'][j] + '"><br>';
+            html += '<br>Votation:<br>';
+            /*game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].push({
+              'answer' : message['answer'], 
+              'votes' : 1
+            });*/
+            for (var k = 0; k < rooms[i]['teams'][j]['sendedQuestions']['area1'].length; k++)
+            {//votation
+                html += 'Question:<br>';
+                html += rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['question'] + '<br>Answers:<br>';
+                for (var l = 0; l < rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers'].length; l++)
+                {
+                    html += rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers']['answer'] + '<br>Votes: ' + rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers']['votes'] + '<br>';
                 }
             }
-            //html += '<input id="room_' + i + '_team_' + j + '_option_' + j + '" type="text" value="' + questions[i]['options'][j] + '"><br>';
-            html += '<hr>';
         }
     }
     document.getElementById('roomsDiv').innerHTML = html;
-    //questionsDiv
-/*game.rooms[index]['readyToStartGame']
-game.rooms.push({
-    'roomCode' : message['roomCode'], 
-    'users' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : undefined}], 
-    ...
-    'teams' : []
-});*/
 }

@@ -88,22 +88,27 @@ function updateUsersInfo()
     for (var i = 0; i < users.length; i++)
     {
         var add = true;
-        for (var j = 0; j < teams.length; j++)
+        if (teams != undefined)
         {
-            for (var k = 0; k < teams[j]['users'].length; k++)
+            for (var j = 0; j < teams.length; j++)
             {
-                if ((teams[j]['users'][k]['userName'] == userName) && 
-                    (teams[j]['users'][k]['userSurname'] == userSurname))
+                for (var k = 0; k < teams[j]['users'].length; k++)
                 {
-                    document.getElementById('inputTeamName').style.display = 'none';
-                    userInTeamIndex = j;
-                }
-                if ((teams[j]['users'][k]['userName'] == users[i]['userName']) || 
-                    (teams[j]['users'][k]['userSurname'] == users[i]['userSurname']))
-                {
-                    add = false;
+                    if ((teams[j]['users'][k]['userName'] == userName) && 
+                        (teams[j]['users'][k]['userSurname'] == userSurname))
+                    {
+                        document.getElementById('teamScore').innerHTML = 'Team score: Area 1: ' + teams[j]['scoreArea1'] + ' Area 2: ' + teams[j]['scoreArea2'] + 'Area 3: ' + teams[j]['scoreArea3'];
+                        document.getElementById('inputTeamName').style.display = 'none';
+                        userInTeamIndex = j;
+                    }
+                    if ((teams[j]['users'][k]['userName'] == users[i]['userName']) || 
+                        (teams[j]['users'][k]['userSurname'] == users[i]['userSurname']))
+                    {
+                        add = false;
+                    }
                 }
             }
+
         }
         //console.log(users);
         if (add)
@@ -117,38 +122,46 @@ function updateUsersInfo()
     {//No está en un team.
         document.getElementById('inputTeamName').style.display = 'block';
     }
-    for (var j = 0; j < teams.length; j++)
+    if (teams != undefined)
     {
-        document.getElementById('lblTeamsInfo').style.display = 'block';
-        html2 += '<div id="t_' + j + '">' + teams[j]['teamName'];
-        if (userInTeamIndex == -1)
-        {//No está en un team.
-            html2 += '<button id="jt_' + j + '" onclick="joinTeam(userName, userSurname, roomCode, ' + j + ');">Join</button>';
-        }
-        else
+        for (var j = 0; j < teams.length; j++)
         {
-            var indexLeaderElected = -1;
-            for (var k = 0; k < teams[j]['users'].length; k++)
+            document.getElementById('lblTeamsInfo').style.display = 'block';
+            html2 += '<div id="t_' + j + '">' + teams[j]['teamName'];
+            if (userInTeamIndex == -1)
+            {//No está en un team.
+                html2 += '<button id="jt_' + j + '" onclick="joinTeam(userName, userSurname, roomCode, ' + j + ');">Join</button>';
+            }
+            else
             {
-                if (teams[j]['users'][k]['leader'])
+                var indexLeaderElected = -1;
+                for (var k = 0; k < teams[j]['users'].length; k++)
                 {
-                    indexLeaderElected = k;
+                    if (teams[j]['users'][k]['leader'])
+                    {
+                        indexLeaderElected = k;
+                    }
+                }
+                for (var k = 0; k < teams[j]['users'].length; k++)
+                {
+                    html2 += '<br>' + teams[j]['users'][k]['userName'] + ' ' + teams[j]['users'][k]['userSurname'];
+                    if ((teams[j]['users'][k]['userName'] == userName) && 
+                        (teams[j]['users'][k]['userSurname'] == userSurname))
+                    {
+                        html2 += ' (you)';
+                    }
+                    if (k == indexLeaderElected)
+                    {
+                        html2 += ' (leader)';
+                    }
+                    if ((teams[j]['users'].length > 1) && (indexLeaderElected == -1) && (userInTeamIndex == j))
+                    {//Se debe habilitar la elección de lider.
+                        html2 += '<button id="vl_' + j + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + j + ', \'' + teams[j]['users'][k]['userName'] + '\', \'' + teams[j]['users'][k]['userSurname'] + '\');document.getElementById(this.id).style.display = \'none\';">Vote for leader</button>';
+                    }
                 }
             }
-            for (var k = 0; k < teams[j]['users'].length; k++)
-            {
-                html2 += '<br>' + teams[j]['users'][k]['userName'] + ' ' + teams[j]['users'][k]['userSurname'];
-                if (k == indexLeaderElected)
-                {
-                    html2 += ' (leader)';
-                }
-                if ((teams[j]['users'].length > 1) && (indexLeaderElected == -1) && (userInTeamIndex == j))
-                {//Se debe habilitar la elección de lider.
-                    html2 += '<button id="vl_' + j + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + j + ', \'' + teams[j]['users'][k]['userName'] + '\', \'' + teams[j]['users'][k]['userSurname'] + '\');document.getElementById(this.id).style.display = \'none\';">Vote for leader</button>';
-                }
-            }
+            html2 += '</div>';
         }
-        html2 += '</div>';
     }
     ul.innerHTML = html;
     tl.innerHTML = html2;

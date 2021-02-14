@@ -21,167 +21,35 @@ var connected = false;
 var regex = /(&zwj;|&nbsp;)/g;
 var d;
 var teams = [];
+var area;
 
 socket.on('update', (data) => {
     if ((data['userName'] != undefined) && (data['userSurname'] != undefined))
-    {
+    {//Pendiente modificar para ser más parecido a lo otros y que muestre los equipos desde el principio como en otras ocasiones.
+        teams = getTeams(data['rooms']);
         console.log(data);
-        //userName = userName.split('_')[0];//pendiente mejorar
         if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
         {
             document.getElementById('divLogin').style.display = 'none';
             roomCode = data['roomCode'];
-            id = data['id'];
-            for (var i = 0; i < data['usersInRoom'].length; i++)
+            for (var i = 0; i < data['rooms'].length; i++)
             {
-                var f = false;
-                for (var j = 0; j < users.length; j++)
+                if (data['rooms'][i]['roomCode'] == roomCode)
                 {
-                    if (users[j][0] == data['usersInRoom'][i])
-                    {
-                        f = true;
-                    }
+                    users = data['rooms'][i]['users'];
                 }
-                if (!f)
-                {
-                    users.push(data['usersInRoom'][i]);
-                    users[users.length - 1]['puntuation'] = 0;
-                    updateUsersInfo();
-                }
-            }
-            /*if (data['requestTeamName'])
-            {
-                document.getElementById('inputTeamName').style.display = 'block';
-            }
-            else
-            {
-                updateUsersInfo();
-            }*/
-            updateUsersInfo();
-            if (users.length > 1)
-            {
-                document.getElementById(panelMessages).style.display = 'block';
-            }
-            if (users.length > 2)
-            {
-                handleNewUserNeedsInfo();
             }
             document.getElementById(lblRoomCode).innerHTML = 'The room code is: ' + roomCode;
+            document.getElementById(privateRoom).style.display = 'none';
 
-            if ((data['selectedUser'] != undefined) && (data['selectedUser'] != ''))
-            {
-                selectedUser = data['selectedUser'];
-                updateUsersInfo();
-                if ((data['selectedUser']['name'] == userName) && (data['selectedUser']['surname'] == userSurname))
-                {
-                    words = data['words'];
-                    document.getElementById('send').childNodes[0].nodeValue = 'Send';
-                    updateBar('mdi-content-send', 'Type here', false);
-                    document.getElementById(privateRoom).style.display = 'none';
-                }
-                else
-                {
-                    var html = '';
-                    if (!data['full'])
-                    {
-                        //document.getElementById('waiting').style.display = 'block';
-                    }
-                    else
-                    {
-                        //document.getElementById('waiting').style.display = 'none';
-                    }
-                    html += '<label>' + data['selectedUser']['userName'] + ' ' + data['selectedUser']['userSurname'] + ' is selecting a word.</label>';
-                    //document.getElementById(wordsInfo).innerHTML = html;
-                    document.getElementById('send').childNodes[0].nodeValue = 'Send';
-                    updateBar('mdi-content-send', 'Type here', false);
-                }
-                //document.getElementById(roundInfo).innerHTML = 'Round: ' + data['round'][0] + ' of ' + data['round'][1];
-            }
+            document.getElementById(panelMessages).style.display = 'block';
+            document.getElementById('send').childNodes[0].nodeValue = 'Send';
+            updateBar('mdi-content-send', 'Type here', false);
+            connected = true;
         }
-        else
-        {
-            if ((data['roomCode'] != undefined) && (data['roomCode'] != '')  && (data['roomCode'] == roomCode))
-            {
-                //document.getElementById('rBtn').style.display = 'none';
-                //document.getElementById('rBtn2').style.display = 'none';
-                //id = data['id'];
-                for (var i = 0; i < data['usersInRoom'].length; i++)
-                {
-                    var f = false;
-                    for (var j = 0; j < users.length; j++)
-                    {
-                        if ((users[j]['userName'] == data['usersInRoom'][i]['userName']) && 
-                            (users[j]['userSurname'] == data['usersInRoom'][i]['userSurname']))
-                        {
-                            f = true;
-                        }
-                    }
-                    if (!f)
-                    {
-                        //users.push({data['usersInRoom'][i]['name'], 0});//Pendiente revisar.
-                        users.push(data['usersInRoom'][i]);
-                        users[users.length - 1]['puntuation'] = 0;
-                    }
-                }
-                if (users.length > 1)
-                {
-                    document.getElementById(panelMessages).style.display = 'block';
-                }
-                updateUsersInfo();
-                if (users.length > 1)
-                {
-                    points = [];
-                    //changeSize();
-                    selectedUser = data['selectedUser'];
-                    updateUsersInfo();
-                    if ((data['selectedUser'] != undefined) && (data['selectedUser']['name'] != '') && (data['selectedUser']['surname'] != ''))
-                    {
-                        if ((data['selectedUser']['name'] == userName) && (data['selectedUser']['surname'] == userSurname))
-                        {
-                            var html = '';
-                            if (!data['full'])
-                            {
-                                //document.getElementById('waiting').style.display = 'block';
-                            }
-                            else
-                            {
-                                //document.getElementById('waiting').style.display = 'none';
-                            }
-                            html += '<label>Select a word: </label>';
-                            words = data['words'];
-                            /*var w = document.getElementById(wordsInfo);
-                            w.style.display = 'flex';
-                            w.innerHTML = '';
-                            for (var i = 0; i < words.length; i++)
-                            {
-                                html += '<button id="w_' + i + '" onclick="selectWord(this.id);">' + words[i] + '</button>';
-                            }
-                            w.innerHTML = html;*/
-                        }
-                        else
-                        {
-                            var html = '';
-                            if (!data['full'])
-                            {
-                                //document.getElementById('waiting').style.display = 'block';
-                            }
-                            else
-                            {
-                                //document.getElementById('waiting').style.display = 'none';
-                            }
-                            html += '<label>' + data['selectedUser'] + ' is selecting a word.</label>';
-                            //document.getElementById(wordsInfo).innerHTML = html;
-                        }
-                        ////document.getElementById(roundInfo).innerHTML = 'Round: ' + data['round'][0] + ' of ' + data['round'][1];
-                    }
-                    updateBar('mdi-content-send', 'Type here', false);
-                    document.getElementById('privateRoom').style.display = 'none';
-                    connected = true;
-                }
-            }
-        }
+        updateUsersInfo();
     }
-    if ((data['roomCode'] != undefined) && (data['roomCode'] != '')  && (data['roomCode'] == roomCode) && data['teams'])
+    /*if ((data['roomCode'] != undefined) && (data['roomCode'] != '')  && (data['roomCode'] == roomCode) && data['teams'])
     {//Si hay teams se le tiene que informar al usuario nuevo.
         for (var i = 0; i < data['teams'].length; i++)
         {
@@ -203,7 +71,7 @@ socket.on('update', (data) => {
             }
         }
         updateUsersInfo();
-    }
+    }*/
 });
 socket.on('newTeamName', (data) => {
     if (data['roomCode'] == roomCode)
@@ -242,46 +110,12 @@ socket.on('voteLeader', (data) => {
         updateUsersInfo();
     }
 });
-socket.on('readyToStartGame', (data) => {
-    if (data['roomCode'] == roomCode)
-    {
-        document.getElementById('statusInfo').innerHTML = 'Waiting for admin.';
-        teams = getTeams(data['rooms']);
-        /*for (var j = 0; j < teams.length; j++)
-        {
-            //var indexLeaderElected = -1;
-            for (var k = 0; k < teams[j]['users'].length; k++)
-            {
-                if (teams[j]['users'][k]['leader'] && 
-                    (teams[j]['users'][k]['userName'] == userName) && 
-                    (teams[j]['users'][k]['userSurname'] == userSurname))
-                {
-                    document.getElementById('startGameButton').style.display = 'block';
-                    //indexLeaderElected = k;
-                }
-            }
-        }*/
-        updateUsersInfo();
-    }
-});
 socket.on('startGame', (data) => {
     if (data['roomCode'] == roomCode)
     {
         console.log('startGame');
         document.getElementById('statusInfo').innerHTML = 'Starting game.';
         teams = getTeams(data['rooms']);
-        /*for (var j = 0; j < teams.length; j++)
-        {
-            for (var k = 0; k < teams[j]['users'].length; k++)
-            {
-                if ((teams[j]['users'][k]['userName'] == userName) && 
-                    (teams[j]['users'][k]['userSurname'] == userSurname))
-                {
-                    document.getElementById('startGameButton').style.display = 'block';
-                    //indexLeaderElected = k;
-                }
-            }
-        }*/
         updateUsersInfo();
         if ((data['userName'] == userName) && 
             (data['userSurname'] == userSurname))
@@ -293,26 +127,87 @@ socket.on('startGame', (data) => {
 socket.on('question', (data) => {
     if (data['roomCode'] == roomCode)
     {
-        //document.getElementById('statusInfo').innerHTML = 'Starting game.';
+        area = data['area'];
         teams = getTeams(data['rooms']);
-        if ((data['userName'] == userName) && 
-            (data['userSurname'] == userSurname))
+        var teamIndex;
+        for (var j = 0; j < teams.length; j++)
+        {
+            if (teams[j]['teamName'] == data['teamName'])
+            {
+                teamIndex = j;
+            }
+        }
+        var leader = false;
+        for (var k = 0; k < teams[teamIndex]['users'].length; k++)
+        {
+            if ((teams[teamIndex]['users'][k]['userName'] == userName) && 
+                (teams[teamIndex]['users'][k]['userSurname'] == userSurname) && 
+                teams[teamIndex]['users'][k]['leader'])
+            {//Ver que no sea el lider (porque ese vota después).
+                leader = true;
+            }
+        }
+        if (!leader)
         {
             document.getElementById('questionsDiv').innerHTML = '';
             var html = '';
             html += '<label id="question">' + data['question']['question'] + '</label><br>';
             html += '<label class="lblOptions">Options<br></label>';
-            /*<p>Please select your gender:</p>
-              <input type="radio" id="male" name="gender" value="male">
-              <label for="male">Male</label><br>*/
             for (var j = 0; j < data['question']['options'].length; j++)
             {
                 html += '<input type="radio" id="question_option_' + j + '" name="answer">';
-                html += '<label for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
-                //html += '<input id="question_' + i + '_option_' + j + '" type="text" value="' + data['question']['options'][j]['option'] + '"><br>';
+                html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
             }
-            html += '<button onclick="submitAnswer();">Submit answer</button>';
+            html += '<button onclick="submitAnswer("allUsersVotation", ' + data + ');">Submit answer</button>';
             document.getElementById('questionsDiv').innerHTML = html;
+        }
+        updateUsersInfo();
+        if ((data['userName'] == userName) && 
+            (data['userSurname'] == userSurname))
+        {
+            document.getElementById('rollDiceButton').style.display = 'block';
+        }
+    }
+});
+socket.on('voteAnswerAllTeam', (data) => {
+    if (data['roomCode'] == roomCode)
+    {
+        //document.getElementById('statusInfo').innerHTML = 'Starting game.';
+        teams = getTeams(data['rooms']);
+        if ((data['userName'] != userName) || 
+            (data['userSurname'] != userSurname))
+        {
+            var leader = false;
+            for (var j = 0; j < teams.length; j++)
+            {
+                for (var k = 0; k < teams[j]['users'].length; k++)
+                {
+                    if ((teams[j]['users'][k]['userName'] == userName) && 
+                        (teams[j]['users'][k]['userSurname'] == userSurname) && 
+                        teams[j]['users'][k]['leader'])
+                    {//Ver que no sea el lider (porque ese vota después).
+                        leader = true;
+                    }
+                    /*if (teams[j]['users'][k]['leader'])
+                    {
+                        indexLeaderElected = k;
+                    }*/
+                }
+            }
+            if (!leader)
+            {
+                document.getElementById('questionsDiv').innerHTML = '';
+                var html = '';
+                html += '<label id="question">' + data['question']['question'] + '</label><br>';
+                html += '<label class="lblOptions">Options<br></label>';
+                for (var j = 0; j < data['question']['options'].length; j++)
+                {
+                    html += '<input type="radio" id="question_option_' + j + '" name="answer">';
+                    html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
+                }
+                html += '<button onclick="submitAnswer("allUsersVotation", ' + data + ');">Submit answer</button>';
+                document.getElementById('questionsDiv').innerHTML = html;
+            }
         }
         /*for (var j = 0; j < teams.length; j++)
         {
@@ -332,6 +227,95 @@ socket.on('question', (data) => {
         {
             document.getElementById('rollDiceButton').style.display = 'block';
         }
+    }
+});
+socket.on('leaderVotation', (data) => {
+    if (data['roomCode'] == roomCode)
+    {
+        //document.getElementById('statusInfo').innerHTML = 'Starting game.';
+        teams = getTeams(data['rooms']);
+        if ((data['userName'] != userName) || 
+            (data['userSurname'] != userSurname))
+        {
+            var leader = false;
+            for (var j = 0; j < teams.length; j++)
+            {
+                for (var k = 0; k < teams[j]['users'].length; k++)
+                {
+                    if ((teams[j]['users'][k]['userName'] == userName) && 
+                        (teams[j]['users'][k]['userSurname'] == userSurname) && 
+                        teams[j]['users'][k]['leader'])
+                    {
+                        leader = true;
+                    }
+                }
+            }
+            if (leader)
+            {
+                document.getElementById('questionsDiv').innerHTML = '';
+                var html = '';
+                html += '<label id="question">' + data['question']['question'] + '</label><br>';
+                html += '<label class="lblOptions">Options<br></label>';
+                var j = 0;
+                for (;j < data['question']['options'].length; j++)
+                {//Agregar opción: "no mutual agreement"
+                    html += '<input type="radio" id="question_option_' + j + '" name="answer">';
+                    html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
+                }
+                html += '<input type="radio" id="question_option_' + j + '" name="answer">';
+                html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">no mutual agreement</label><br>';
+                
+                html += '<button onclick="submitAnswer("leaderVotation", ' + data + ');">Submit answer</button>';
+                document.getElementById('questionsDiv').innerHTML = html;
+            }
+        }
+        updateUsersInfo();
+        if ((data['userName'] == userName) && 
+            (data['userSurname'] == userSurname))
+        {
+            document.getElementById('rollDiceButton').style.display = 'block';
+        }
+    }
+});
+socket.on('personalEvaluation', (data) => {
+    if (data['roomCode'] == roomCode)
+    {
+        document.getElementById('statusInfo').innerHTML = 'Personal evaluation.';
+        teams = getTeams(data['rooms']);
+        if ((data['userName'] != userName) || 
+            (data['userSurname'] != userSurname))
+        {
+            var leader = false;
+            for (var j = 0; j < teams.length; j++)
+            {
+                for (var k = 0; k < teams[j]['users'].length; k++)
+                {
+                    if ((teams[j]['users'][k]['userName'] == userName) && 
+                        (teams[j]['users'][k]['userSurname'] == userSurname) && 
+                        teams[j]['users'][k]['leader'])
+                    {
+                        leader = true;
+                    }
+                }
+            }
+            document.getElementById('questionsDiv').innerHTML = '';
+            
+            var html = '<label>' + data['question'] + '</label><br>';
+            //Mostrar la opción seleccionada por el líder.
+            html += '<label>Final answer</label><br>';
+            html += '<label>' + data['answer'] + '</label><br>';
+            html += '<label>Close to reality: </label>';
+            html += '<input type="range" id="personalEvaluationRange" min="0" max="4">';
+            html += '<button onclick="submitPersonalEvaluation();">Submit</button>';
+            
+            document.getElementById('questionsDiv').innerHTML = html;
+        }
+        updateUsersInfo();
+        /*if ((data['userName'] == userName) && 
+            (data['userSurname'] == userSurname))
+        {
+            document.getElementById('rollDiceButton').style.display = 'block';
+        }*/
     }
 });
 socket.on('userDisconected', (data) => {
@@ -361,52 +345,6 @@ socket.on('userDisconected', (data) => {
             //document.getElementById('waiting').style.display = 'none';
             //document.getElementById(drawingToolsDiv).style.display = 'none';
             selectedUser = undefined;
-            if (data['subType'] == 'gameOver')
-            {
-                /*canvas.removeEventListener('touchstart', onTouch, false);
-                canvas.removeEventListener('touchend', onTouchUp, false);
-                canvas.removeEventListener('mouseup', onUp, false);
-                canvas.removeEventListener('mousemove', onMove, false);*/
-                //document.getElementById(drawingToolsDiv).style.display = 'none';
-                document.getElementById(panelMessages).style.display = 'block';
-                //showChat(data.type, '', 'The word was \'' + data['word'] + '\'.', '', '');
-                stopTime = true;
-                points = [];
-                drawer = false;
-                //changeSize();
-                selectedUser = '';
-                if (data['puntuation'] != undefined)
-                {
-                    for (var i = 0; i < users.length; i++)
-                    {
-                        //if (users[i][0] == data['userName'])
-                        {
-                            users[i]['puntuation'] = data['puntuation'][i];
-                            //i = users.length;
-                        }
-                    }
-                    updateUsersInfo();
-                    if (data['winners'].length > 1)
-                    {
-                        var names = data['winners'][0][0];
-                        for (var i = 1; i < data['winners'].length; i++)
-                        {
-                            names += ', ' + data['winners'][i][0];
-                        }
-                        showChat(data.type, '', 'Winners: ' + names + '.', '', '');
-                    }
-                    else
-                    {
-                        showChat(data.type, '', 'Winner: ' + data['winners'][0][0] + '.', '', '');
-                    }
-                }
-                else
-                {//Cuando se hace rematch luego de terminar el juego por abandono.
-                    //document.getElementById('rBtn2').style.display = 'block';
-                }
-                showChat(data.type, '', 'Game over.', '', '');
-                //document.getElementById('rBtn').style.display = 'block';
-            }
         }
         else
         {
@@ -515,139 +453,6 @@ socket.on('startDrawing', (data) => {
         }
     }
 });
-socket.on('nextTurn', (data) => {
-    if (data['roomCode'] == roomCode)
-    {
-        canvas.removeEventListener('touchstart', onTouch, false);
-        canvas.removeEventListener('touchend', onTouchUp, false);
-        canvas.removeEventListener('mouseup', onUp, false);
-        canvas.removeEventListener('mousemove', onMove, false);
-        document.getElementById(drawingToolsDiv).style.display = 'none';
-        if (data['timeOut'])
-        {
-            showChat(data.type, '', 'Time out.', '', '');
-        }
-        if ((data['userName'] != '') && (data['userName'] != undefined))
-        {
-            showChat(data.type, '', data['userName'] + ' ' + data['userSurname'] + ' guessed the word!', '', '');
-        }
-        showChat(data.type, '', 'The word was \'' + data['word'] + '\'.', '', '');
-        stopTime = true;
-        points = [];
-        drawer = false;
-        //changeSize();
-        selectedUser = data['selectedUser'];
-        for (var i = 0; i < users.length; i++)
-        {
-            //if (users[i][0] == data['userName'])
-            {
-                users[i][1] = data['puntuation'][i];
-                //i = users.length;
-            }
-        }
-        updateUsersInfo();
-        if (data['selectedUser'] != '')
-        {
-            if (data['selectedUser'] == userName)
-            {
-                var html = '';
-                if (!data['full'])//No funciona.
-                {
-                    //document.getElementById('waiting').style.display = 'block';
-                }
-                else
-                {
-                    //document.getElementById('waiting').style.display = 'none';
-                }
-                html += '<label>Select a word: </label>';
-                words = data['words'];
-                /*var w = document.getElementById(wordsInfo);
-                w.style.display = 'flex';
-                w.innerHTML = '';
-                for (var i = 0; i < words.length; i++)
-                {
-                    html += '<button id="w_' + i + '" onclick="selectWord(this.id);">' + words[i] + '</button>';
-                }
-                w.innerHTML = html;*/
-                //console.log(w.innerHTML);
-                document.getElementById('send').childNodes[0].nodeValue = 'Send';
-                updateBar('mdi-content-send', 'Type here', false);
-            }
-            else
-            {
-                var html = '';
-                if (!data['full'])
-                {
-                    //document.getElementById('waiting').style.display = 'block';
-                }
-                else
-                {
-                    //document.getElementById('waiting').style.display = 'none';
-                }
-                html += '<label>' + data['selectedUser'] + ' is selecting a word.</label>';
-                //document.getElementById(wordsInfo).innerHTML = html;
-                document.getElementById('send').childNodes[0].nodeValue = 'Send';
-                updateBar('mdi-content-send', 'Type here', false);
-                document.getElementById('privateRoom').style.display = 'none';
-            }
-            //document.getElementById('roundInfo').innerHTML = 'Round: ' + data['round'][0] + ' of ' + data['round'][1];
-        }
-        else
-        {
-            //¿Error?
-        }
-    }
-});
-socket.on('gameOver', (data) => {
-    if (data['roomCode'] == roomCode)
-    {
-        canvas.removeEventListener('touchstart', onTouch, false);
-        canvas.removeEventListener('touchend', onTouchUp, false);
-        canvas.removeEventListener('mouseup', onUp, false);
-        canvas.removeEventListener('mousemove', onMove, false);
-        document.getElementById(drawingToolsDiv).style.display = 'none';
-        if (data['timeOut'])
-        {
-            showChat(data.type, '', 'Time out.', '', '');
-        }
-        if ((data['userName'] != '') && (data['userName'] != undefined))
-        {
-            showChat(data.type, '', data['userName'] + ' guessed the word!', '', '');
-        }
-        showChat(data.type, '', 'The word was \'' + data['word'] + '\'.', '', '');
-        stopTime = true;
-        points = [];
-        drawer = false;
-        //changeSize();
-        selectedUser = '';
-        for (var i = 0; i < users.length; i++)
-        {
-            //if (users[i][0] == data['userName'])
-            {
-                users[i][1] = data['puntuation'][i];
-                //i = users.length;
-            }
-        }
-        updateUsersInfo();
-        if (data['winners'].length > 1)
-        {
-            var names = data['winners'][0][0];
-            for (var i = 1; i < data['winners'].length; i++)
-            {
-                names += ', ' + data['winners'][i][0];
-            }
-            showChat(data.type, '', 'Winners: ' + names + '.', '', '');
-        }
-        else
-        {
-            showChat(data.type, '', 'Winner: ' + data['winners'][0][0] + '.', '', '');
-        }
-        showChat(data.type, '', 'Game over.', '', '');
-
-        document.getElementById('rBtn').style.display = 'block';
-        document.getElementById('rBtn2').style.display = 'none';
-    }
-});
 socket.on('message', (data) => {
     if (data['roomCode'] == roomCode)
     {
@@ -706,6 +511,7 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, teamIndex, user
         document.getElementById('vl_' + teamIndex + '_' + i).style.display = 'none';
     }
     console.log(userNameVoting, userSurnameVoting, roomCode, teamIndex, userNameVoted, userSurnameVoted);
+    //Pendiente ver que el último que vota no recibe la información sobre quién es el líder.
     socket.emit('voteLeader', JSON.stringify({
         type: 'voteLeader',
         userNameVoted: userNameVoted, 
@@ -716,14 +522,85 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, teamIndex, user
         roomCode: roomCode
     }));
 }
-function submitAnswer()
+function submitAnswer(type = 'allUsersVotation', data = undefined)
 {
-    socket.emit('answer', JSON.stringify({
-        userName: userName, 
-        userSurname: userSurname, 
-        teamName: document.getElementById('teamName').value, 
-        roomCode: roomCode
+    var question;
+    var answer;
+    var rads = document.getElementsByName('answer');
+    for (var i = 0; i < rads.length; i++)
+    {
+        if (rads[i].checked)
+        {
+            question = document.getElementById('question').innerHTML;
+            answer = document.getElementById('lbl_question_option_' + rads[i].id.split('_')[rads[i].id.split('_').length - 1]).innerHTML;
+            i = rads.length;
+        }
+    }
+    switch (type)
+    {
+        case 'allUsersVotation':
+            socket.emit('allUsersVotation', JSON.stringify({
+                "userName" : userName, 
+                "userSurname" : userSurname, 
+                "teamName" : document.getElementById('teamName').value, 
+                "question" : question, 
+                "answer" : answer, 
+                "area" : area, 
+                "roomCode" : roomCode
+            }));
+        break;
+        case 'leaderVotation':
+            socket.emit('leaderVotation', JSON.stringify({
+                "userName" : userName, 
+                "userSurname" : userSurname, 
+                "teamName" : document.getElementById('teamName').value, 
+                "question" : question, 
+                "answer" : answer, 
+                "area" : area, 
+                "roomCode" : roomCode
+            }));
+        break;
+    }
+    //Pendiente ver si es necesario ocultar la pregunta luego de enviar.
+    //document.getElementById('questionsDiv').innerHTML = '';
+}
+function submitPersonalEvaluation()
+{
+    var question;
+    var answer;
+    var rads = document.getElementsByName('answer');
+    for (var i = 0; i < rads.length; i++)
+    {
+        if (rads[i].checked)
+        {
+            question = document.getElementById('question').innerHTML;
+            answer = document.getElementById('lbl_question_option_' + rads[i].id.split('_')[rads[i].id.split('_').length - 1]).innerHTML;
+            i = rads.length;
+        }
+    }
+    socket.emit('personalEvaluation', JSON.stringify({
+        "userName" : userName, 
+        "userSurname" : userSurname, 
+        "teamName" : document.getElementById('teamName').value, 
+        "question" : question, 
+        "answer" : answer, 
+        "area" : area, 
+        "evaluation" : int(document.getElementById('personalEvaluationRange').value) + 1, 
+        "roomCode" : roomCode
     }));
+    console.log({
+        "userName" : userName, 
+        "userSurname" : userSurname, 
+        "teamName" : document.getElementById('teamName').value, 
+        "question" : question, 
+        "answer" : answer, 
+        "area" : area, 
+        "evaluation" : int(document.getElementById('personalEvaluationRange').value) + 1,
+        "roomCode" : roomCode
+    });
+    document.getElementById('questionsDiv').innerHTML = '';
+    //Pendiente ver si es necesario ocultar la pregunta luego de enviar.
+    //document.getElementById('questionsDiv').innerHTML = '';
 }
 function handleNewTeamName()
 {
