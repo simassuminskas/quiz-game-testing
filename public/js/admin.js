@@ -65,6 +65,10 @@ socket.on('personalEvaluationAdmin', (data) => {
     rooms = data['rooms'];
     updateRoomsList();
 });
+socket.on('leaderVotation', (data) => {//Pendiente ver si funciona para el último que tiene que votar.
+    rooms = data['rooms'];
+    updateRoomsList();
+});
 //Pendiente ver si hace falta con 'question'.
 function updateQuestionsList()
 {
@@ -113,9 +117,9 @@ function updateRoomsList()
         html += '<label class="lblTeams">Teams<br></label>';
         for (var j = 0; j < rooms[i]['teams'].length; j++)
         {
-            html += '<label id="room_' + i + '_team_' + j + '">Team name: ' + rooms[i]['teams'][j]['teamName'] + '</label>';
-            html += '<label>Team score: Area 1: ' + rooms[i]['teams'][j]['scoreArea1'] + ' Area 2: ' + rooms[i]['teams'][j]['scoreArea2'] + 'Area 3: ' + rooms[i]['teams'][j]['scoreArea3'] + '</label><br>';
-            html += '<label class="lblUsers">Users<br></label>';
+            html += '<label id="room_' + i + '_team_' + j + '">Team name: ' + rooms[i]['teams'][j]['teamName'] + '</label><br>';
+            html += '<label>Team score: Area 1: ' + rooms[i]['teams'][j]['scoreArea1'] + ' Area 2: ' + rooms[i]['teams'][j]['scoreArea2'] + ' Area 3: ' + rooms[i]['teams'][j]['scoreArea3'] + '</label><br>';
+            html += '<label class="lblUsers">Users</label>';
             for (var k = 0; k < rooms[i]['teams'][j]['users'].length; k++)
             {
                 html += '<br>' + rooms[i]['teams'][j]['users'][k]['userName'] + ' ' + rooms[i]['teams'][j]['users'][k]['userSurname'];
@@ -124,6 +128,7 @@ function updateRoomsList()
                     html += ' (leader)';
                 }
             }
+            if (rooms[i]['teams'][j]) {}
             //Falta agregar las respuestas y evaluacionces del Área 1.
             //html += '<input id="room_' + i + '_team_' + j + '_option_' + j + '" type="text" value="' + questions[i]['options'][j] + '"><br>';
             html += '<br>Votation:<br>';
@@ -137,7 +142,7 @@ function updateRoomsList()
                 html += rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['question'] + '<br>Answers:<br>';
                 for (var l = 0; l < rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers'].length; l++)
                 {
-                    html += rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers']['answer'] + '<br>Votes: ' + rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers']['votes'] + '<br>';
+                    html += rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers'][l]['answer'] + '<br>Votes: ' + rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers'][l]['votes'] + '<br>';
                 }
             }
         }

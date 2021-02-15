@@ -25,20 +25,14 @@ var area;
 
 socket.on('update', (data) => {
     if ((data['userName'] != undefined) && (data['userSurname'] != undefined))
-    {//Pendiente modificar para ser más parecido a lo otros y que muestre los equipos desde el principio como en otras ocasiones.
-        teams = getTeams(data['rooms']);
+    {//Pendiente modificar para ser más parecido a los otros y que muestre los equipos desde el principio como en otras ocasiones.
+        /*console.log('update');
         console.log(data);
+        console.log(userName, userSurname);*/
         if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
         {
             document.getElementById('divLogin').style.display = 'none';
             roomCode = data['roomCode'];
-            for (var i = 0; i < data['rooms'].length; i++)
-            {
-                if (data['rooms'][i]['roomCode'] == roomCode)
-                {
-                    users = data['rooms'][i]['users'];
-                }
-            }
             document.getElementById(lblRoomCode).innerHTML = 'The room code is: ' + roomCode;
             document.getElementById(privateRoom).style.display = 'none';
 
@@ -47,40 +41,46 @@ socket.on('update', (data) => {
             updateBar('mdi-content-send', 'Type here', false);
             connected = true;
         }
-        updateUsersInfo();
-    }
-    /*if ((data['roomCode'] != undefined) && (data['roomCode'] != '')  && (data['roomCode'] == roomCode) && data['teams'])
-    {//Si hay teams se le tiene que informar al usuario nuevo.
-        for (var i = 0; i < data['teams'].length; i++)
+        teams = getTeams(data['rooms']);
+        /*for (var i = 0; i < data['rooms'].length; i++)
         {
-            var index = -1;
-            for (var j = 0; j < teams.length; j++)
+            if (data['rooms'][i]['roomCode'] == roomCode)
             {
-                if (data['teams'][i]['teamName'] == teams[j]['teamName'])
+                for (var j = 0; j < data['rooms'][i]['teams'].length; j++)
                 {
-                    index = j;
+                    for (var k = 0; k < data['rooms'][i]['teams'].length; k++)
+                    {
+                        console.log(data['rooms'][i]['users']);
+                    }
                 }
             }
-            if (index == -1)
-            {
-                teams.push({'teamName' : data['teams'][i]['teamName'], 'users' : data['teams'][i]['users']});
-            }
-            else
-            {
-                teams[index]['users'] = data['teams'][i]['users'];
-            }
-        }
+        }*/
+        console.log('Teams:');
+        console.log(teams);
         updateUsersInfo();
-    }*/
+    }
 });
 socket.on('newTeamName', (data) => {
     if (data['roomCode'] == roomCode)
     {
         if (data['teamOk'])
         {
-            teams.push({'teamName' : data['teamName'], 'users' : [{'userName' : data['userName'], 'userSurname' : data['userSurname']}]});
-            console.log('Se añadió un team:');
-            console.log(teams[teams.length - 1]);
+            teams.push({
+                'teamName' : data['teamName'], 
+                'users' : [{
+                    'userName' : data['userName'], 
+                    'userSurname' : data['userSurname']
+                }], 
+                'scoreArea1' : 0, 
+                'scoreArea2' : 0, 
+                'scoreArea3' : 0
+            });
+            if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
+            {
+                teamName = data['teamName'];
+            }
+            //console.log('Se añadió un team:');
+            //console.log(teams[teams.length - 1]);
             updateUsersInfo();
         }
     }
@@ -89,6 +89,10 @@ socket.on('joinTeam', (data) => {
     if (data['roomCode'] == roomCode)
     {
         teams = getTeams(data['rooms']);
+        if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
+        {
+            teamName = data['teamName'];
+        }
         updateUsersInfo();
     }
 });
@@ -101,6 +105,7 @@ function getTeams(rooms)
             return rooms[i]['teams'];
         }
     }
+    return [];
 }
 socket.on('voteLeader', (data) => {
     if (data['roomCode'] == roomCode)
@@ -158,15 +163,15 @@ socket.on('question', (data) => {
                 html += '<input type="radio" id="question_option_' + j + '" name="answer">';
                 html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
             }
-            html += '<button onclick="submitAnswer("allUsersVotation", ' + data + ');">Submit answer</button>';
+            html += '<button onclick="submitAnswer(\'allUsersVotation\');">Submit answer</button>';
             document.getElementById('questionsDiv').innerHTML = html;
         }
         updateUsersInfo();
-        if ((data['userName'] == userName) && 
+        /*if ((data['userName'] == userName) && 
             (data['userSurname'] == userSurname))
         {
             document.getElementById('rollDiceButton').style.display = 'block';
-        }
+        }*/
     }
 });
 socket.on('voteAnswerAllTeam', (data) => {
@@ -205,7 +210,7 @@ socket.on('voteAnswerAllTeam', (data) => {
                     html += '<input type="radio" id="question_option_' + j + '" name="answer">';
                     html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
                 }
-                html += '<button onclick="submitAnswer("allUsersVotation", ' + data + ');">Submit answer</button>';
+                html += '<button onclick="submitAnswer(\'allUsersVotation\');">Submit answer</button>';
                 document.getElementById('questionsDiv').innerHTML = html;
             }
         }
@@ -222,11 +227,11 @@ socket.on('voteAnswerAllTeam', (data) => {
             }
         }*/
         updateUsersInfo();
-        if ((data['userName'] == userName) && 
+        /*if ((data['userName'] == userName) && 
             (data['userSurname'] == userSurname))
         {
             document.getElementById('rollDiceButton').style.display = 'block';
-        }
+        }*/
     }
 });
 socket.on('leaderVotation', (data) => {
@@ -252,6 +257,7 @@ socket.on('leaderVotation', (data) => {
             }
             if (leader)
             {
+                console.log(data);
                 document.getElementById('questionsDiv').innerHTML = '';
                 var html = '';
                 html += '<label id="question">' + data['question']['question'] + '</label><br>';
@@ -265,16 +271,16 @@ socket.on('leaderVotation', (data) => {
                 html += '<input type="radio" id="question_option_' + j + '" name="answer">';
                 html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">no mutual agreement</label><br>';
                 
-                html += '<button onclick="submitAnswer("leaderVotation", ' + data + ');">Submit answer</button>';
+                html += '<button onclick="submitAnswer(\'leaderVotation\');">Submit answer</button>';
                 document.getElementById('questionsDiv').innerHTML = html;
             }
         }
         updateUsersInfo();
-        if ((data['userName'] == userName) && 
+        /*if ((data['userName'] == userName) && 
             (data['userSurname'] == userSurname))
         {
             document.getElementById('rollDiceButton').style.display = 'block';
-        }
+        }*/
     }
 });
 socket.on('personalEvaluation', (data) => {
@@ -311,17 +317,12 @@ socket.on('personalEvaluation', (data) => {
             document.getElementById('questionsDiv').innerHTML = html;
         }
         updateUsersInfo();
-        /*if ((data['userName'] == userName) && 
-            (data['userSurname'] == userSurname))
-        {
-            document.getElementById('rollDiceButton').style.display = 'block';
-        }*/
     }
 });
 socket.on('userDisconected', (data) => {
     if (data['roomCode'] == roomCode)
     {
-        console.log(data);
+        //console.log(data);
         showChat(data.type, '', data['userName'] + ' ' + data['userSurname'] + ' disconnected.', '', '');
         var auxUsers = [];
         for (var i = 0; i < users.length; i++)
@@ -426,34 +427,7 @@ socket.on('returningGameInfo', (data) => {
         }
     }
 });
-socket.on('startDrawing', (data) => {
-    //console.log(data['roomCode'], roomCode);
-    if (data['roomCode'] == roomCode)
-    {
-        //document.getElementById(canvas).style.display = 'block';
-        canvasDisplay = 'block';
-        points = [];
-        //var b = $('#body');
-        //changeSize();
-        stopTime = false;
-        initTime();
-        selectedUser = data['selectedUser'];
-        updateUsersInfo();
-        if (data['selectedUser'] == userName)
-        {
-            //changeSize(true);
-            document.getElementById('send').childNodes[0].nodeValue = 'Send';
-            updateBar('mdi-content-send', 'Type here', false);
-        }
-        else
-        {
-            document.getElementById('send').childNodes[0].nodeValue = 'Send';
-            updateBar('mdi-content-send', 'Type here', false);
-            document.getElementById('privateRoom').style.display = 'none';
-        }
-    }
-});
-socket.on('message', (data) => {
+socket.on('new message', (data) => {
     if (data['roomCode'] == roomCode)
     {
         showChat(data.type, data['userName'], data['userSurname'], data['guess'], '', '');
@@ -511,7 +485,7 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, teamIndex, user
         document.getElementById('vl_' + teamIndex + '_' + i).style.display = 'none';
     }
     console.log(userNameVoting, userSurnameVoting, roomCode, teamIndex, userNameVoted, userSurnameVoted);
-    //Pendiente ver que el último que vota no recibe la información sobre quién es el líder.
+    //Pendiente ver por qué el último que vota no recibe la información sobre quién es el líder.
     socket.emit('voteLeader', JSON.stringify({
         type: 'voteLeader',
         userNameVoted: userNameVoted, 
@@ -522,7 +496,7 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, teamIndex, user
         roomCode: roomCode
     }));
 }
-function submitAnswer(type = 'allUsersVotation', data = undefined)
+function submitAnswer(type = 'allUsersVotation')
 {
     var question;
     var answer;
@@ -542,7 +516,7 @@ function submitAnswer(type = 'allUsersVotation', data = undefined)
             socket.emit('allUsersVotation', JSON.stringify({
                 "userName" : userName, 
                 "userSurname" : userSurname, 
-                "teamName" : document.getElementById('teamName').value, 
+                "teamName" : teamName, 
                 "question" : question, 
                 "answer" : answer, 
                 "area" : area, 
@@ -553,7 +527,7 @@ function submitAnswer(type = 'allUsersVotation', data = undefined)
             socket.emit('leaderVotation', JSON.stringify({
                 "userName" : userName, 
                 "userSurname" : userSurname, 
-                "teamName" : document.getElementById('teamName').value, 
+                "teamName" : teamName, 
                 "question" : question, 
                 "answer" : answer, 
                 "area" : area, 
@@ -562,7 +536,7 @@ function submitAnswer(type = 'allUsersVotation', data = undefined)
         break;
     }
     //Pendiente ver si es necesario ocultar la pregunta luego de enviar.
-    //document.getElementById('questionsDiv').innerHTML = '';
+    document.getElementById('questionsDiv').innerHTML = '';
 }
 function submitPersonalEvaluation()
 {
@@ -581,7 +555,7 @@ function submitPersonalEvaluation()
     socket.emit('personalEvaluation', JSON.stringify({
         "userName" : userName, 
         "userSurname" : userSurname, 
-        "teamName" : document.getElementById('teamName').value, 
+        "teamName" : teamName, 
         "question" : question, 
         "answer" : answer, 
         "area" : area, 
@@ -591,16 +565,15 @@ function submitPersonalEvaluation()
     console.log({
         "userName" : userName, 
         "userSurname" : userSurname, 
-        "teamName" : document.getElementById('teamName').value, 
+        "teamName" : teamName, 
         "question" : question, 
         "answer" : answer, 
         "area" : area, 
         "evaluation" : int(document.getElementById('personalEvaluationRange').value) + 1,
         "roomCode" : roomCode
     });
-    document.getElementById('questionsDiv').innerHTML = '';
     //Pendiente ver si es necesario ocultar la pregunta luego de enviar.
-    //document.getElementById('questionsDiv').innerHTML = '';
+    document.getElementById('questionsDiv').innerHTML = '';
 }
 function handleNewTeamName()
 {
