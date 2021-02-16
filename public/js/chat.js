@@ -134,7 +134,7 @@ socket.on('question', (data) => {
     {
         area = data['area'];
         teams = getTeams(data['rooms']);
-        var teamIndex;
+        var teamIndex = -1;
         for (var j = 0; j < teams.length; j++)
         {
             if (teams[j]['teamName'] == data['teamName'])
@@ -142,6 +142,7 @@ socket.on('question', (data) => {
                 teamIndex = j;
             }
         }
+        console.log(data);
         var leader = false;
         for (var k = 0; k < teams[teamIndex]['users'].length; k++)
         {
@@ -152,7 +153,8 @@ socket.on('question', (data) => {
                 leader = true;
             }
         }
-        if (!leader)
+        //if ((!leader) && (teamIndex != -1))
+        if ((!leader) && (data['teamName'] == teamName))
         {
             document.getElementById('questionsDiv').innerHTML = '';
             var html = '';
@@ -167,11 +169,6 @@ socket.on('question', (data) => {
             document.getElementById('questionsDiv').innerHTML = html;
         }
         updateUsersInfo();
-        /*if ((data['userName'] == userName) && 
-            (data['userSurname'] == userSurname))
-        {
-            document.getElementById('rollDiceButton').style.display = 'block';
-        }*/
     }
 });
 socket.on('voteAnswerAllTeam', (data) => {
@@ -183,23 +180,24 @@ socket.on('voteAnswerAllTeam', (data) => {
             (data['userSurname'] != userSurname))
         {
             var leader = false;
+            var teamIndex = -1;
             for (var j = 0; j < teams.length; j++)
             {
-                for (var k = 0; k < teams[j]['users'].length; k++)
+                if (teams[j]['teamName'] == data['teamName'])
                 {
-                    if ((teams[j]['users'][k]['userName'] == userName) && 
-                        (teams[j]['users'][k]['userSurname'] == userSurname) && 
-                        teams[j]['users'][k]['leader'])
-                    {//Ver que no sea el lider (porque ese vota después).
-                        leader = true;
-                    }
-                    /*if (teams[j]['users'][k]['leader'])
+                    teamIndex = j;
+                    for (var k = 0; k < teams[j]['users'].length; k++)
                     {
-                        indexLeaderElected = k;
-                    }*/
+                        if ((teams[j]['users'][k]['userName'] == userName) && 
+                            (teams[j]['users'][k]['userSurname'] == userSurname) && 
+                            teams[j]['users'][k]['leader'])
+                        {//Ver que no sea el lider (porque ese vota después).
+                            leader = true;
+                        }
+                    }
                 }
             }
-            if (!leader)
+            if ((!leader) && (teamIndex != -1))
             {
                 document.getElementById('questionsDiv').innerHTML = '';
                 var html = '';
@@ -239,23 +237,28 @@ socket.on('leaderVotation', (data) => {
     {
         //document.getElementById('statusInfo').innerHTML = 'Starting game.';
         teams = getTeams(data['rooms']);
-        if ((data['userName'] != userName) || 
-            (data['userSurname'] != userSurname))
-        {
+        //if ((data['userName'] != userName) || 
+            //(data['userSurname'] != userSurname))
+        {//if (data['teamName'] == teamName)
             var leader = false;
+            var teamIndex = -1;
             for (var j = 0; j < teams.length; j++)
             {
-                for (var k = 0; k < teams[j]['users'].length; k++)
+                if (teams[j]['teamName'] == data['teamName'])
                 {
-                    if ((teams[j]['users'][k]['userName'] == userName) && 
-                        (teams[j]['users'][k]['userSurname'] == userSurname) && 
-                        teams[j]['users'][k]['leader'])
+                    teamIndex = j;
+                    for (var k = 0; k < teams[j]['users'].length; k++)
                     {
-                        leader = true;
+                        if ((teams[j]['users'][k]['userName'] == userName) && 
+                            (teams[j]['users'][k]['userSurname'] == userSurname) && 
+                            teams[j]['users'][k]['leader'])
+                        {
+                            leader = true;
+                        }
                     }
                 }
             }
-            if (leader)
+            if (leader && (teamIndex != -1) && (data['teamName'] == teamName))
             {
                 console.log(data);
                 document.getElementById('questionsDiv').innerHTML = '';
@@ -288,35 +291,44 @@ socket.on('personalEvaluation', (data) => {
     {
         document.getElementById('statusInfo').innerHTML = 'Personal evaluation.';
         teams = getTeams(data['rooms']);
-        if ((data['userName'] != userName) || 
-            (data['userSurname'] != userSurname))
+        //if ((data['userName'] != userName) || 
+        //    (data['userSurname'] != userSurname))
         {
-            var leader = false;
-            for (var j = 0; j < teams.length; j++)
+            //for (var j = 0; j < teams.length; j++)
             {
-                for (var k = 0; k < teams[j]['users'].length; k++)
+                //if (teams[j]['teamName'] == data['teamName'])
+                if (data['teamName'] == teamName)
                 {
-                    if ((teams[j]['users'][k]['userName'] == userName) && 
-                        (teams[j]['users'][k]['userSurname'] == userSurname) && 
-                        teams[j]['users'][k]['leader'])
-                    {
-                        leader = true;
-                    }
+                    document.getElementById('questionsDiv').innerHTML = '';
+                    var html = '<label>' + data['question'] + '</label><br>';
+                    //Mostrar la opción seleccionada por el líder.
+                    html += '<label>Final answer</label><br>';
+                    html += '<label>' + data['answer'] + '</label><br>';
+                    html += '<label>Close to reality: </label>';
+                    html += '<input type="range" id="personalEvaluationRange" min="0" max="4">';
+                    html += '<button onclick="submitPersonalEvaluation();">Submit</button>';
+                    
+                    document.getElementById('questionsDiv').innerHTML = html;
+                    //j = teams.length;
                 }
             }
-            document.getElementById('questionsDiv').innerHTML = '';
-            
-            var html = '<label>' + data['question'] + '</label><br>';
-            //Mostrar la opción seleccionada por el líder.
-            html += '<label>Final answer</label><br>';
-            html += '<label>' + data['answer'] + '</label><br>';
-            html += '<label>Close to reality: </label>';
-            html += '<input type="range" id="personalEvaluationRange" min="0" max="4">';
-            html += '<button onclick="submitPersonalEvaluation();">Submit</button>';
-            
-            document.getElementById('questionsDiv').innerHTML = html;
         }
         updateUsersInfo();
+    }
+});
+socket.on('finishGame', (data) => {
+    if (data['roomCode'] == roomCode)
+    {
+        document.getElementById('statusInfo').innerHTML = 'Game finished.';
+        teams = getTeams(data['rooms']);
+        updateUsersInfo();
+        if ((data['userName'] == userName) && 
+            (data['userSurname'] == userSurname))
+        {
+            document.getElementById('rollDiceButton').style.display = 'none';
+            document.getElementById('questionsDiv').innerHTML = '';
+            document.getElementById('rollDiceButton').style.display = 'none';
+        }
     }
 });
 socket.on('userDisconected', (data) => {
@@ -402,31 +414,6 @@ socket.on('userDisconected', (data) => {
         updateUsersInfo();
     }
 });
-socket.on('returningGameInfo', (data) => {
-    if ((data['roomCode'] == roomCode) && (data['userName'] == userName))
-    {
-        if ((data['selectedUser'] != undefined) && (data['selectedUser'] != ''))
-        {
-            var html = '';
-            if (!data['full'])
-            {
-                //document.getElementById('waiting').style.display = 'block';
-            }
-            else
-            {
-                //document.getElementById('waiting').style.display = 'none';
-            }
-            html += '<label>' + data['selectedUser'] + ' is selecting a word.</label>';
-            //document.getElementById(wordsInfo).innerHTML = html;
-            //document.getElementById(roundInfo).innerHTML = 'Round: ' + data['round'][0] + ' of ' + data['round'][1];
-            selectedUser = data['selectedUser'];
-            updateUsersInfo();
-            document.getElementById('send').childNodes[0].nodeValue = 'Send';
-            updateBar('mdi-content-send', 'Type here', false);
-            document.getElementById('privateRoom').style.display = 'none';
-        }
-    }
-});
 socket.on('new message', (data) => {
     if (data['roomCode'] == roomCode)
     {
@@ -457,15 +444,6 @@ function showChat(type, userName, userSurname, message, subtxt, mid)
     $('#' + panel).append('<div class="' + type + '""><span><b><a class="namelink" href="javascript:void(0)">' + userName + ' ' + userSurname + '</a></b></span><span class="timestamp">' + subtxt + getTime() + '</span><br><span class="msg">' + message + '</span></div>');
     
     $('#' + panel).animate({scrollTop: $('#' + panel).prop('scrollHeight')}, 500);
-}
-function handleNewUserNeedsInfo()
-{
-    socket.emit('newUserNeedsInfo', JSON.stringify({
-        type: 'newUserNeedsInfo',
-        userName: userName, 
-        userSurname: userSurname, 
-        roomCode: roomCode
-    }));
 }
 function joinTeam(userName, userSurname, roomCode, index)
 {
@@ -559,19 +537,19 @@ function submitPersonalEvaluation()
         "question" : question, 
         "answer" : answer, 
         "area" : area, 
-        "evaluation" : int(document.getElementById('personalEvaluationRange').value) + 1, 
+        "evaluation" : parseInt(document.getElementById('personalEvaluationRange').value) + 1, 
         "roomCode" : roomCode
     }));
-    console.log({
+    /*console.log({
         "userName" : userName, 
         "userSurname" : userSurname, 
         "teamName" : teamName, 
         "question" : question, 
         "answer" : answer, 
         "area" : area, 
-        "evaluation" : int(document.getElementById('personalEvaluationRange').value) + 1,
+        "evaluation" : parseInt(document.getElementById('personalEvaluationRange').value) + 1,
         "roomCode" : roomCode
-    });
+    });*/
     //Pendiente ver si es necesario ocultar la pregunta luego de enviar.
     document.getElementById('questionsDiv').innerHTML = '';
 }

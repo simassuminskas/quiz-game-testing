@@ -367,36 +367,47 @@ io.on('connection', (socket) => {
       {//Enviar de a una pregunta.
         for (var i = 0; i < game.rooms[index]['teams'].length; i++)
         {
-          for (var j = 0; j < game.questions['area' + area].length; j++)
+          if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
           {
-            var sended = false;
-            for (var k = 0; k < game.rooms[index]['teams'][i]['sendedQuestions']['area' + area].length; k++)
+            var allSended = true;
+            for (var j = 0; j < game.questions['area' + area].length; j++)
             {
-              if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + area][j]['question'] == game.questions['area' + area][j]['question'])
+              var sended = false;
+              for (var k = 0; k < game.rooms[index]['teams'][i]['sendedQuestions']['area' + area].length; k++)
               {
-                sended = true;
-                k = game.rooms[index]['teams'][i]['sendedQuestions']['area' + area].length;
+                if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + area][j]['question'] == game.questions['area' + area][j]['question'])
+                {
+                  sended = true;
+                  k = game.rooms[index]['teams'][i]['sendedQuestions']['area' + area].length;
+                }
+              }
+              if (!sended)
+              {
+                allSended = false;
+                game.rooms[index]['teams'][i]['sendedQuestions']['area' + area].push({
+                  'question' : game.questions['area' + area][j]['question'], 
+                  'finalAnswer' : '', 
+                  'otherAnswers' : [], 
+                  'evaluation' : []
+                });
+                for (var k = 0; k < game.rooms[index]['teams'][i]['users'].length; k++)
+                {//Se "recicla" esa variable para usarla en la votación de respuestas en vez de la elección del líder.
+                  game.rooms[index]['teams'][i]['users'][k]['vote'] = false;
+                }
+                message['question'] = game.questions['area' + area][j];
+                message['rooms'] = game.rooms;
+                message['area'] = area;
+                //message['teamName'] = game.rooms[index]['teams'][i]['teamName'];
+                socket.emit('question', message);//El problema es que se hace una vez por cada team.
+                socket.broadcast.emit('question', message);
+                j = game.questions['area' + area].length;
               }
             }
-            if (!sended)
-            {
-              game.rooms[index]['teams'][i]['sendedQuestions']['area' + area].push({
-                'question' : game.questions['area' + area][j]['question'], 
-                'finalAnswer' : '', 
-                'otherAnswers' : []
-              });
-              for (var k = 0; k < game.rooms[index]['teams'][i]['users'].length; k++)
-              {//Se "recicla" esa variable para usarla en la votación de respuestas en vez de la elección del líder.
-                game.rooms[index]['teams'][i]['users'][k]['vote'] = false;
-              }
-              message['question'] = game.questions['area' + area][j];
-              message['rooms'] = game.rooms;
-              message['area'] = area;
-              message['teamName'] = game.rooms[index]['teams'][i]['teamName'];
-              socket.emit('question', message);
-              socket.broadcast.emit('question', message);
-              j = game.questions['area' + area].length;
+            if (allSended)
+            {//Luego de las votaciones y etc., termina el juego porque ya se enviaron todas las preguntas.
+              //
             }
+            i = game.rooms[index]['teams'].length;
           }
         }
       }
@@ -525,14 +536,14 @@ io.on('connection', (socket) => {
           if (message['answer'] != 'no mutual agreement')
           {
             for (var j = 0; j < game.questions['area' + message['area']].length; j++)
-            {
+            {//console.log(game.questions['area' + message['area']][j]['question'], message['question']);
               if (game.questions['area' + message['area']][j]['question'] == message['question'])
-              {
+              {//console.log('Line 541.');
                 for (var k = 0; k < game.questions['area' + message['area']][j]['options'].length; k++)
-                {
+                {//console.log(game.questions['area' + message['area']][j]['options'][k]['option'], message['answer']);
                   if (game.questions['area' + message['area']][j]['options'][k]['option'] == message['answer'])
-                  {
-                    game.rooms[index]['teams'][i]['scoreArea' + message['area']] += game.questions['area' + message['area']][j]['options'][k]['puntuation'];
+                  {//Pendiente ver por qué no llega a este punto.
+                    game.rooms[index]['teams'][i]['scoreArea' + message['area']] += game.questions['area' + message['area']][j]['options'][k]['score'];
                     k = game.questions['area' + message['area']][j]['options'].length;
                   }
                 }
@@ -560,7 +571,7 @@ io.on('connection', (socket) => {
       }
     }
   });
-  socket.on('personalEvaluation', () => {//input range
+  socket.on('personalEvaluation', (data) => {//input range
     var message = JSON.parse(data);
     var index = game.searchRoomCode(message['roomCode'], false);
     if (index != -1)
@@ -570,8 +581,54 @@ io.on('connection', (socket) => {
       {
         if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
         {//Pendiente ver si es necesario omitir al lider en esta parte.
+          /*"question" : question, 
+          "answer" : answer, 
+          "area" : area, 
+          "evaluation" : parseInt(document.getElementById('personalEvaluationRange').value) + 1, 
+          "roomCode" : roomCode*/
+          for (var j = 0; j < game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']].length; j++)
+          {
+            if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['question'] == message['question'])
+            {//Pregunta actual encontrada en sendedQuestions.
+              //game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['finalAnswer']
+              game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['evaluation'].push({
+                'evaluation' : message['evaluation'], 
+                'userName' : message['userName'], 
+                'userSurname' : message['userSurname']
+              });
+            }
+          }
+          //socket.emit('personalEvaluationAdmin', message);
+          /*var allUsers = true;
+          for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+          {
+            //var found = false;
+            for (var k = 0; k < game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j].length; k++)
+            {
+              if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j][k]['evaluation']['userName'] == )
+              {}
+              //game.rooms[index]['teams'][i]['users']
+              //game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['evaluation'][i]
+            }
+          }
+          if (allUsers)
+          {//Evaluaron todos. Ver si respondieron todas las preguntas del área 1.
+            //
+          }*/
           message['rooms'] = game.rooms;
-          socket.emit('personalEvaluation', message);
+          var size = game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']].length;
+          console.log('Line 616.');
+          console.log(size, game.questions['area' + message['area']].length);
+          console.log(game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][size - 1]['evaluation'].length, game.rooms[index]['teams'][i]['users'].length);
+          
+          if (size == game.questions['area' + message['area']].length)
+          {//Se enviaron todas las preguntas a este equipo.
+            if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][size - 1]['evaluation'].length == game.rooms[index]['teams'][i]['users'].length)
+            {//Todos los usuarios evaluaron hasta la última pregunta. //Juego terminado.
+              socket.emit('finishGame', message);
+              socket.broadcast.emit('finishGame', message);
+            }
+          }
           socket.broadcast.emit('personalEvaluationAdmin', message);
         }
       }

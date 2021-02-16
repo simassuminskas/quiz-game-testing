@@ -144,7 +144,22 @@ function updateRoomsList()
                 {
                     html += rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers'][l]['answer'] + '<br>Votes: ' + rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers'][l]['votes'] + '<br>';
                 }
+                if (rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['evaluation'].length)
+                {//evaluation
+                    html += 'Evaluation:<br>';
+                    for (var l = 0; l < rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['evaluation'].length; l++)
+                    {
+                        html += 'User: ' + rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['evaluation'][l]['userName'] + ' ' + rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['evaluation'][l]['userSurname'] + '<br>';
+                        html += '<label>Close to reality: ' + rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['evaluation'][l]['evaluation'] + '</label><br>';
+                    }
+                }
+
             }
+            /*game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['evaluation'].push({
+                'evaluation' : message['evaluation'], 
+                'userName' : message['userName'], 
+                'userSurname' : message['userSurname']
+            });*/
         }
     }
     document.getElementById('roomsDiv').innerHTML = html;

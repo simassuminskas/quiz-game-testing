@@ -182,7 +182,8 @@ function rollDice()
         type: 'rollingDice',
         userName: userName, 
         userSurname: userSurname, 
-        roomCode: roomCode
+        roomCode: roomCode, 
+        teamName: teamName
     }));
     document.getElementById('rollDiceButton').style.display = 'none';
 }
