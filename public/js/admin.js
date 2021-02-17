@@ -138,12 +138,21 @@ function updateRoomsList()
             });*/
             for (var k = 0; k < rooms[i]['teams'][j]['sendedQuestions']['area1'].length; k++)
             {//votation
+                /*if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['question'] == message['question'])
+                {//Pregunta actual encontrada en sendedQuestions.
+                game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['finalAnswer'] = message['answer'];*/
                 html += 'Question:<br>';
                 html += rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['question'] + '<br>Answers:<br>';
                 for (var l = 0; l < rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers'].length; l++)
                 {
                     html += rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers'][l]['answer'] + '<br>Votes: ' + rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['otherAnswers'][l]['votes'] + '<br>';
                 }
+                if (rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['finalAnswer'] != '')
+                {
+                    html += 'Final answer:<br>';
+                    html += rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['finalAnswer'] + '<br>';
+                }
+                console.log('Line 155: ' + rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['evaluation'].length);
                 if (rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['evaluation'].length)
                 {//evaluation
                     html += 'Evaluation:<br>';

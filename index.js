@@ -315,6 +315,7 @@ io.on('connection', (socket) => {
           if (allUsersInTeams && allUsersVoted)
           {
             //Hay que lanzar el dado.
+            //Pendiente ver si se puede optimizar. Buscar rolledDice.
             for (var i = 0; i < game.rooms[index]['teams'].length; i++)
             {
               for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
@@ -361,8 +362,23 @@ io.on('connection', (socket) => {
     var index = game.searchRoomCode(message['roomCode'], false);
     if (index != -1)
     {
+      for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+      {
+        if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
+        {
+          for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+          {
+            if ((game.rooms[index]['teams'][i]['users'][j]['userName'] == message['userName']) && 
+                (game.rooms[index]['teams'][i]['users'][j]['userSurname'] == message['userSurname']))
+            {
+              game.rooms[index]['teams'][i]['users'][j]['rolledDice'] = true;
+              j = game.rooms[index]['teams'][i]['users'].length;
+            }
+          }
+        }
+      }
       var area = Math.floor(Math.random() * Math.floor(3)) + 1;
-      area = 1;//tmp_code
+      area = 3;//tmp_code
       if (area == 1)
       {//Enviar de a una pregunta.
         for (var i = 0; i < game.rooms[index]['teams'].length; i++)
@@ -375,7 +391,7 @@ io.on('connection', (socket) => {
               var sended = false;
               for (var k = 0; k < game.rooms[index]['teams'][i]['sendedQuestions']['area' + area].length; k++)
               {
-                if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + area][j]['question'] == game.questions['area' + area][j]['question'])
+                if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + area][k]['question'] == game.questions['area' + area][j]['question'])
                 {
                   sended = true;
                   k = game.rooms[index]['teams'][i]['sendedQuestions']['area' + area].length;
@@ -398,16 +414,64 @@ io.on('connection', (socket) => {
                 message['rooms'] = game.rooms;
                 message['area'] = area;
                 //message['teamName'] = game.rooms[index]['teams'][i]['teamName'];
-                socket.emit('question', message);//El problema es que se hace una vez por cada team.
+                socket.emit('question', message);
                 socket.broadcast.emit('question', message);
                 j = game.questions['area' + area].length;
               }
             }
-            if (allSended)
-            {//Luego de las votaciones y etc., termina el juego porque ya se enviaron todas las preguntas.
-              //
-            }
             i = game.rooms[index]['teams'].length;
+          }
+        }
+      }
+      if (area == 2)
+      {
+        for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+        {
+          if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
+          {
+            message['question'] = game.questions['area2'][Math.floor(Math.random() * Math.floor(game.questions['area2'].length))];
+            message['rooms'] = game.rooms;
+            message['area'] = area;
+            socket.emit('questionArea2', message);
+            socket.broadcast.emit('questionArea2', message);
+            i = game.rooms[index]['teams'].length;
+          }
+        }
+      }
+      if (area == 3)
+      {//Enviar risks y oportunities. .
+        for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+        {
+          if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
+          {
+            var type = 'risk';
+            if (Math.floor(Math.random() * Math.floor(2)))
+            {
+              type = 'oportunity';
+            }
+            var ro = game['area3'][type][Math.floor(Math.random() * Math.floor(game['area3'][type].length))];
+            game.rooms[index]['teams'][i]['scoreArea3'] += ro['score'];
+            message['ro'] = ro;
+            message['type'] = type;
+            message['rooms'] = game.rooms;
+            message['area'] = area;
+            socket.emit('ro', message);
+            socket.broadcast.emit('ro', message);
+            i = game.rooms[index]['teams'].length;
+
+            //Hay que lanzar el dado.
+            for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+            {
+              if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
+              {
+                message['userName'] = game.rooms[index]['teams'][i]['users'][j]['userName'];
+                message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
+                socket.emit('startGame', message);
+                socket.broadcast.emit('startGame', message);
+                //Es necesario detener el bucle para que tire de a uno a la vez.
+                j = game.rooms[index]['teams'][i]['users'].length;
+              }
+            }
           }
         }
       }
@@ -580,17 +644,19 @@ io.on('connection', (socket) => {
       for (var i = 0; i < game.rooms[index]['teams'].length; i++)
       {
         if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
-        {//Pendiente ver si es necesario omitir al lider en esta parte.
+        {console.log('Line 580.');//Pendiente ver si es necesario omitir al lider en esta parte.
           /*"question" : question, 
           "answer" : answer, 
           "area" : area, 
           "evaluation" : parseInt(document.getElementById('personalEvaluationRange').value) + 1, 
           "roomCode" : roomCode*/
+          console.log(message);
           for (var j = 0; j < game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']].length; j++)
-          {
+          {console.log(game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['question'], message['question']);
             if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['question'] == message['question'])
-            {//Pregunta actual encontrada en sendedQuestions.
+            {console.log('Line 589.');//Pregunta actual encontrada en sendedQuestions.
               //game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['finalAnswer']
+              //Ver por qué no llega a este punto.
               game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['evaluation'].push({
                 'evaluation' : message['evaluation'], 
                 'userName' : message['userName'], 
@@ -621,15 +687,81 @@ io.on('connection', (socket) => {
           console.log(size, game.questions['area' + message['area']].length);
           console.log(game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][size - 1]['evaluation'].length, game.rooms[index]['teams'][i]['users'].length);
           
-          if (size == game.questions['area' + message['area']].length)
-          {//Se enviaron todas las preguntas a este equipo.
+          if ((size == game.questions['area' + message['area']].length) && 
+              (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][size - 1]['evaluation'].length == game.rooms[index]['teams'][i]['users'].length))
+          {//Todos los usuarios evaluaron hasta la última pregunta. //Juego terminado.
+            socket.emit('finishGame', message);
+            socket.broadcast.emit('finishGame', message);
+          }
+          else
+          {
             if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][size - 1]['evaluation'].length == game.rooms[index]['teams'][i]['users'].length)
-            {//Todos los usuarios evaluaron hasta la última pregunta. //Juego terminado.
-              socket.emit('finishGame', message);
-              socket.broadcast.emit('finishGame', message);
+            {//Todos los usuarios evaluaron hasta la pregunta actual. Siguiente pregunta.
+              //Hay que lanzar el dado.
+              for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+              {
+                if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
+                {
+                  message['userName'] = game.rooms[index]['teams'][i]['users'][j]['userName'];
+                  message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
+                  message['rooms'] = game.rooms;
+                  socket.emit('startGame', message);
+                  socket.broadcast.emit('startGame', message);
+                  //Es necesario detener el bucle para que tire de a uno a la vez.
+                  j = game.rooms[index]['teams'][i]['users'].length;
+                }
+              }
+              //socket.emit('finishGame', message);
+              //socket.broadcast.emit('finishGame', message);
             }
           }
           socket.broadcast.emit('personalEvaluationAdmin', message);
+        }
+      }
+    }
+  });
+  socket.on('questionArea2', (data) => {
+    var message = JSON.parse(data);
+    var index = game.searchRoomCode(message['roomCode'], false);
+    if (index != -1)
+    {
+      //game.rooms[index]['teams'][i]['sendedQuestions'].push(game.questions['area' + data['area']][j]['question']);
+      for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+      {
+        if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
+        {
+          for (var j = 0; j < game.questions['area' + message['area']].length; j++)
+          {//console.log(game.questions['area' + message['area']][j]['question'], message['question']);
+            if (game.questions['area' + message['area']][j]['question'] == message['question'])
+            {//console.log('Line 541.');
+              for (var k = 0; k < game.questions['area' + message['area']][j]['options'].length; k++)
+              {//console.log(game.questions['area' + message['area']][j]['options'][k]['option'], message['answer']);
+                if (game.questions['area' + message['area']][j]['options'][k]['option'] == message['answer'])
+                {//Pendiente ver por qué no llega a este punto.
+                  game.rooms[index]['teams'][i]['scoreArea' + message['area']] += game.questions['area' + message['area']][j]['options'][k]['score'];
+                  k = game.questions['area' + message['area']][j]['options'].length;
+                }
+              }
+              j = game.questions['area' + message['area']].length;
+            }
+          }
+          message['rooms'] = game.rooms;
+          //Hay que lanzar el dado.
+          for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+          {
+            if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
+            {
+              message['userName'] = game.rooms[index]['teams'][i]['users'][j]['userName'];
+              message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
+              message['rooms'] = game.rooms;
+              socket.emit('startGame', message);
+              socket.broadcast.emit('startGame', message);
+              //Es necesario detener el bucle para que tire de a uno a la vez.
+              j = game.rooms[index]['teams'][i]['users'].length;
+            }
+          }
+          //socket.emit('resultArea2', message);
+          //socket.broadcast.emit('resultArea2', message);
         }
       }
     }

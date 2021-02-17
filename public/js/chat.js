@@ -291,27 +291,58 @@ socket.on('personalEvaluation', (data) => {
     {
         document.getElementById('statusInfo').innerHTML = 'Personal evaluation.';
         teams = getTeams(data['rooms']);
-        //if ((data['userName'] != userName) || 
-        //    (data['userSurname'] != userSurname))
+        if (data['teamName'] == teamName)
         {
-            //for (var j = 0; j < teams.length; j++)
-            {
-                //if (teams[j]['teamName'] == data['teamName'])
-                if (data['teamName'] == teamName)
-                {
-                    document.getElementById('questionsDiv').innerHTML = '';
-                    var html = '<label>' + data['question'] + '</label><br>';
-                    //Mostrar la opción seleccionada por el líder.
-                    html += '<label>Final answer</label><br>';
-                    html += '<label>' + data['answer'] + '</label><br>';
-                    html += '<label>Close to reality: </label>';
-                    html += '<input type="range" id="personalEvaluationRange" min="0" max="4">';
-                    html += '<button onclick="submitPersonalEvaluation();">Submit</button>';
-                    
-                    document.getElementById('questionsDiv').innerHTML = html;
-                    //j = teams.length;
-                }
+            document.getElementById('questionsDiv').innerHTML = '';
+            var html = '<label id="question">' + data['question'] + '</label><br>';
+            //Mostrar la opción seleccionada por el líder.
+            html += '<label>Final answer</label><br>';
+            html += '<label>' + data['answer'] + '</label><br>';
+            html += '<label>Close to reality: </label>';
+            html += '<input type="range" id="personalEvaluationRange" min="0" max="4">';
+            html += '<button onclick="submitPersonalEvaluation();">Submit</button>';
+            
+            document.getElementById('questionsDiv').innerHTML = html;
+        }
+        updateUsersInfo();
+    }
+});
+socket.on('ro', (data) => {
+    if (data['roomCode'] == roomCode)
+    {
+        area = data['area'];
+        teams = getTeams(data['rooms']);
+        console.log(data);
+        if (data['teamName'] == teamName)
+        {
+            document.getElementById('questionsDiv').innerHTML = '';
+            var html = '<label id="question">' + data['ro']['text'] + '</label><br>';
+            html += '<label class="lblArea3Score">Score: ' + data['ro']['score'] + '</label>';
+            document.getElementById('questionsDiv').innerHTML = html;
+        }
+        updateUsersInfo();
+    }
+});
+socket.on('questionArea2', (data) => {
+    if (data['roomCode'] == roomCode)
+    {
+        area = data['area'];
+        teams = getTeams(data['rooms']);
+        console.log(data);
+        if (data['teamName'] == teamName)
+        {
+            document.getElementById('questionsDiv').innerHTML = '';
+            var html = '';
+            html += '<label id="question">' + data['question']['question'] + '</label><br>';
+            html += '<label class="lblOptions">Options<br></label>';
+            var j = 0;
+            for (;j < data['question']['options'].length; j++)
+            {//Agregar opción: "no mutual agreement"
+                html += '<input type="radio" id="question_option_' + j + '" name="answer">';
+                html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
             }
+            html += '<button onclick="submitAnswer(\'questionArea2\');">Submit answer</button>';
+            document.getElementById('questionsDiv').innerHTML = html;
         }
         updateUsersInfo();
     }
@@ -327,7 +358,6 @@ socket.on('finishGame', (data) => {
         {
             document.getElementById('rollDiceButton').style.display = 'none';
             document.getElementById('questionsDiv').innerHTML = '';
-            document.getElementById('rollDiceButton').style.display = 'none';
         }
     }
 });
@@ -512,6 +542,17 @@ function submitAnswer(type = 'allUsersVotation')
                 "roomCode" : roomCode
             }));
         break;
+        case 'questionArea2':
+            socket.emit('questionArea2', JSON.stringify({
+                "userName" : userName, 
+                "userSurname" : userSurname, 
+                "teamName" : teamName, 
+                "question" : question, 
+                "answer" : answer, 
+                "area" : area, 
+                "roomCode" : roomCode
+            }));
+        break;
     }
     //Pendiente ver si es necesario ocultar la pregunta luego de enviar.
     document.getElementById('questionsDiv').innerHTML = '';
@@ -519,7 +560,8 @@ function submitAnswer(type = 'allUsersVotation')
 function submitPersonalEvaluation()
 {
     var question;
-    var answer;
+    question = document.getElementById('question').innerHTML;
+    /*var answer;
     var rads = document.getElementsByName('answer');
     for (var i = 0; i < rads.length; i++)
     {
@@ -529,28 +571,18 @@ function submitPersonalEvaluation()
             answer = document.getElementById('lbl_question_option_' + rads[i].id.split('_')[rads[i].id.split('_').length - 1]).innerHTML;
             i = rads.length;
         }
-    }
+    }*/
+    console.log('Line 534.');
+    console.log(question);
     socket.emit('personalEvaluation', JSON.stringify({
         "userName" : userName, 
         "userSurname" : userSurname, 
         "teamName" : teamName, 
         "question" : question, 
-        "answer" : answer, 
         "area" : area, 
         "evaluation" : parseInt(document.getElementById('personalEvaluationRange').value) + 1, 
         "roomCode" : roomCode
     }));
-    /*console.log({
-        "userName" : userName, 
-        "userSurname" : userSurname, 
-        "teamName" : teamName, 
-        "question" : question, 
-        "answer" : answer, 
-        "area" : area, 
-        "evaluation" : parseInt(document.getElementById('personalEvaluationRange').value) + 1,
-        "roomCode" : roomCode
-    });*/
-    //Pendiente ver si es necesario ocultar la pregunta luego de enviar.
     document.getElementById('questionsDiv').innerHTML = '';
 }
 function handleNewTeamName()
