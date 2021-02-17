@@ -315,10 +315,19 @@ socket.on('ro', (data) => {
         console.log(data);
         if (data['teamName'] == teamName)
         {
-            document.getElementById('questionsDiv').innerHTML = '';
-            var html = '<label id="question">' + data['ro']['text'] + '</label><br>';
-            html += '<label class="lblArea3Score">Score: ' + data['ro']['score'] + '</label>';
-            document.getElementById('questionsDiv').innerHTML = html;
+            if ((data['userName'] == userName) && 
+                (data['userSurname'] == userSurname))
+            {
+                document.getElementById('questionsDiv').innerHTML = '';
+                var html = '<label id="question">' + data['ro']['text'] + '</label><br>';
+                html += '<label class="lblArea3Score">Score: ' + data['ro']['score'] + '</label>';
+                document.getElementById('questionsDiv').innerHTML = html;
+            }
+            /*if (data['startGame'])
+            {
+                document.getElementById('rollDiceButton').style.display = 'block';
+                document.getElementById('statusInfo').innerHTML = 'Starting game.';
+            }*/
         }
         updateUsersInfo();
     }
@@ -330,19 +339,23 @@ socket.on('questionArea2', (data) => {
         teams = getTeams(data['rooms']);
         console.log(data);
         if (data['teamName'] == teamName)
-        {
-            document.getElementById('questionsDiv').innerHTML = '';
-            var html = '';
-            html += '<label id="question">' + data['question']['question'] + '</label><br>';
-            html += '<label class="lblOptions">Options<br></label>';
-            var j = 0;
-            for (;j < data['question']['options'].length; j++)
-            {//Agregar opción: "no mutual agreement"
-                html += '<input type="radio" id="question_option_' + j + '" name="answer">';
-                html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
+        {//Pendiente ver que sólamente sea para el usuario indicado.
+            if ((data['userName'] == userName) && 
+                (data['userSurname'] == userSurname))
+            {
+                document.getElementById('questionsDiv').innerHTML = '';
+                var html = '';
+                html += '<label id="question">' + data['question']['question'] + '</label><br>';
+                html += '<label class="lblOptions">Options<br></label>';
+                var j = 0;
+                for (;j < data['question']['options'].length; j++)
+                {//Agregar opción: "no mutual agreement"
+                    html += '<input type="radio" id="question_option_' + j + '" name="answer">';
+                    html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
+                }
+                html += '<button onclick="submitAnswer(\'questionArea2\');">Submit answer</button>';
+                document.getElementById('questionsDiv').innerHTML = html;
             }
-            html += '<button onclick="submitAnswer(\'questionArea2\');">Submit answer</button>';
-            document.getElementById('questionsDiv').innerHTML = html;
         }
         updateUsersInfo();
     }
@@ -350,12 +363,11 @@ socket.on('questionArea2', (data) => {
 socket.on('finishGame', (data) => {
     if (data['roomCode'] == roomCode)
     {
-        document.getElementById('statusInfo').innerHTML = 'Game finished.';
-        teams = getTeams(data['rooms']);
-        updateUsersInfo();
-        if ((data['userName'] == userName) && 
-            (data['userSurname'] == userSurname))
+        if (data['teamName'] == teamName)
         {
+            document.getElementById('statusInfo').innerHTML = 'Game finished.';
+            teams = getTeams(data['rooms']);
+            updateUsersInfo();
             document.getElementById('rollDiceButton').style.display = 'none';
             document.getElementById('questionsDiv').innerHTML = '';
         }

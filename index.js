@@ -378,7 +378,6 @@ io.on('connection', (socket) => {
         }
       }
       var area = Math.floor(Math.random() * Math.floor(3)) + 1;
-      area = 3;//tmp_code
       if (area == 1)
       {//Enviar de a una pregunta.
         for (var i = 0; i < game.rooms[index]['teams'].length; i++)
@@ -455,11 +454,28 @@ io.on('connection', (socket) => {
             message['type'] = type;
             message['rooms'] = game.rooms;
             message['area'] = area;
-            socket.emit('ro', message);
-            socket.broadcast.emit('ro', message);
-            i = game.rooms[index]['teams'].length;
 
             //Hay que lanzar el dado.
+            //Reiniciar si lanzaron todos.
+            var allUsersRolled = true;
+            for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+            {
+              if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
+              {
+                allUsersRolled = false;
+                j = game.rooms[index]['teams'][i]['users'].length;
+              }
+            }
+            if (allUsersRolled)
+            {console.log('Line 471.');
+              for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+              {
+                game.rooms[index]['teams'][i]['users'][j]['rolledDice'] = false;
+              }
+            }
+            socket.emit('ro', message);
+            socket.broadcast.emit('ro', message);
+
             for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
             {
               if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
@@ -472,6 +488,7 @@ io.on('connection', (socket) => {
                 j = game.rooms[index]['teams'][i]['users'].length;
               }
             }
+            i = game.rooms[index]['teams'].length;
           }
         }
       }
@@ -698,6 +715,23 @@ io.on('connection', (socket) => {
             if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][size - 1]['evaluation'].length == game.rooms[index]['teams'][i]['users'].length)
             {//Todos los usuarios evaluaron hasta la pregunta actual. Siguiente pregunta.
               //Hay que lanzar el dado.
+              //Reiniciar si lanzaron todos.
+              var allUsersRolled = true;
+              for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+              {
+                if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
+                {
+                  allUsersRolled = false;
+                  j = game.rooms[index]['teams'][i]['users'].length;
+                }
+              }
+              if (allUsersRolled)
+              {
+                for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+                {
+                  game.rooms[index]['teams'][i]['users'][j]['rolledDice'] = false;
+                }
+              }
               for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
               {
                 if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
@@ -747,6 +781,23 @@ io.on('connection', (socket) => {
           }
           message['rooms'] = game.rooms;
           //Hay que lanzar el dado.
+          //Reiniciar si lanzaron todos.
+          var allUsersRolled = true;
+          for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+          {
+            if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
+            {
+              allUsersRolled = false;
+              j = game.rooms[index]['teams'][i]['users'].length;
+            }
+          }
+          if (allUsersRolled)
+          {
+            for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+            {
+              game.rooms[index]['teams'][i]['users'][j]['rolledDice'] = false;
+            }
+          }
           for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
           {
             if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])

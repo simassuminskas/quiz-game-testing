@@ -49,7 +49,7 @@ socket.on('startGame', (data) => {
     rooms = data['rooms'];
     updateRoomsList();
 });
-socket.on('startGame', (data) => {
+socket.on('ro', (data) => {
     rooms = data['rooms'];
     updateRoomsList();
 });
