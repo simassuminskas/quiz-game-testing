@@ -9,7 +9,6 @@ function adminLogin()
     }));
 }
 socket.on('adminLogged', (data) => {
-    //console.log(data);
     document.getElementById('loginDiv').style.display = 'none';
     rooms = data['rooms'];
     questions = data['questionsArea1'];
@@ -23,23 +22,6 @@ socket.on('adminLogged', (data) => {
 socket.on('update', (data) => {
     rooms = data['rooms'];
     updateRoomsList();
-    /*console.log(data);
-    updateRoomsList();*/
-    //document.getElementById('statusInfo').innerHTML = 'Waiting for admin.';
-    /*for (var j = 0; j < teams.length; j++)
-    {
-        //var indexLeaderElected = -1;
-        for (var k = 0; k < teams[j]['users'].length; k++)
-        {
-            if (teams[j]['users'][k]['leader'] && 
-                (teams[j]['users'][k]['userName'] == userName) && 
-                (teams[j]['users'][k]['userSurname'] == userSurname))
-            {
-                document.getElementById('startGameButton').style.display = 'block';
-                //indexLeaderElected = k;
-            }
-        }
-    }*/
 });
 socket.on('newTeamName', (data) => {
     rooms = data['rooms'];
@@ -51,6 +33,10 @@ socket.on('joinTeam', (data) => {
 });
 socket.on('startGame', (data) => {
     rooms = data['rooms'];
+    document.getElementById('questionsDiv').style.display = 'none';
+    document.getElementById('addQuestionBtn').style.display = 'none';
+    document.getElementById('lblQuestionsInfo').style.display = 'none';
+    document.getElementById('submitQuestionsBtn').style.display = 'none';
     updateRoomsList();
 });
 socket.on('ro', (data) => {
@@ -69,20 +55,12 @@ socket.on('personalEvaluationAdmin', (data) => {
     rooms = data['rooms'];
     updateRoomsList();
 });
-socket.on('leaderVotation', (data) => {//Pendiente ver si funciona para el último que tiene que votar.
+socket.on('leaderVotation', (data) => {
     rooms = data['rooms'];
     updateRoomsList();
 });
-//Pendiente ver si hace falta con 'question'.
 function updateQuestionsList()
 {
-    /*<div id="question_` + nextId + `">
-        <input class="questionText" id="question_text` + nextId + `" type="text" value="Question ` + (nextId + 1) + `...">
-        <button class="deleteQuestionButton" id="delete_` + nextId + `" onclick="deleteQuestion(this.id);">Delete</button>
-        <label class="lblRepeatedQuestion" id="lblQuestion_` + nextId + `"></label>
-    </div><br>
-    <label>Options:</label><br>
-    <input class="optionText" id="option_0_question_text` + nextId + `" type="text" value="option 1...">*/
     document.getElementById('questionsDiv').innerHTML = '';
     var html = '';
     for (var i = 0; i < questions.length; i++)
@@ -99,15 +77,6 @@ function updateQuestionsList()
         html += '<hr></div>';
     }
     document.getElementById('questionsDiv').innerHTML = html;
-    /*var questions = [
-    {
-        'question' : 'You are a new employee and have been working at CGI for two weeks. A day before a meeting with clients your manager tells you that you will be giving a presentation. You just laugh and jokingly say sure, because you do not have enough experience to complete this task. Just before the meeting, your manager asks you if you are prepared and you tell him that you are not. During the meeting, your manager tells you to present what you have prepared. You are shocked and you shake your head stating that you have not prepared anything. Your manager manages the situation and the meeting goes well anyway. However, you are unsure if the same thing could happen next time. What do you do now?', 
-        'options' : [
-            {
-                'option' : 'I think of this as a lesson and realize that when I gain more experience, there will not be any more situations like this.', 
-                'score' : 0, 
-                'response' : 'You shouldn’t ignore this situation. Our value is open communication.'
-        'topic' : 'Objectivity and Integrity'*/
 }
 function addQuestion()
 {
@@ -158,7 +127,7 @@ function deleteQuestion(item)
             {
                 var subItems = document.getElementById(items[i].id).children;
                 for (var k = 0; k < subItems.length; k++)
-                {//Reemplaza el número en el id.
+                {
                     if (subItems[k].id != '')
                     {
                         var finalIndex;
@@ -216,7 +185,7 @@ function getQuestions()
     if (c.length)
     {
         for (var i = 0; i < order.length; i++)
-        {console.log('Line 200: ' + order[i]);
+        {
             var text = document.getElementById('question_text_' + order[i]).value;
             questions.push({
                 'question' : text, 
@@ -229,7 +198,7 @@ function getOptions(index)
 {
     var options = [];
     for (var i = 0; i < 6; i++)
-    {//console.log('option_' + i + '_question_text_' + index);
+    {
         var text = document.getElementById('option_' + i + '_question_text_' + index).value;
         var score = parseInt(document.getElementById('score_option_' + i + '_question_text_' + index).value);
         options.push({
@@ -319,7 +288,6 @@ function updateRoomsList()
                     html += 'Final answer:<br>';
                     html += rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['finalAnswer'] + '<br>';
                 }
-                console.log('Line 155: ' + rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['evaluation'].length);
                 if (rooms[i]['teams'][j]['sendedQuestions']['area1'][k]['evaluation'].length)
                 {//evaluation
                     html += 'Evaluation:<br>';
@@ -331,11 +299,6 @@ function updateRoomsList()
                 }
 
             }
-            /*game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['evaluation'].push({
-                'evaluation' : message['evaluation'], 
-                'userName' : message['userName'], 
-                'userSurname' : message['userSurname']
-            });*/
         }
     }
     document.getElementById('roomsDiv').innerHTML = html;

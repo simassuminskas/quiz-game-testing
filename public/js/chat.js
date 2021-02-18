@@ -1,6 +1,5 @@
 var socket = io();
 /* Variables */
-var user;
 var id;
 var users = [];
 var selectedUser;
