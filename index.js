@@ -23,7 +23,7 @@ io.on('connection', (socket) => {
       admin = socket.id;
       message['password'] = undefined;
       message['rooms'] = game.rooms;
-      message['questions'] = game.questions;
+      message['questionsArea1'] = game.questions['area1'];
       socket.emit('adminLogged', message);
     }
     else
@@ -33,6 +33,19 @@ io.on('connection', (socket) => {
     //message['password'] = undefined;
     //socket.emit('adminLogged', message);
     console.log(socket.id);
+  });
+  socket.on('submitQuestionsArea1', (data) => {
+    var message = JSON.parse(data);
+    if (message['password'] == 'Password123')
+    {console.log('Line 40.');
+      game.questions['area1'] = message['questionsArea1'];
+      console.log(game.questions['area1'].length + ' preguntas.');
+      for (var i = 0; i < game.questions['area1'].length; i++)
+      {
+        console.log(game.questions['area1'][i]['question']);
+      }
+      //console.log(socket.id);
+    }
   });
 	socket.on('new message', (data) => {
 		socket.broadcast.emit('new message', {
