@@ -21,42 +21,23 @@ var regex = /(&zwj;|&nbsp;)/g;
 var d;
 var teams = [];
 var area;
+var finished = false;
 
 socket.on('update', (data) => {
     if ((data['userName'] != undefined) && (data['userSurname'] != undefined))
     {//Pendiente modificar para ser más parecido a los otros y que muestre los equipos desde el principio como en otras ocasiones.
-        /*console.log('update');
-        console.log(data);
-        console.log(userName, userSurname);*/
+        teams = getTeams(data['rooms']);
         if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
         {
-            document.getElementById('divLogin').style.display = 'none';
             roomCode = data['roomCode'];
-            document.getElementById(lblRoomCode).innerHTML = 'The room code is: ' + roomCode;
-            document.getElementById(privateRoom).style.display = 'none';
-
-            document.getElementById(panelMessages).style.display = 'block';
-            document.getElementById('send').childNodes[0].nodeValue = 'Send';
-            updateBar('mdi-content-send', 'Type here', false);
+            document.getElementById('divLogin').style.display = 'none';
+            document.getElementById('teamInfo').style.display = 'block';
             connected = true;
+            teamName = data['teamName'];
+            showTeamInfo();
         }
-        teams = getTeams(data['rooms']);
-        /*for (var i = 0; i < data['rooms'].length; i++)
-        {
-            if (data['rooms'][i]['roomCode'] == roomCode)
-            {
-                for (var j = 0; j < data['rooms'][i]['teams'].length; j++)
-                {
-                    for (var k = 0; k < data['rooms'][i]['teams'].length; k++)
-                    {
-                        console.log(data['rooms'][i]['users']);
-                    }
-                }
-            }
-        }*/
-        console.log('Teams:');
-        console.log(teams);
-        updateUsersInfo();
+        //console.log('Teams:');
+        //console.log(teams);
     }
 });
 socket.on('newTeamName', (data) => {
@@ -114,17 +95,18 @@ socket.on('voteLeader', (data) => {
         updateUsersInfo();
     }
 });
-socket.on('startGame', (data) => {
-    if (data['roomCode'] == roomCode)
+socket.on('showSpinner', (data) => {
+    if ((data['roomCode'] == roomCode) && (!finished))
     {
         console.log('startGame');
-        document.getElementById('statusInfo').innerHTML = 'Starting game.';
+        document.getElementById('statusInfo').innerHTML = data['status'];
+        started = true;
         teams = getTeams(data['rooms']);
-        updateUsersInfo();
+        //updateUsersInfo();
         if ((data['userName'] == userName) && 
             (data['userSurname'] == userSurname))
         {
-            document.getElementById('rollDiceButton').style.display = 'block';
+            document.getElementById('spinner').style.display = 'block';
         }
     }
 });
@@ -155,6 +137,7 @@ socket.on('question', (data) => {
         //if ((!leader) && (teamIndex != -1))
         if ((!leader) && (data['teamName'] == teamName))
         {
+            document.getElementById('lblDilemas').style.display = 'block';
             document.getElementById('questionsDiv').innerHTML = '';
             var html = '';
             html += '<label id="question">' + data['question']['question'] + '</label><br>';
@@ -198,6 +181,7 @@ socket.on('voteAnswerAllTeam', (data) => {
             }
             if ((!leader) && (teamIndex != -1))
             {
+                document.getElementById('lblDilemas').style.display = 'block';
                 document.getElementById('questionsDiv').innerHTML = '';
                 var html = '';
                 html += '<label id="question">' + data['question']['question'] + '</label><br>';
@@ -260,6 +244,7 @@ socket.on('leaderVotation', (data) => {
             if (leader && (teamIndex != -1) && (data['teamName'] == teamName))
             {
                 console.log(data);
+                document.getElementById('lblDilemas').style.display = 'block';
                 document.getElementById('questionsDiv').innerHTML = '';
                 var html = '';
                 html += '<label id="question">' + data['question']['question'] + '</label><br>';
@@ -292,6 +277,7 @@ socket.on('personalEvaluation', (data) => {
         teams = getTeams(data['rooms']);
         if (data['teamName'] == teamName)
         {
+            document.getElementById('lblDilemas').style.display = 'block';
             document.getElementById('questionsDiv').innerHTML = '';
             var html = '<label id="question">' + data['question'] + '</label><br>';
             //Mostrar la opción seleccionada por el líder.
@@ -317,6 +303,7 @@ socket.on('ro', (data) => {
             if ((data['userName'] == userName) && 
                 (data['userSurname'] == userSurname))
             {
+                document.getElementById('lblDilemas').style.display = 'block';
                 document.getElementById('questionsDiv').innerHTML = '';
                 var html = '<label id="question">' + data['ro']['text'] + '</label><br>';
                 html += '<label class="lblArea3Score">Score: ' + data['ro']['score'] + '</label>';
@@ -342,6 +329,7 @@ socket.on('questionArea2', (data) => {
             if ((data['userName'] == userName) && 
                 (data['userSurname'] == userSurname))
             {
+                document.getElementById('lblDilemas').style.display = 'block';
                 document.getElementById('questionsDiv').innerHTML = '';
                 var html = '';
                 html += '<label id="question">' + data['question']['question'] + '</label><br>';
@@ -363,12 +351,24 @@ socket.on('finishGame', (data) => {
     if (data['roomCode'] == roomCode)
     {
         if (data['teamName'] == teamName)
-        {
-            document.getElementById('statusInfo').innerHTML = 'Game finished.';
+        {/*<div id="divGameFinished" style="display: none;">
+            <div id="congratulationsText">
+                <h1>CONGRATULATIONS! YOU</h1>
+                <h1>FINISHED THE GAME!</h1>
+                <label>YOUR GAME SCORE:</label><br>
+                <label id="teamScore2"></label>
+            </div>
+        </div>*/
+            //document.getElementById('statusInfo').innerHTML = 'Game finished.';
             teams = getTeams(data['rooms']);
-            updateUsersInfo();
-            document.getElementById('rollDiceButton').style.display = 'none';
-            document.getElementById('questionsDiv').innerHTML = '';
+            //updateUsersInfo();
+            //document.getElementById('rollDiceButton').style.display = 'none';
+            //document.getElementById('questionsDiv').innerHTML = '';
+            //document.getElementById('lblDilemas').style.display = 'none';
+            document.getElementById('teamsInfo').style.display = 'none';
+            document.getElementById('gameInfo').style.display = 'none';
+            document.getElementById('spinner').style.display = 'none';
+            finished = true;
         }
     }
 });
@@ -567,6 +567,7 @@ function submitAnswer(type = 'allUsersVotation')
     }
     //Pendiente ver si es necesario ocultar la pregunta luego de enviar.
     document.getElementById('questionsDiv').innerHTML = '';
+    document.getElementById('lblDilemas').style.display = 'none';
 }
 function submitPersonalEvaluation()
 {
@@ -595,58 +596,25 @@ function submitPersonalEvaluation()
         "roomCode" : roomCode
     }));
     document.getElementById('questionsDiv').innerHTML = '';
+    document.getElementById('lblDilemas').style.display = 'none';
 }
-function handleNewTeamName()
+function login(newTeam = false)
 {
-    socket.emit('newTeamName', JSON.stringify({
-        type: 'newTeamName',
-        userName: userName, 
-        userSurname: userSurname, 
-        teamName: document.getElementById('teamName').value, 
-        roomCode: roomCode
-    }));
-}
-function handleMsg()
-{
-    var value = $('#' + messageInput).val().replace(regex, ' ').trim();
-    if ((selectedUser != undefined) && (selectedUser != ''))
-    {
-        socket.emit('guess', JSON.stringify({
-            type: 'guess',
-            userName: userName, 
-            userSurname: userSurname, 
-            guess: value, 
-            roomCode: roomCode
-        }));
-    }
-    $('#' + messageInput).val('');
-}
-function handleLogin(private = false)
-{
-    var name = $('#nameInput').val().replace(regex, ' ').trim();
-    var surname = $('#surnameInput').val().replace(regex, ' ').trim();
-    if (private)
-    {
-        roomCode = 'private';
-        privateRoom = true;
-    }
-    else
-    {
-        if (!connected)
-        {
-            roomCode = $('#roomCode').val();
-        }
-    }
     if ((name.length > 0) && (surname.length > 0) && (!connected) && (userName === undefined) && (userSurname === undefined))
     {
-        userName = name;
-        userSurname = surname;
-        //connect();
-        var data = JSON.stringify({'type' : 'update', 'userName' : userName, 'userSurname' : surname, 'roomCode' : roomCode});
+        roomCode = $('#roomCode').val();
+        userName = $('#nameInput').val().replace(regex, ' ').trim();
+        userSurname = $('#surnameInput').val().replace(regex, ' ').trim();
+        var data = JSON.stringify({
+            'type' : 'update', 
+            'userName' : userName, 
+            'userSurname' : surname, 
+            'roomCode' : roomCode, 
+            'teamName' : document.getElementById('teamName').value, 
+            'newTeam' : newTeam
+        });
         socket.emit('update', data);
     }
-    $('#userInput').val('');
-    $('#roomCode').val('');
 }
 function handleTimeOut()
 {

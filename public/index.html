@@ -6,54 +6,78 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" type="image/png" href="img/favicon.png"/>
     <title>Quiz Game</title>
+    <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap');</style>
+    <link rel="stylesheet" type="text/css" href="./css/styles.css">
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </head>
-<body id="body" onload="document.getElementById('timeInfo').innerHTML = 'Time remaining: ' + time;">
-    <label id="timeInfo" style="display: none;"></label>
-    <label id="statusInfo"></label>
-    <label id="teamScore"></label>
-    <label id="lblRoomCode"></label>
-    <label id="lblUsersInfo" style="display: none;">Users without team<br></label>
-    <div id="users"></div>
-    <label id="lblTeamsInfo" style="display: none;">Teams<br></label>
-    <div id="teams"></div>
-    <div id="inputTeamName" style="display: none;">
-        <label>New team name</label><input type="text" id="teamName"><button onclick="handleNewTeamName();">Send</button>
-    </div>
-    <button id="rollDiceButton" onclick="rollDice();" style="display: none;">Roll dice</button>
-    <div id="questionsDiv"></div>
-    <!--<button id="startGameButton" onclick="startGame();" style="display: none;">Start Game</button>-->
-    <div>
-        <div id="panelMessages" style="display: none;">
-            <div id="panel" class="panel-body"></div>
-            <div>
-                <input id="message" type="text" class="form-control" aria-describedby="basic-addon1" maxlength="768">
-                <button id="send" onclick="handleMsg();">Send</button>
-            </div>
+<body>
+    <div id="divLogin" style="display: block;">
+        <div id="welcomeText">
+            <h5>WELCOME TO</h5>
+            <h1>THE<br>VALUE GAME</h1>
+            <h5>PLEASE JOIN THE<br> TEAM</h5>
         </div>
-        <div id="divLogin">
-            <div class="input-group">
-                <span class="input-group-addon"><span id="icon" class="mdi mdi-social-person"></span></span>
-                <label id="lblName">Name</label>
-                <input id="nameInput" type="text" aria-describedby="basic-addon1" maxlength="768">
-                <br>
-                <label id="lblSurname">Surname</label>
-                <input id="surnameInput" type="text" aria-describedby="basic-addon1" maxlength="768">
-                <br>
-                <label id="lblRoomCode1">Game code (empty for random)</label>
-                <input id="roomCode" type="text" class="form-control" aria-describedby="basic-addon1" maxlength="768">
-            </div>
-            <div id="inputAndButtons">
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <button id="sendUserName" class="btn btn-primary btn-flat" onclick="handleLogin();">Play</button>
-                    </span>
-                </div>
-                <div class="input-group">
-                    <span class="input-group-btn">
-                        <button id="privateRoom" class="btn btn-primary btn-flat" onclick="handleLogin(true);">Create Private Room</button>
-                    </span>
-                </div>
-            </div>
+        <center id="loginFields">
+            <label id="lblName">NAME</label><br>
+            <input id="nameInput" type="text" aria-describedby="basic-addon1" maxlength="768">
+            <br>
+            <label id="lblSurname">SURNAME</label><br>
+            <input id="surnameInput" type="text" aria-describedby="basic-addon1" maxlength="768">
+            <br><br>
+            <label id="lblSurname">TEAM NAME</label><br>
+            <input type="text" id="teamName">
+            <br><br>
+            <button id="createTeam" onclick="login(true);">CREATE TEAM</button>
+            <button id="joinTeam" onclick="login();">JOIN TEAM</button>
+        </center>
+    </div>
+    <center id="teamInfo" style="display: none;"></center>
+    <center id="gameInfo" style="display: none;">
+        <label id="teamScore"></label>
+        <label id="statusInfo"></label>
+    </center>
+    <!--<button id="spinner" onclick="rollDice();" style="display: none; text-align: center;">Roll dice</button>-->
+    <div id="spinner" style="display: block;"></div>
+    <center id="area1" style="display: none;">
+        <h4 id="lblDilemas">DILEMAS</h4>
+        <table style="width: 80%; text-align: center;" rules="cols">
+            <tr>
+                <td>QUESTIONS</td>
+                <td>ANSWERS</td>
+            </tr>
+            <tr>
+                <td><br><div id="area1QuestionsDiv">...</div></td>
+                <td><div id="area1AnswersDiv">...</div></td>
+            </tr>
+        </table>
+    </center>
+    <center id="area2" style="display: none;">
+        <h4 id="lblKnowledge">KNOWLEDGE ABOUT US</h4>
+        <table style="width: 80%; text-align: center;" rules="cols">
+            <tr>
+                <td>QUESTIONS</td>
+                <td>ANSWERS</td>
+            </tr>
+            <tr>
+                <td><br><div id="area2QuestionsDiv">...</div></td>
+                <td><div id="area2AnswersDiv">...</div></td>
+            </tr>
+        </table>
+    </center>
+    <div id="divGameFinished" style="display: none;">
+        <div id="congratulationsText">
+            <h1>CONGRATULATIONS! YOU</h1>
+            <h1>FINISHED THE GAME!</h1>
+            <label>YOUR GAME SCORE:</label><br>
+            <label id="teamScore2"></label>
+        </div>
+    </div>
+    <!--<button id="startGameButton" onclick="startGame();" style="display: none;">Start Game</button>-->
+    <div id="panelMessages" style="display: none;">
+        <div id="panel" class="panel-body"></div>
+        <div>
+            <input id="message" type="text" class="form-control" aria-describedby="basic-addon1" maxlength="768">
+            <button id="send" onclick="handleMsg();">Send</button>
         </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>

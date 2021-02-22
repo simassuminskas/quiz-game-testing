@@ -61,10 +61,16 @@ io.on('connection', (socket) => {
     console.log(message['roomCode'].length);
 		var private = false;
 		var flagAddRoom = false;
+    /*{
+    'type' : 'update', 
+    'userName' : userName, 
+    'userSurname' : surname, 
+    'roomCode' : roomCode, 
+    'teamName' : document.getElementById('teamName').value, 
+    'newTeam' : newTeam
+    }*/
 		//if ((message['userName'].split('_').length < 1) || (message['userName'].split('_')[message['userName'].split('_').length - 1] == ''))
-    if (
-      (message['roomCode'] == '')
-    )
+    if ((message['roomCode'] == undefined) || (message['roomCode'] == ''))
 		{//Código no especificado
       console.log('Line 41.');
 			if (game.searchRoomCode('') != -1)
@@ -77,39 +83,25 @@ io.on('connection', (socket) => {
 				message['roomCode'] = game.generateRoomCode();
 				flagAddRoom = true;
 			}
-			//game.extractUserName(message);
 		}
 		else
 		{
-			//message['roomCode'] = message['userName'].split('_')[message['userName'].split('_').length - 1];
-			//game.extractUserName(message);
-			if (message['roomCode'] != 'private')
+			if (game.searchRoomCode(message['roomCode']) != -1)
 			{
-				if (game.searchRoomCode(message['roomCode']) != -1)
-				{
-					index = game.searchRoomCode(message['roomCode']);
-				}
-				else
-				{//Pendiente hacer visible el error.
-					message['type'] = 'error';
-					message['error'] = 'Error: The code \'' + message['roomCode'] + '\' was not found.';
-				}
+				index = game.searchRoomCode(message['roomCode']);
 			}
 			else
-			{
-				message['roomCode'] = game.generateRoomCode();
-				flagAddRoom = true;
-				private = true;
+			{//Pendiente hacer visible el error.
+				message['type'] = 'error';
+				message['error'] = 'Error: The code \'' + message['roomCode'] + '\' was not found.';
 			}
 		}
 		if (flagAddRoom)
 		{
-			//console.log('Añadiendo: ' + socket.id);
 			game.rooms.push({
 				'roomCode' : message['roomCode'], 
 				'users' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : undefined, 'votes' : 0, 'vote' : false}], 
 				'usersIds' : [socket.id], 
-				'usersPoints' : [0], 
 				'usersTurns' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : undefined, 'votes' : 0, 'vote' : false}], 
 				'usersUsed' : [], 
 				'private' : private, 
@@ -117,9 +109,10 @@ io.on('connection', (socket) => {
 				'round' : [1, rounds], 
         'teams' : []
 			});
+      index = 0;
       console.log(game.rooms[game.rooms.length - 1]['users']);
 			message['usersInRoom'] = [...game.rooms[game.rooms.length - 1]['users']];
-      message['requestTeamName'] = true;
+      //message['requestTeamName'] = true;
 		}
 		else
 		{
@@ -144,101 +137,58 @@ io.on('connection', (socket) => {
 					{
             //Pendiente ver si sobran datos en el JSON.
 						game.rooms[index]['users'].push({'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : message['userType'], 'votes' : 0, 'vote' : message['vote']});
-						if (game.rooms[index]['users'].length == maxUsers)
+						/*if (game.rooms[index]['users'].length == maxUsers)//Pendiente usar el 'full' por cada team.
 						{console.log('Line 132.');
 							game.rooms[index]['full'] = true;
-						}
+						}*/
             game.rooms[index]['usersIds'].push(socket.id);
-						game.rooms[index]['usersPoints'].push(0);
 						message['usersInRoom'] = [...game.rooms[index]['users']];
-						if (game.rooms[index]['selectedUser'] == '')
-						{//Esto se haría al principio.
-							game.rooms[index]['usersUsed'] = [];
-							game.rooms[index]['round'] = [1, rounds];
-							game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
-							if (game.rooms[index]['usersTurns'].length)
-							{
-								game.rooms[index]['selectedUser'] = game.rooms[index]['usersTurns'][Math.floor(Math.random() * Math.floor(game.rooms[index]['usersTurns'].length))];
-								game.rooms[index]['usersUsed'].push(game.rooms[index]['selectedUser']);
-								game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
-
-								message['selectedUser'] = game.rooms[index]['selectedUser'];
-								/*var aux = [];
-								while (aux.length < 5)
-								{
-									var w = words[(Math.floor(Math.random() * Math.floor(words.length)))];
-									if (aux.indexOf(w) == -1)
-									{
-										aux.push(w);
-									}
-								}
-								message['words'] = aux;*/
-								message['round'] = [...game.rooms[index]['round']];
-							}
-						}
 					}
 				}
 			}
 		}
-    message['rooms'] = game.rooms;
-    socket.emit('update', message);
-    socket.broadcast.emit('update', message);
-	});
-  socket.on('newTeamName', (data) => {
-    var message = JSON.parse(data);
-    index = game.searchRoomCode(message['roomCode'], false);
-    //index2 = game.searchUserInTeam(message['userName'], message['userSurname'], message['teamName'], index);
-    index2 = game.searchTeam(message['teamName'], index);
-    if (index2 == -1)
-    {//Se debe agregar el team a la sala y al usuario.
-      game.rooms[index]['teams'].push({//Pendiente ver que no se repita el nombre.
-        'teamName' : message['teamName'], 
-        'users' : [
-          {
+    var index2 = game.searchTeam(message['teamName'], index);
+    if (data['newTeam'])
+    {//
+      if (index2 == -1)
+      {//Se debe agregar el team a la sala y al usuario.
+        game.rooms[index]['teams'].push({//Pendiente ver que no se repita el nombre.
+          'teamName' : message['teamName'], 
+          'users' : [
+            {
+              'userName' : message['userName'], 
+              'userSurname' : message['userSurname'], 
+              'votes' : 0, 
+              'vote' : message['vote']
+            }
+          ], 
+          'sendedQuestions' : {
+            'area1' : [], 
+            'area2' : [], 
+            'area3' : []
+          }, 
+          'scoreArea1' : 0, 
+          'scoreArea2' : 0, 
+          'scoreArea3' : 0
+        });
+      }
+      else
+      {
+        if (index2 != -1)
+        {
+          game.rooms[index]['teams'][index2]['users'].push({
             'userName' : message['userName'], 
             'userSurname' : message['userSurname'], 
             'votes' : 0, 
             'vote' : message['vote']
-          }
-        ], 
-        'sendedQuestions' : {
-          'area1' : [], 
-          'area2' : [], 
-          'area3' : []
-        }, 
-        'scoreArea1' : 0, 
-        'scoreArea2' : 0, 
-        'scoreArea3' : 0
-      });
-      message['teamOk'] = true;
-      message['rooms'] = game.rooms;
-      socket.emit('newTeamName', message);
-      socket.broadcast.emit('newTeamName', message);
+          });
+        }
+      }
     }
-  });
-  socket.on('joinTeam', (data) => {
-    var message = JSON.parse(data);
-    index = game.searchRoomCode(message['roomCode'], false);
-    //index2 = game.searchUserInTeam(message['userName'], message['userSurname'], message['teamName'], index);
-    index2 = game.searchTeam(message['teamName'], index);
-    /*type: 'joinTeam',
-      userName: userName, 
-      userSurname: userSurname, 
-      teamName: teams[index]['teamName'], 
-      roomCode: roomCode*/
-    if (index2 != -1)
-    {//
-      game.rooms[index]['teams'][index2]['users'].push({
-        'userName' : message['userName'], 
-        'userSurname' : message['userSurname'], 
-        'votes' : 0, 
-        'vote' : message['vote']
-      });
-      message['rooms'] = game.rooms;
-      socket.emit('joinTeam', message);
-      socket.broadcast.emit('joinTeam', message);
-    }
-  });
+    message['rooms'] = game.rooms;
+    socket.emit('update', message);
+    socket.broadcast.emit('update', message);
+	});
   socket.on('voteLeader', (data) => {//Pendiente asegurarse de que no pueda votar sin estar en ese team.
     var message = JSON.parse(data);
     index = game.searchRoomCode(message['roomCode'], false);
@@ -251,7 +201,7 @@ io.on('connection', (socket) => {
     teamName: teams[teamIndex]['teamName'], 
     roomCode: roomCode*/
     if (index2 != -1)
-    {//
+    {
       console.log(message['userNameVoting'], message['userSurnameVoting']);
       for (var i = 0; i < game.rooms[index]['teams'][index2]['users'].length; i++)
       {
@@ -300,6 +250,7 @@ io.on('connection', (socket) => {
         {//Hay un ganador.
           console.log(game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['userName'] + ' ' + game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['userSurname'] + ' es el lider del equipo: ' + game.rooms[index]['teams'][index2]['teamName']);
           game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['leader'] = true;
+          game.rooms[index]['teams'][index2]['full'] = true;//Pendiente ver que funcione.
           var allUsersInTeams = true;
           var allUsersVoted = true;
           for (var i = 0; i < game.rooms[index]['users'].length; i++)
@@ -345,8 +296,9 @@ io.on('connection', (socket) => {
                   message['userName'] = game.rooms[index]['teams'][i]['users'][j]['userName'];
                   message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
                   message['rooms'] = game.rooms;
-                  socket.emit('startGame', message);
-                  socket.broadcast.emit('startGame', message);
+                  message['status'] = 'Starting Game.';
+                  socket.emit('showSpinner', message);
+                  socket.broadcast.emit('showSpinner', message);
                   //Es necesario detener el bucle para que tire de a uno a la vez.
                   j = game.rooms[index]['teams'][i]['users'].length;
                 }
@@ -495,8 +447,8 @@ io.on('connection', (socket) => {
               {
                 message['userName'] = game.rooms[index]['teams'][i]['users'][j]['userName'];
                 message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
-                socket.emit('startGame', message);
-                socket.broadcast.emit('startGame', message);
+                socket.emit('showSpinner', message);
+                socket.broadcast.emit('showSpinner', message);
                 //Es necesario detener el bucle para que tire de a uno a la vez.
                 j = game.rooms[index]['teams'][i]['users'].length;
               }
@@ -752,8 +704,8 @@ io.on('connection', (socket) => {
                   message['userName'] = game.rooms[index]['teams'][i]['users'][j]['userName'];
                   message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
                   message['rooms'] = game.rooms;
-                  socket.emit('startGame', message);
-                  socket.broadcast.emit('startGame', message);
+                  socket.emit('showSpinner', message);
+                  socket.broadcast.emit('showSpinner', message);
                   //Es necesario detener el bucle para que tire de a uno a la vez.
                   j = game.rooms[index]['teams'][i]['users'].length;
                 }
@@ -818,8 +770,8 @@ io.on('connection', (socket) => {
               message['userName'] = game.rooms[index]['teams'][i]['users'][j]['userName'];
               message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
               message['rooms'] = game.rooms;
-              socket.emit('startGame', message);
-              socket.broadcast.emit('startGame', message);
+              socket.emit('showSpinner', message);
+              socket.broadcast.emit('showSpinner', message);
               //Es necesario detener el bucle para que tire de a uno a la vez.
               j = game.rooms[index]['teams'][i]['users'].length;
             }
@@ -894,7 +846,6 @@ io.on('connection', (socket) => {
           if ((game.rooms[index]['word'] != undefined) && (game.rooms[index]['word'] != ''))
           {//El que queda gana por abandono si es que en algún momento se seleccionó una palabra.
             message['word'] = game.rooms[index]['word'];
-            message['winners'] = [[game.rooms[index]['users'][0], game.rooms[index]['usersPoints'][0]]];
             message['subType'] = 'gameOver';
           }
           else

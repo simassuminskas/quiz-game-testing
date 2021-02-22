@@ -2,21 +2,8 @@ var mouse = {x: null, y: null};
 var touch;
 var drawingTool = 'pencil';
 var canvas;
-var canvasId = 'canvasDiv';
 
-var timeAndRound = 'timeAndRound';
-var timeInfo = 'timeInfo';
-var roundInfo = 'roundInfo';
-var wordsInfo = 'wordsInfo';
-var drawingToolsDiv = 'drawingToolsDiv';
-var usersDiv = 'users';
-var teamsDiv = 'teams';
-var panelMessages = 'panelMessages';
-var panel = 'panel';
-var send = 'send';
-var messageInput = 'message';
-var privateRoom = 'privateRoom';
-var lblRoomCode = 'lblRoomCode';
+var started = false;
 
 var lineColour = '#000000';
 var pencilSize = 0.005;
@@ -27,61 +14,65 @@ var points = [];
 var auxPoints = [];
 var drawingTools;
 var canvasDisplay = 'none';
-var time = 90;
-var stopTime = false;
 var pr = false;
-var drawer = false;
 
-$(document).ready(function () {
-    $("#message").on('keyup', function (e) {
-        if (e.key === 'Enter' || e.keyCode === 13)
+function showTeamInfo()
+{
+    document.getElementById('teamInfo').style.display = 'block';
+    var html = '';
+    var tmp = [];
+    var userInTeamIndex = -1;
+    if (teams != undefined)
+    {
+        for (var j = 0; j < teams.length; j++)
         {
-            handleMsg();
-        }
-    });
-});
-function selectWord(i)
-{
-    document.getElementById('waiting').style.display = 'none';
-    document.getElementById(wordsInfo).innerHTML = '<label>The word is: ' + words[Number(i.split('_')[1])] + '</label>';
-    document.getElementById(drawingToolsDiv).style.display = 'block';
-    handleWordSelected(words[Number(i.split('_')[1])]);
-    drawer = true;
-    changeSize();
-}
-function initTime()
-{
-    document.getElementById(timeInfo).style.display = 'block';
-    t = time;
-    var countdown = () => {
-        var timerUpdate = setInterval( () => {
-            if (stopTime)
+            for (var k = 0; k < teams[j]['users'].length; k++)
             {
-                clearInterval(timerUpdate);
-                t = time;
-                document.getElementById(timeInfo).style.display = 'none';
-            }
-            document.getElementById(timeInfo).innerHTML = 'Time remaining: ' + t;
-            t--;
-            if (t == 0)
-            {
-                clearInterval(timerUpdate);
-                t = time;
-                if (selectedUser == username)
+                if ((teams[j]['users'][k]['userName'] == userName) && 
+                    (teams[j]['users'][k]['userSurname'] == userSurname))
                 {
-                    handleTimeOut();
+                    userInTeamIndex = j;
                 }
             }
-        }, 1000);
-    };
-    countdown();
+        }
+        for (var j = 0; j < teams.length; j++)
+        {
+            document.getElementById('lblTeamsInfo').style.display = 'block';
+            html += '<label>' + teams[userInTeamIndex]['teamName'] + '</label>';
+            var indexLeaderElected = -1;
+            for (var k = 0; k < teams[j]['users'].length; k++)
+            {
+                if (teams[j]['users'][k]['leader'])
+                {
+                    indexLeaderElected = k;
+                }
+            }
+            for (var k = 0; k < teams[j]['users'].length; k++)
+            {
+                html += '<br>' + teams[j]['users'][k]['userName'] + ' ' + teams[j]['users'][k]['userSurname'];
+                if ((teams[j]['users'][k]['userName'] == userName) && 
+                    (teams[j]['users'][k]['userSurname'] == userSurname))
+                {
+                    html += ' (you)';
+                }
+                if (k == indexLeaderElected)
+                {
+                    html += ' (leader)';
+                }
+                if ((teams[j]['users'].length > 1) && (indexLeaderElected == -1) && (userInTeamIndex == j))
+                {//Se debe habilitar la elección de lider.
+                    html += '<button id="vl_' + j + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + j + ', \'' + teams[j]['users'][k]['userName'] + '\', \'' + teams[j]['users'][k]['userSurname'] + '\');document.getElementById(this.id).style.display = \'none\';">Vote for leader</button>';
+                }
+            }
+            html += '</div>';
+        }
+    }
+    document.getElementById('teamInfo').innerHTML = html;
 }
 function updateUsersInfo()
 {
-    //teams.push({'teamName' : data['teamName'], 'users' : [{'userName' : data['userName'], 'userSurname' : data['userSurname']}]});
-    var ul = document.getElementById(usersDiv);
     var html = '';
-    var tl = document.getElementById(teamsDiv);
+    var tl = document.getElementById('teams');
     var html2 = '';
     var tmp = [];
     var userInTeamIndex = -1;
@@ -97,7 +88,10 @@ function updateUsersInfo()
                     if ((teams[j]['users'][k]['userName'] == userName) && 
                         (teams[j]['users'][k]['userSurname'] == userSurname))
                     {
-                        document.getElementById('teamScore').innerHTML = 'Team score: Area 1: ' + teams[j]['scoreArea1'] + ' Area 2: ' + teams[j]['scoreArea2'] + ' Area 3: ' + teams[j]['scoreArea3'];
+                        if (started)
+                        {
+                            document.getElementById('teamScore').innerHTML = 'Team score: Area 1: ' + teams[j]['scoreArea1'] + ' Area 2: ' + teams[j]['scoreArea2'] + ' Area 3: ' + teams[j]['scoreArea3'];
+                        }
                         document.getElementById('inputTeamName').style.display = 'none';
                         userInTeamIndex = j;
                     }
@@ -166,16 +160,8 @@ function updateUsersInfo()
             html2 += '</div>';
         }
     }
-    ul.innerHTML = html;
     tl.innerHTML = html2;
 }
-/*function verifyNewTeam(data)
-{
-    if (data['requestTeamName'])
-    {
-        document.getElementById('inputTeamName').style.display = 'block';
-    }
-}*/
 function rollDice()
 {
     socket.emit('rollingDice', JSON.stringify({
