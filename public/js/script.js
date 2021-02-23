@@ -61,7 +61,7 @@ function showTeamInfo()
                 }
                 if ((teams[userInTeamIndex]['users'].length > 1) && (indexLeaderElected == -1) && (!vote))
                 {//Se debe habilitar la elección de lider.
-                    html += '<button id="vl_' + userInTeamIndex + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + j + ', \'' + teams[j]['users'][k]['userName'] + '\', \'' + teams[j]['users'][k]['userSurname'] + '\');document.getElementById(this.id).style.display = \'none\';">Vote for leader</button>';
+                    html += '<button id="vl_' + userInTeamIndex + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + userInTeamIndex + ', \'' + teams[userInTeamIndex]['users'][k]['userName'] + '\', \'' + teams[userInTeamIndex]['users'][k]['userSurname'] + '\');document.getElementById(this.id).style.display = \'none\';">Vote for leader</button>';
                 }
             }
             html += '</div>';
@@ -103,99 +103,6 @@ function gameFinished()
             }
         }
     }
-}
-function updateUsersInfo()
-{
-    var html = '';
-    var tl = document.getElementById('teams');
-    var html2 = '';
-    var tmp = [];
-    var userInTeamIndex = -1;
-    //for (var i = 0; i < users.length; i++)
-    {
-        //var add = true;
-        if (teams != undefined)
-        {
-            for (var j = 0; j < teams.length; j++)
-            {
-                for (var k = 0; k < teams[j]['users'].length; k++)
-                {
-                    if ((teams[j]['users'][k]['userName'] == userName) && 
-                        (teams[j]['users'][k]['userSurname'] == userSurname))
-                    {
-                        if (started)
-                        {
-                            document.getElementById('teamScore').innerHTML = 'Team score: Area 1: ' + teams[j]['scoreArea1'] + ' Area 2: ' + teams[j]['scoreArea2'] + ' Area 3: ' + teams[j]['scoreArea3'];
-                        }
-                        document.getElementById('inputTeamName').style.display = 'none';
-                        userInTeamIndex = j;
-                    }
-                    /*if ((teams[j]['users'][k]['userName'] == users[i]['userName']) || 
-                        (teams[j]['users'][k]['userSurname'] == users[i]['userSurname']))
-                    {
-                        add = false;
-                    }*/
-                }
-            }
-
-        }
-        //console.log(users);
-        /*if (add)
-        {
-            document.getElementById('lblUsersInfo').style.display = 'block';
-            var subHtml = users[i]['userName'] + ' ' + users[i]['userSurname'];
-            html += '<div id="u_' + i + '">' + subHtml + '</div>';
-        }*/
-    }
-    if (userInTeamIndex == -1)
-    {
-        if (connected)
-        {//No está en un team y está conectado.//Pendiente ver si funciona.
-            document.getElementById('inputTeamName').style.display = 'block';
-        }
-    }
-    if (teams != undefined)
-    {
-        for (var j = 0; j < teams.length; j++)
-        {
-            //document.getElementById('lblTeamsInfo').style.display = 'block';
-            html2 += '<div id="t_' + j + '">' + teams[j]['teamName'];
-            if (userInTeamIndex == -1)
-            {//No está en un team.//Pendiente ver por qué no aparece el Join con el u3 al principio. Parece estar relacionado con la falta del status: Starting game
-                html2 += '<button id="jt_' + j + '" onclick="joinTeam(userName, userSurname, roomCode, ' + j + ');">Join</button>';
-            }
-            //else
-            //{
-            var indexLeaderElected = -1;
-            for (var k = 0; k < teams[j]['users'].length; k++)
-            {
-                if (teams[j]['users'][k]['leader'])
-                {
-                    indexLeaderElected = k;
-                }
-            }
-            for (var k = 0; k < teams[j]['users'].length; k++)
-            {
-                html2 += '<br>' + teams[j]['users'][k]['userName'] + ' ' + teams[j]['users'][k]['userSurname'];
-                if ((teams[j]['users'][k]['userName'] == userName) && 
-                    (teams[j]['users'][k]['userSurname'] == userSurname))
-                {
-                    html2 += ' (you)';
-                }
-                if (k == indexLeaderElected)
-                {
-                    html2 += ' (leader)';
-                }
-                if ((teams[j]['users'].length > 1) && (indexLeaderElected == -1) && (userInTeamIndex == j))
-                {//Se debe habilitar la elección de lider.
-                    html2 += '<button id="vl_' + j + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + j + ', \'' + teams[j]['users'][k]['userName'] + '\', \'' + teams[j]['users'][k]['userSurname'] + '\');document.getElementById(this.id).style.display = \'none\';">Vote for leader</button>';
-                }
-            }
-            //}
-            html2 += '</div>';
-        }
-    }
-    tl.innerHTML = html2;
 }
 function getTeams(rooms)
 {

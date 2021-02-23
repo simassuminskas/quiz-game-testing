@@ -129,6 +129,7 @@ function detenerRotacionRuleta() {
       }
     }
   }
+  index = 1;
   optRuleta.save();
   optRuleta.font = 'bold 30px Verdana, Arial';
   socket.emit('spin', JSON.stringify({

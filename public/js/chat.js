@@ -26,7 +26,7 @@ var vote = false;
 var answerType;
 
 socket.on('update', (data) => {//message['newTeam']
-    if ((data['userName'] != undefined) && (data['userSurname'] != undefined) && (!finished))
+    if ((data['userName'] != undefined) && (data['userSurname'] != undefined) && (document.getElementById('divGameFinished').style.display == 'none'))
     {//Pendiente modificar para ser más parecido a los otros y que muestre los equipos desde el principio como en otras ocasiones.
         if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
         {
@@ -36,6 +36,8 @@ socket.on('update', (data) => {//message['newTeam']
                 teams = getTeams(data['rooms']);
                 teamName = data['teamName'];
                 connected = true;
+                document.getElementById('body').style.backgroundColor = "white";
+                document.getElementById('body').style.backgroundImage = "url('./img/2.png')";
             }
             teams = getTeams(data['rooms']);
             document.getElementById('divLogin').style.display = 'none';
@@ -59,32 +61,32 @@ socket.on('update', (data) => {//message['newTeam']
         //console.log('Teams:');
         //console.log(teams);
     }
-});//b.style.backgroundImage = "url('./img/3.png')"//ac0034
+});
 socket.on('showSpinner', (data) => {
-    if ((data['roomCode'] == roomCode) && (!finished))
+    if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
-        console.log('startGame');
-        document.getElementById('statusInfo').innerHTML = data['status'];
+        //document.getElementById('statusInfo').innerHTML = data['status'];
         started = true;
         teams = getTeams(data['rooms']);
         //updateUsersInfo();
+        if (data['teamName'] == teamName)
+        {
+            document.getElementById('body').style.backgroundColor = "#ac0034";
+            document.getElementById('body').style.backgroundImage = "url('./img/3.2.png')";
+        }
         if ((data['userName'] == userName) && 
             (data['userSurname'] == userSurname))
         {
             document.getElementById('area3').style.display = 'none';
             document.getElementById('spinner').style.display = 'block';
-            /*<center id="gameInfo" style="display: none;">
-                <label id="teamScore"></label>
-                <label id="statusInfo"></label>
-                <label id="userInfo"></label>
-            </center>*/
         }
         showTeamInfo();
         showGameInfo();
     }
 });
-socket.on('question', (data) => {
-    if ((data['roomCode'] == roomCode) && (!finished))console.log('Line 134: ' + data['roomCode'])
+socket.on('question', (data) => {//El problema está cuando recibe una pregunta del área 1 desde otro equipo.
+    console.log('Line 88: ' + data['roomCode'] + ', ' + finished)
+    if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
         area = data['area'];
         teams = getTeams(data['rooms']);
@@ -94,42 +96,42 @@ socket.on('question', (data) => {
             if (teams[j]['teamName'] == data['teamName'])
             {
                 teamIndex = j;
-            }
-        }
-        var leader = false;
-        for (var k = 0; k < teams[teamIndex]['users'].length; k++)
-        {
-            if ((teams[teamIndex]['users'][k]['userName'] == userName) && 
-                (teams[teamIndex]['users'][k]['userSurname'] == userSurname) && 
-                teams[teamIndex]['users'][k]['leader'])
-            {//Ver que no sea el lider (porque ese vota después).
-                leader = true;
-            }
-        }
-        //if ((!leader) && (teamIndex != -1))
-        if ((data['teamName'] == teamName))console.log('Line 157: ' + leader + ', ' + data['teamName'] + ', ' + data['area'] + ', ' + leader);
-        {
-            document.getElementById('area3').style.display = 'none';
-            if (((data['area'] == 1) && (!leader)) || ((data['area'] == 2) && (data['userName'] == userName) && (data['userSurname'] == userSurname)))
-            {
-                document.getElementById('area' + data['area']).style.display = 'block';
-                document.getElementById('area' + data['area'] + 'QuestionsDiv').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
-                var html = '';
-                for (var j = 0; j < data['question']['options'].length; j++)
+                var leader = false;
+                for (var k = 0; k < teams[teamIndex]['users'].length; k++)
                 {
-                    html += '<input type="radio" id="question_option_' + j + '" name="answer">';
-                    html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
+                    if ((teams[teamIndex]['users'][k]['userName'] == userName) && 
+                        (teams[teamIndex]['users'][k]['userSurname'] == userSurname) && 
+                        teams[teamIndex]['users'][k]['leader'])
+                    {//Ver que no sea el lider (porque ese vota después).
+                        leader = true;
+                    }
                 }
-                //html += '<button onclick="submitAnswer(\'allUsersVotation\');">Submit answer</button>';
-                document.getElementById('area' + data['area'] + 'AnswersDiv').innerHTML = html;
-                document.getElementById('submitAnswerButton').style.display = 'block';
-                if (area == 2)
+                //if ((!leader) && (teamIndex != -1))
+                if ((data['teamName'] == teamName))console.log('Line 157: ' + leader + ', ' + data['teamName'] + ', ' + data['area'] + ', ' + leader);
                 {
-                    answerType = 'questionArea2';
-                }
-                else
-                {
-                    answerType = 'allUsersVotation';
+                    document.getElementById('area3').style.display = 'none';
+                    if (((data['area'] == 1) && (!leader)) || ((data['area'] == 2) && (data['userName'] == userName) && (data['userSurname'] == userSurname)))
+                    {
+                        document.getElementById('area' + data['area']).style.display = 'block';
+                        document.getElementById('area' + data['area'] + 'QuestionsDiv').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
+                        var html = '';
+                        for (var j = 0; j < data['question']['options'].length; j++)
+                        {
+                            html += '<input type="radio" id="question_option_' + j + '" name="answer">';
+                            html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
+                        }
+                        //html += '<button onclick="submitAnswer(\'allUsersVotation\');">Submit answer</button>';
+                        document.getElementById('area' + data['area'] + 'AnswersDiv').innerHTML = html;
+                        document.getElementById('submitAnswerButton').style.display = 'block';
+                        if (area == 2)
+                        {
+                            answerType = 'questionArea2';
+                        }
+                        else
+                        {
+                            answerType = 'allUsersVotation';
+                        }
+                    }
                 }
             }
         }
@@ -137,7 +139,7 @@ socket.on('question', (data) => {
     }
 });
 socket.on('voteAnswerAllTeam', (data) => {
-    if ((data['roomCode'] == roomCode) && (!finished))
+    if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
         //document.getElementById('statusInfo').innerHTML = 'Starting game.';
         teams = getTeams(data['rooms']);
@@ -180,7 +182,7 @@ socket.on('voteAnswerAllTeam', (data) => {
     }
 });
 socket.on('leaderVotation', (data) => {
-    if ((data['roomCode'] == roomCode) && (!finished))
+    if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
         teams = getTeams(data['rooms']);
         var leader = false;
@@ -221,9 +223,9 @@ socket.on('leaderVotation', (data) => {
     }
 });
 socket.on('personalEvaluation', (data) => {
-    if ((data['roomCode'] == roomCode) && (!finished))
+    if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
-        document.getElementById('statusInfo').innerHTML = 'Personal evaluation.';
+        //document.getElementById('statusInfo').innerHTML = 'Personal evaluation.';
         teams = getTeams(data['rooms']);
         if (data['teamName'] == teamName)
         {
@@ -262,7 +264,7 @@ socket.on('personalEvaluation', (data) => {
     }
 });
 socket.on('ro', (data) => {
-    if ((data['roomCode'] == roomCode) && (!finished))
+    if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
         area = data['area'];
         teams = getTeams(data['rooms']);
@@ -282,10 +284,12 @@ socket.on('ro', (data) => {
     }
 });
 socket.on('finishGame', (data) => {
-    if ((data['roomCode'] == roomCode) && (!finished))
+    if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
         if (data['teamName'] == teamName)
         {
+            document.getElementById('body').style.backgroundColor = "white";
+            document.getElementById('body').style.backgroundImage = "url('./img/2.png')";
             teams = getTeams(data['rooms']);
             document.getElementById('teamInfo').style.display = 'none';
             document.getElementById('gameInfo').style.display = 'none';
@@ -313,7 +317,7 @@ socket.on('userDisconected', (data) => {
                 auxUsers.push(users[i]);
             }
         }
-        updateUsersInfo();
+        //updateUsersInfo();
         users = [...auxUsers];
         if (users.length < 2)
         {
@@ -334,7 +338,7 @@ socket.on('userDisconected', (data) => {
             {
                 stopTime = true;
                 selectedUser = data['selectedUser'];
-                updateUsersInfo();
+                //updateUsersInfo();
                 if ((data['selectedUser']['name'] == userName) && (data['selectedUser']['surname'] == userSurname))
                 {
                     words = data['words'];
@@ -480,8 +484,6 @@ function submitPersonalEvaluation()
 {
     var question;
     question = document.getElementById('question').innerHTML;
-    console.log('Line 534.');
-    console.log(question);
     socket.emit('personalEvaluation', JSON.stringify({
         "userName" : userName, 
         "userSurname" : userSurname, 
