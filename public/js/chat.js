@@ -93,7 +93,7 @@ socket.on('question', (data) => {//El problema está cuando recibe una pregunta 
         var teamIndex = -1;
         for (var j = 0; j < teams.length; j++)
         {
-            if (teams[j]['teamName'] == data['teamName'])
+            if ((teams[j]['teamName'] == data['teamName']) && (data['teamName'] == teamName))
             {
                 teamIndex = j;
                 var leader = false;
