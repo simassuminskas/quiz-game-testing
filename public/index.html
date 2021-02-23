@@ -9,11 +9,13 @@
     <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap');</style>
     <link rel="stylesheet" type="text/css" href="./css/styles.css">
 </head>
-<body id="body" style="background-image: url('./img/1.png');background-size: cover;">
+<body id="body" style="background-image: url('./img/1.png');background-size: cover;" onload="document.getElementById('rulesLink').href = location + 'rules/'">
+    <br>
+    <a href="" id="rulesLink" target="_blank" style="position: right;">RULES</a>
     <div id="divLogin" style="display: block;">
         <div id="welcomeText">
             <h5>WELCOME TO</h5>
-            <h1>THE<br>VALUE GAME</h1>
+            <h1 style="font-size: 400%;">THE<br>VALUE GAME</h1>
             <h5>PLEASE JOIN THE<br> TEAM</h5>
         </div>
         <center id="loginFields">
