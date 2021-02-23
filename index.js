@@ -57,8 +57,6 @@ io.on('connection', (socket) => {
     console.log(socket.id);
 		var message = JSON.parse(data);
 		console.log('Line 45: ');
-    console.log(message['roomCode']);
-    console.log(message['roomCode'].length);
 		var private = false;
 		var flagAddRoom = false;
     /*{
@@ -81,8 +79,8 @@ io.on('connection', (socket) => {
 			else
 			{
 				message['roomCode'] = game.generateRoomCode();
-				flagAddRoom = true;
-			}
+				flagAddRoom = true;console.log('flagAddRoom == ' + flagAddRoom);
+			}console.log('Line 83: ' + message['roomCode']);
 		}
 		else
 		{
@@ -147,9 +145,9 @@ io.on('connection', (socket) => {
 				}
 			}
 		}
-    var index2 = game.searchTeam(message['teamName'], index);
-    if (data['newTeam'])
-    {//
+    var index2 = game.searchTeam(message['teamName'], index);console.log('Line 148: ' + message['teamName'] + ', ' + index);
+    if (message['newTeam'])
+    {console.log('Line 150: ' + index2);
       if (index2 == -1)
       {//Se debe agregar el team a la sala y al usuario.
         game.rooms[index]['teams'].push({//Pendiente ver que no se repita el nombre.
@@ -172,17 +170,17 @@ io.on('connection', (socket) => {
           'scoreArea3' : 0
         });
       }
-      else
-      {
-        if (index2 != -1)
-        {
-          game.rooms[index]['teams'][index2]['users'].push({
-            'userName' : message['userName'], 
-            'userSurname' : message['userSurname'], 
-            'votes' : 0, 
-            'vote' : message['vote']
-          });
-        }
+    }
+    else
+    {
+      if (index2 != -1)
+      {console.log('Line 176: ' + game.rooms[index]['teams'][index2]['teamName']);
+        game.rooms[index]['teams'][index2]['users'].push({
+          'userName' : message['userName'], 
+          'userSurname' : message['userSurname'], 
+          'votes' : 0, 
+          'vote' : message['vote']
+        });
       }
     }
     message['rooms'] = game.rooms;
@@ -322,7 +320,7 @@ io.on('connection', (socket) => {
       }
     }
   });
-  socket.on('rollingDice', (data) => {
+  socket.on('spin', (data) => {
     var message = JSON.parse(data);
     var index = game.searchRoomCode(message['roomCode'], false);
     if (index != -1)
@@ -342,9 +340,9 @@ io.on('connection', (socket) => {
           }
         }
       }
-      var area = Math.floor(Math.random() * Math.floor(3)) + 1;
+      var area = message['area'];console.log('Line 343: ' + message['area']);//parseInt(message['area'].split(' ')[1]);
       if (area == 1)
-      {//Enviar de a una pregunta.
+      {console.log('Line 345.');//Enviar de a una pregunta.
         for (var i = 0; i < game.rooms[index]['teams'].length; i++)
         {
           if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
@@ -388,16 +386,15 @@ io.on('connection', (socket) => {
         }
       }
       if (area == 2)
-      {
+      {console.log('Line 389: ' + message['area']);
         for (var i = 0; i < game.rooms[index]['teams'].length; i++)
         {
           if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
           {
             message['question'] = game.questions['area2'][Math.floor(Math.random() * Math.floor(game.questions['area2'].length))];
             message['rooms'] = game.rooms;
-            message['area'] = area;
-            socket.emit('questionArea2', message);
-            socket.broadcast.emit('questionArea2', message);
+            socket.emit('question', message);
+            socket.broadcast.emit('question', message);
             i = game.rooms[index]['teams'].length;
           }
         }
@@ -536,13 +533,12 @@ io.on('connection', (socket) => {
           //message['area'] = data['area'];
           if (allUsersVoted)
           {//Tiene que decidir el líder.//Falta pasarle las opciones.
-
             //message['question'] = game.questions['area' + area][j];
-            console.log(message['area']);
+            console.log('Line 537: ' + message['question'] + ', ' + message['area']);
             for (var j = 0; j < game.questions['area' + message['area']].length; j++)
             {
               if (game.questions['area' + message['area']][j]['question'] == message['question'])
-              {
+              {console.log('Line 541');
                 message['question'] = game.questions['area' + message['area']][j];
               }
             }

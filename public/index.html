@@ -8,9 +8,8 @@
     <title>Quiz Game</title>
     <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap');</style>
     <link rel="stylesheet" type="text/css" href="./css/styles.css">
-    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 </head>
-<body>
+<body id="body" style="background-color: red; background-image: url('./img/1.png');background-size: cover;">
     <div id="divLogin" style="display: block;">
         <div id="welcomeText">
             <h5>WELCOME TO</h5>
@@ -35,27 +34,29 @@
     <center id="gameInfo" style="display: none;">
         <label id="teamScore"></label>
         <label id="statusInfo"></label>
+        <label id="userInfo"></label>
     </center>
-    <!--<button id="spinner" onclick="rollDice();" style="display: none; text-align: center;">Roll dice</button>-->
-    <div id="spinner" style="display: block;"></div>
+    <center><canvas id="spinner" width="500" height="500" style="display: none;"></canvas></center>
     <center id="area1" style="display: none;">
-        <h4 id="lblDilemas">DILEMAS</h4>
-        <table style="width: 80%; text-align: center;" rules="cols">
+        <h4 id="lblDilemmas">DILEMMAS</h4>
+        <table id="area1Table" style="width: 80%; text-align: center;" rules="cols">
             <tr>
-                <td>QUESTIONS</td>
+                <td>QUESTION</td>
                 <td>ANSWERS</td>
             </tr>
             <tr>
-                <td><br><div id="area1QuestionsDiv">...</div></td>
-                <td><div id="area1AnswersDiv">...</div></td>
+                <td><br><div id="area1QuestionsDiv"></div></td>
+                <td><div id="area1AnswersDiv"></div></td>
             </tr>
         </table>
+        <div id="personalEvaluation"></div>
     </center>
+    <center><button id="submitPersonalEvaluation" style="display: none;" onclick="submitPersonalEvaluation();">SUBMIT</button></center>
     <center id="area2" style="display: none;">
         <h4 id="lblKnowledge">KNOWLEDGE ABOUT US</h4>
         <table style="width: 80%; text-align: center;" rules="cols">
             <tr>
-                <td>QUESTIONS</td>
+                <td>QUESTION</td>
                 <td>ANSWERS</td>
             </tr>
             <tr>
@@ -64,20 +65,17 @@
             </tr>
         </table>
     </center>
+    <center id="area3" style="display: none;">
+        <h4 id="lblRo">RISKS & OPPORTUNITIES</h4>
+        <div id="area3TextAndPoints"></div>
+    </center>
+    <center><button id="submitAnswerButton" style="display: none;" onclick="submitAnswer();">SUBMIT ANSWER</button></center>
     <div id="divGameFinished" style="display: none;">
         <div id="congratulationsText">
             <h1>CONGRATULATIONS! YOU</h1>
             <h1>FINISHED THE GAME!</h1>
             <label>YOUR GAME SCORE:</label><br>
             <label id="teamScore2"></label>
-        </div>
-    </div>
-    <!--<button id="startGameButton" onclick="startGame();" style="display: none;">Start Game</button>-->
-    <div id="panelMessages" style="display: none;">
-        <div id="panel" class="panel-body"></div>
-        <div>
-            <input id="message" type="text" class="form-control" aria-describedby="basic-addon1" maxlength="768">
-            <button id="send" onclick="handleMsg();">Send</button>
         </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
@@ -89,6 +87,7 @@
     <script src="js/ripples.min.js"></script>
     <script src="js/chat.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/spinner.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 </body>
 </html>
