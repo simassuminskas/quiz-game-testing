@@ -47,7 +47,7 @@ socket.on('update', (data) => {//message['newTeam']
         else
         {//data['newTeam']
             if (connected)
-            {
+            {console.log('Ya estaba conectado.');
                 teams = getTeams(data['rooms']);
                 document.getElementById('divLogin').style.display = 'none';
                 document.getElementById('teamInfo').style.display = 'block';
@@ -55,6 +55,23 @@ socket.on('update', (data) => {//message['newTeam']
             //if (connected)
             {
                 //showTeamInfo(false);
+            }
+        }
+        for (var j = 0; j < teams.length; j++)
+        {
+            if ((teams[j]['teamName'] == data['teamName']) && (data['teamName'] == teamName))
+            {
+                var leader = false;
+                for (var k = 0; k < teams[j]['users'].length; k++)
+                {
+                    if ((teams[j]['users'][k]['userName'] == userName) && 
+                        (teams[j]['users'][k]['userSurname'] == userSurname) && 
+                        (!teams[j]['users'][k]['vote']) && 
+                        (!teams[j]['users'][k]['leader']))
+                    {//Ver que no sea el lider.
+                        vote = false;
+                    }
+                }
             }
         }
         showTeamInfo();
@@ -85,28 +102,24 @@ socket.on('showSpinner', (data) => {
     }
 });
 socket.on('question', (data) => {//El problema está cuando recibe una pregunta del área 1 desde otro equipo.
-    console.log('Line 88: ' + data['roomCode'] + ', ' + finished)
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
         area = data['area'];
         teams = getTeams(data['rooms']);
-        var teamIndex = -1;
         for (var j = 0; j < teams.length; j++)
         {
             if ((teams[j]['teamName'] == data['teamName']) && (data['teamName'] == teamName))
             {
-                teamIndex = j;
                 var leader = false;
-                for (var k = 0; k < teams[teamIndex]['users'].length; k++)
+                for (var k = 0; k < teams[j]['users'].length; k++)
                 {
-                    if ((teams[teamIndex]['users'][k]['userName'] == userName) && 
-                        (teams[teamIndex]['users'][k]['userSurname'] == userSurname) && 
-                        teams[teamIndex]['users'][k]['leader'])
+                    if ((teams[j]['users'][k]['userName'] == userName) && 
+                        (teams[j]['users'][k]['userSurname'] == userSurname) && 
+                        teams[j]['users'][k]['leader'])
                     {//Ver que no sea el lider (porque ese vota después).
                         leader = true;
                     }
                 }
-                //if ((!leader) && (teamIndex != -1))
                 if ((data['teamName'] == teamName))console.log('Line 157: ' + leader + ', ' + data['teamName'] + ', ' + data['area'] + ', ' + leader);
                 {
                     document.getElementById('area3').style.display = 'none';
@@ -135,7 +148,6 @@ socket.on('question', (data) => {//El problema está cuando recibe una pregunta 
                 }
             }
         }
-        //updateUsersInfo();
     }
 });
 socket.on('voteAnswerAllTeam', (data) => {
@@ -303,88 +315,6 @@ socket.on('finishGame', (data) => {
             finished = true;
             gameFinished();
         }
-    }
-});
-socket.on('userDisconected', (data) => {
-    if (data['roomCode'] == roomCode)
-    {
-        //console.log(data);
-        var auxUsers = [];
-        for (var i = 0; i < users.length; i++)
-        {
-            if (users[i][0] != data['userName'])
-            {
-                auxUsers.push(users[i]);
-            }
-        }
-        //updateUsersInfo();
-        users = [...auxUsers];
-        if (users.length < 2)
-        {
-            //canvasDisplay = 'none';
-            //changeSize();
-            document.getElementById(panelMessages).style.display = 'none';
-            //document.getElementById(roundInfo).innerHTML = '';
-            stopTime = true;
-            document.getElementById(timeInfo).innerHTML = 'Time remaining: ' + time;
-            //document.getElementById(wordsInfo).innerHTML = '';
-            //document.getElementById('waiting').style.display = 'none';
-            //document.getElementById(drawingToolsDiv).style.display = 'none';
-            selectedUser = undefined;
-        }
-        else
-        {
-            if (data['subType'] == 'reasignedSelectedUser')
-            {
-                stopTime = true;
-                selectedUser = data['selectedUser'];
-                //updateUsersInfo();
-                if ((data['selectedUser']['name'] == userName) && (data['selectedUser']['surname'] == userSurname))
-                {
-                    words = data['words'];
-                    /*var w = document.getElementById(wordsInfo);
-                    w.style.display = 'flex';
-                    w.innerHTML = '';
-                    var html = '';
-                    if (!data['full'])
-                    {
-                        //document.getElementById('waiting').style.display = 'block';
-                    }
-                    else
-                    {
-                        //document.getElementById('waiting').style.display = 'none';
-                    }
-                    html += '<label>Select a word: </label>';
-                    for (var i = 0; i < words.length; i++)
-                    {
-                        html += '<button id="w_' + i + '" onclick="selectWord(this.id);">' + words[i] + '</button>';
-                    }
-                    w.innerHTML = html;*/
-                    document.getElementById('send').childNodes[0].nodeValue = 'Send';
-                    updateBar('mdi-content-send', 'Type here', false);
-                    document.getElementById(privateRoom).style.display = 'none';
-                }
-                else
-                {
-                    var html = '';
-                    if (!data['full'])
-                    {
-                        //document.getElementById('waiting').style.display = 'block';
-                    }
-                    else
-                    {
-                        //document.getElementById('waiting').style.display = 'none';
-                    }
-                    html += '<label>' + data['selectedUser']['userName'] + ' ' + data['selectedUser']['userSurname'] + ' is selecting a word.</label>';
-                    //document.getElementById(wordsInfo).innerHTML = html;
-                    //document.getElementById(wordsInfo).style.display = 'flex';
-                    document.getElementById('send').childNodes[0].nodeValue = 'Send';
-                    updateBar('mdi-content-send', 'Type here', false);
-                }
-                //document.getElementById(roundInfo).innerHTML = 'Round: ' + data['round'][0] + ' of ' + data['round'][1];
-            }
-        }
-        updateUsersInfo();
     }
 });
 socket.on('error', (data) => {

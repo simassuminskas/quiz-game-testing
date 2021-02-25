@@ -100,11 +100,8 @@ io.on('connection', (socket) => {
 				'roomCode' : message['roomCode'], 
 				'users' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : undefined, 'votes' : 0, 'vote' : false}], 
 				'usersIds' : [socket.id], 
-				'usersTurns' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : undefined, 'votes' : 0, 'vote' : false}], 
-				'usersUsed' : [], 
 				'private' : private, 
 				'full' : false, 
-				'round' : [1, rounds], 
         'teams' : []
 			});
       index = 0;
@@ -188,141 +185,12 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('update', message);
 	});
   socket.on('voteLeader', (data) => {//Pendiente asegurarse de que no pueda votar sin estar en ese team.
-    var message = JSON.parse(data);
-    index = game.searchRoomCode(message['roomCode'], false);
-    index2 = game.searchTeam(message['teamName'], index);
-    /*type: 'voteLeader',
-    userNameVoted: userNameVoted, 
-    userSurnameVoted: userSurnameVoted, 
-    userNameVoting: userNameVoting, 
-    userSurnameVoting: userSurnameVoting, 
-    teamName: teams[teamIndex]['teamName'], 
-    roomCode: roomCode*/
-    if (index2 != -1)
-    {
-      console.log(message['userNameVoting'], message['userSurnameVoting']);
-      for (var i = 0; i < game.rooms[index]['teams'][index2]['users'].length; i++)
-      {
-        if ((game.rooms[index]['teams'][index2]['users'][i]['userName'] == message['userNameVoting']) && 
-          (game.rooms[index]['teams'][index2]['users'][i]['userSurname'] == message['userSurnameVoting']))
-        {
-          game.rooms[index]['teams'][index2]['users'][i]['vote'] = true;
-          console.log(game.rooms[index]['teams'][index2]['users'][i]['userName'] + ' ' + game.rooms[index]['teams'][index2]['users'][i]['userSurname'] + ' ha votado.');
-        }
-        if ((game.rooms[index]['teams'][index2]['users'][i]['userName'] == message['userNameVoted']) && 
-          (game.rooms[index]['teams'][index2]['users'][i]['userSurname'] == message['userSurnameVoted']))
-        {
-          game.rooms[index]['teams'][index2]['users'][i]['votes'] += 1;
-          console.log(game.rooms[index]['teams'][index2]['users'][i]['userName'] + ' ' + game.rooms[index]['teams'][index2]['users'][i]['userSurname'] + ' tiene ' + game.rooms[index]['teams'][index2]['users'][i]['votes'] + ' votos.');
-        }
-      }
-      var votationComplete = true;
-      for (var i = 0; i < game.rooms[index]['teams'][index2]['users'].length; i++)
-      {//Ver si ya votaron todos en el team.
-        if (!game.rooms[index]['teams'][index2]['users'][i]['vote'])
-        {
-          votationComplete = false;
-          i = game.rooms[index]['teams'][index2]['users'].length;
-        }
-      }
-      if (votationComplete)
-      {//Ver si hay algún ganador.
-        console.log('Todos votaron en el equipo: ' + game.rooms[index]['teams'][index2]['teamName']);
-        var maxVotesIndex = 0;
-        for (var i = 1; i < game.rooms[index]['teams'][index2]['users'].length; i++)
-        {
-          if (game.rooms[index]['teams'][index2]['users'][i]['votes'] > game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['votes'])
-          {
-            maxVotesIndex = i;
-          }
-        }
-        for (var i = 0; i < game.rooms[index]['teams'][index2]['users'].length; i++)
-        {
-          if ((game.rooms[index]['teams'][index2]['users'][i]['votes'] == game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['votes']) && (i != maxVotesIndex))
-          {
-            maxVotesIndex = -1;
-            i = game.rooms[index]['teams'][index2]['users'].length;
-          }
-        }
-        if (maxVotesIndex != -1)
-        {//Hay un ganador.
-          console.log(game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['userName'] + ' ' + game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['userSurname'] + ' es el lider del equipo: ' + game.rooms[index]['teams'][index2]['teamName']);
-          game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['leader'] = true;
-          game.rooms[index]['teams'][index2]['full'] = true;//Pendiente ver que funcione.
-          var allUsersInTeams = true;
-          var allUsersVoted = true;
-          for (var i = 0; i < game.rooms[index]['users'].length; i++)
-          {
-            var found = false;
-            for (var j = 0; j < game.rooms[index]['teams'].length; j++)
-            {
-                for (var k = 0; k < game.rooms[index]['teams'][j]['users'].length; k++)
-                {
-                    if (!game.rooms[index]['teams'][j]['users'][k]['vote'])
-                    {
-                      allUsersVoted = false;
-                    }
-                    if ((game.rooms[index]['teams'][j]['users'][k]['userName'] == game.rooms[index]['users'][i]['userName']) || 
-                        (game.rooms[index]['teams'][j]['users'][k]['userSurname'] == game.rooms[index]['users'][i]['userSurname']))
-                    {
-                        found = true;
-                    }
-                }
-            }
-            if (!found)
-            {
-              allUsersInTeams = false;
-            }
-          }
-          if (allUsersInTeams && allUsersVoted)
-          {
-            //Hay que lanzar el dado.
-            //Pendiente ver si se puede optimizar. Buscar rolledDice.
-            for (var i = 0; i < game.rooms[index]['teams'].length; i++)
-            {
-              for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
-              {
-                game.rooms[index]['teams'][i]['users'][j]['rolledDice'] = false;
-              }
-            }
-            for (var i = 0; i < game.rooms[index]['teams'].length; i++)
-            {
-              for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
-              {
-                if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
-                {
-                  message['userName'] = game.rooms[index]['teams'][i]['users'][j]['userName'];
-                  message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
-                  message['rooms'] = game.rooms;
-                  message['status'] = 'Starting Game.';
-                  socket.emit('showSpinner', message);
-                  socket.broadcast.emit('showSpinner', message);
-                  //Es necesario detener el bucle para que tire de a uno a la vez.
-                  j = game.rooms[index]['teams'][i]['users'].length;
-                }
-              }
-            }
-            //message['rooms'] = game.rooms;
-          }
-          else
-          {
-            message['rooms'] = game.rooms;
-            socket.emit('voteLeader', message);
-            socket.broadcast.emit('voteLeader', message);
-          }
-        }
-        else
-        {
-          message['rooms'] = game.rooms;
-          socket.emit('voteLeader', message);
-          socket.broadcast.emit('voteLeader', message);
-        }
-      }
-    }
+    voteLeader(socket, data);
   });
   socket.on('spin', (data) => {
     var message = JSON.parse(data);
     var index = game.searchRoomCode(message['roomCode'], false);
+    var index2 = -1;
     if (index != -1)
     {
       for (var i = 0; i < game.rooms[index]['teams'].length; i++)
@@ -335,6 +203,7 @@ io.on('connection', (socket) => {
                 (game.rooms[index]['teams'][i]['users'][j]['userSurname'] == message['userSurname']))
             {
               game.rooms[index]['teams'][i]['users'][j]['rolledDice'] = true;
+              index2 = j;
               j = game.rooms[index]['teams'][i]['users'].length;
             }
           }
@@ -371,14 +240,19 @@ io.on('connection', (socket) => {
                 for (var k = 0; k < game.rooms[index]['teams'][i]['users'].length; k++)
                 {//Se "recicla" esa variable para usarla en la votación de respuestas en vez de la elección del líder.
                   game.rooms[index]['teams'][i]['users'][k]['vote'] = false;
+                  if (game.rooms[index]['teams'][i]['users'][k]['leader'])
+                  {
+                    game.rooms[index]['teams'][i]['users'][index2]['status'] = 'waitingAnsweringQuestionArea1';
+                  }
                 }
                 message['question'] = game.questions['area' + area][j];
                 message['rooms'] = game.rooms;
                 message['area'] = area;
                 //message['teamName'] = game.rooms[index]['teams'][i]['teamName'];
+                game.rooms[index]['teams'][i]['users'][index2]['status'] = 'answeringQuestionArea1';
                 socket.emit('question', message);
                 socket.broadcast.emit('question', message);
-                j = game.questions['area' + area].length;
+                j = game.questions['area' + area].length;//Pendiente ver si hace falta quitar esto para enviar a todos los usuario que no sean el lider.
               }
             }
             i = game.rooms[index]['teams'].length;
@@ -395,6 +269,10 @@ io.on('connection', (socket) => {
             message['rooms'] = game.rooms;
             socket.emit('question', message);
             socket.broadcast.emit('question', message);
+            for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+            {
+              game.rooms[index]['teams'][i]['users'][j]['status'] = 'answeringQuestionArea2';
+            }
             i = game.rooms[index]['teams'].length;
           }
         }
@@ -457,105 +335,7 @@ io.on('connection', (socket) => {
     }
   });
   socket.on('allUsersVotation', (data) => {
-    var message = JSON.parse(data);
-    console.log(message);
-    var index = game.searchRoomCode(message['roomCode'], false);
-    if (index != -1)
-    {
-      //game.rooms[index]['teams'][i]['sendedQuestions'].push(game.questions['area' + data['area']][j]['question']);
-      for (var i = 0; i < game.rooms[index]['teams'].length; i++)
-      {
-        if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
-        {
-          var allUsersVoted = true;
-          for (var k = 0; k < game.rooms[index]['teams'][i]['users'].length; k++)
-          {//Se "recicla" esa variable para usarla en la votación de respuestas en vez de la elección del líder.
-            if ((game.rooms[index]['teams'][i]['users'][k]['userName'] == message['userName']) && 
-                (game.rooms[index]['teams'][i]['users'][k]['userSurname'] == message['userSurname']))
-            {
-              game.rooms[index]['teams'][i]['users'][k]['vote'] = true;
-            }
-            if (game.rooms[index]['teams'][i]['users'][k]['vote'])
-            {
-              console.log(game.rooms[index]['teams'][i]['users'][k]['userName'] + ' ' + game.rooms[index]['teams'][i]['users'][k]['userSurname'] + ' eligió una respuesta.');
-            }
-            if ((!game.rooms[index]['teams'][i]['users'][k]['vote']) && (!game.rooms[index]['teams'][i]['users'][k]['leader']))
-            {
-              allUsersVoted = false;
-            }
-          }
-          /*"question" : question, 
-          "answer" : answer, 
-          "area" : area, */
-          //var index2 = -1;
-          console.log('Pregunta: ' + message['question']);
-          for (var j = 0; j < game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']].length; j++)
-          {
-            if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['question'] == message['question'])
-            {//Se encontró la pregunta.
-              //message['question']['options'] = game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['options'];//?
-              //index2 = j;
-              //if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].length)
-              //{//Esa pregunta tiene al menos respuesta registrada.
-              var found = false;
-              for (var k = 0; k < game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].length; k++)
-              {
-                if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'][k]['answer'] == message['answer'])
-                {//Alguien ya eligió esa repuesta préviamente
-                  game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'][k]['votes'] += 1;
-                  found = true;
-                }
-              }
-              if (!found)
-              {//Nadie eligió esa repuesta préviamente.
-                console.log('No estaba: ' + message['answer']);
-                game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].push({
-                  'answer' : message['answer'], 
-                  'votes' : 1
-                });
-              }
-              else
-              {
-                console.log('Ya estaba: ' + message['answer']);
-                /*game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].push({
-                  'answer' : message['answer'], 
-                  'votes' : 1
-                });*/
-              }
-            }
-          }
-          /*game.rooms[index]['teams'][i]['sendedQuestions']['area' + area].push({
-            'question' : game.questions['area' + area][j]['question'], 
-            'finalAnswer' : '', 
-            'otherAnswers' : []
-          });*/
-          message['rooms'] = game.rooms;
-          //message['area'] = data['area'];
-          if (allUsersVoted)
-          {//Tiene que decidir el líder.//Falta pasarle las opciones.
-            //message['question'] = game.questions['area' + area][j];
-            console.log('Line 537: ' + message['question'] + ', ' + message['area']);
-            for (var j = 0; j < game.questions['area' + message['area']].length; j++)
-            {
-              if (game.questions['area' + message['area']][j]['question'] == message['question'])
-              {console.log('Line 541');
-                message['question'] = game.questions['area' + message['area']][j];
-              }
-            }
-            socket.emit('leaderVotation', message);
-            socket.broadcast.emit('leaderVotation', message);
-          }
-          else
-          {//Para informar al admin sobre el estado de la votación.
-            socket.emit('allUsersVotationAdmin', message);
-            socket.broadcast.emit('allUsersVotationAdmin', message);
-          }
-        }
-      }
-      //message['voteAnswerAllTeam'] = game.questions['area' + data['area']][j];
-      //socket.emit('question', message);
-      //socket.broadcast.emit('voteAnswerAllTeam', message);
-    }
+    allUsersVotation(socket, data);
   });
   socket.on('leaderVotation', (data) => {
     var message = JSON.parse(data);
@@ -716,164 +496,461 @@ io.on('connection', (socket) => {
     }
   });
   socket.on('questionArea2', (data) => {
-    var message = JSON.parse(data);
-    var index = game.searchRoomCode(message['roomCode'], false);
-    if (index != -1)
+    questionArea2(socket, data);
+  });
+  socket.on('disconnect', () => {
+    console.log(socket.id);
+    var userInfo = game.userDisconected(socket.id);
+    console.log(userInfo);
+    if ((userInfo[0] != null) && (userInfo[1] != null))
     {
-      //game.rooms[index]['teams'][i]['sendedQuestions'].push(game.questions['area' + data['area']][j]['question']);
-      for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+      var message = {
+        'type' : 'userDisconected', 
+        'roomCode' : userInfo[0], 
+        'userName' : userInfo[1]['userName'], 
+        'userSurname' : userInfo[1]['userSurname']
+      };console.log('Se desconectó: ' + message['userName'] + ' ' + message['userSurname']);
+      index = game.searchRoomCode(userInfo[0], false);
+      if (index != -1)
       {
-        if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
+        var type;
+        for (var i = 0; i < game.rooms[index]['users'].length; i++)
         {
-          for (var j = 0; j < game.questions['area' + message['area']].length; j++)
-          {//console.log(game.questions['area' + message['area']][j]['question'], message['question']);
-            if (game.questions['area' + message['area']][j]['question'] == message['question'])
-            {//console.log('Line 541.');
-              for (var k = 0; k < game.questions['area' + message['area']][j]['options'].length; k++)
-              {//console.log(game.questions['area' + message['area']][j]['options'][k]['option'], message['answer']);
-                if (game.questions['area' + message['area']][j]['options'][k]['option'] == message['answer'])
-                {//Pendiente ver por qué no llega a este punto.
-                  game.rooms[index]['teams'][i]['scoreArea' + message['area']] += game.questions['area' + message['area']][j]['options'][k]['score'];
-                  k = game.questions['area' + message['area']][j]['options'].length;
-                }
-              }
-              j = game.questions['area' + message['area']].length;
-            }
+          if ((game.rooms[index]['users'][i]['userName'] == message['userName']) && 
+            (game.rooms[index]['users'][i]['userSurname'] == message['userSurname']))
+          {//Se encontró el user en un room.
+            game.rooms[index]['users'][i] = null;
+            game.rooms[index]['usersIds'][i] = null;
           }
-          message['rooms'] = game.rooms;
-          //Hay que lanzar el dado.
-          //Reiniciar si lanzaron todos.
-          var allUsersRolled = true;
+        }
+        var index2 = -1;
+        for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+        {
           for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
           {
-            if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
-            {
-              allUsersRolled = false;
-              j = game.rooms[index]['teams'][i]['users'].length;
+            if ((game.rooms[index]['teams'][i]['users'][j]['userName'] == message['userName']) && 
+                (game.rooms[index]['teams'][i]['users'][j]['userSurname'] == message['userSurname']))
+            {//Se encontró el user en un team.
+              if (game.rooms[index]['teams'][i]['users'][j]['leader'])
+              {console.log('Line 535');//Se desconectó el lider del team. Elejir otro lider.
+                if ((game.rooms[index]['teams'][i]['users'][j]['status'] == 'waitingAnsweringQuestionArea1') || 
+                  (game.rooms[index]['teams'][i]['users'][j]['status'] == 'answeringQuestionArea2'))
+                {console.log('status == ' + game.rooms[index]['teams'][i]['users'][j]['status']);//Está esperando que los otros respondan una pregunta del área 1 o respondiendo una pregunta del área 2.
+                  //Se tiene que habilitar la elección de otro lider.
+                  message['teamName'] = game.rooms[index]['teams'][i]['teamName'];
+                  console.log('Line 541: ' + message['teamName']);
+                  message['userName'] = '';
+                  message['userSurname'] = '';
+                  type = 'update';//Ver qué hacer con la pregunta que debían responder y que pasará luego de volver a elejir al lider.
+                }
+                if (game.rooms[index]['teams'][i]['status'] == 'leaderVotation')
+                {//El lider desconectado estaba dando la respuesta final a una pregunta de área 1.
+                  message['teamName'] = game.rooms[index]['teams'][i]['teamName'];console.log('Line 548: ' + message['teamName']);
+                  message['userName'] = '';
+                  message['userSurname'] = '';
+                  type = 'update';//Ver qué hacer con la pregunta que debían responder y que pasará luego de volver a elejir al lider.
+                }
+              }
+              else
+              {//Se desconectó un usuario común del team.
+                if (game.rooms[index]['teams'][i]['users'][j]['status'] == 'answeringQuestionArea1')
+                {//Estába por responder una pregunta del área 1.
+                  message['teamName'] = game.rooms[index]['teams'][i]['teamName'];
+                  message['userName'] = '';
+                  message['userSurname'] = '';
+                  type = 'allUsersVotation';
+                }
+                if (game.rooms[index]['teams'][i]['users'][j]['status'] == 'answeringQuestionArea2')
+                {//Estába por responder una pregunta del área 2.
+                  message['teamName'] = game.rooms[index]['teams'][i]['teamName'];
+                  message['question'] = '';
+                  message['answer'] = '';
+                  type = 'questionArea2';
+                }
+                if (game.rooms[index]['teams'][i]['users'][j]['status'] == 'voteLeader')
+                {//Pendiente reiniciar la votación desde aquí o desde emit('voteLeader'
+                  message['teamName'] = game.rooms[index]['teams'][i]['teamName'];
+                  message['userName'] = '';
+                  message['userSurname'] = '';
+                  type = 'update';
+                }
+              }
+              game.rooms[index]['teams'][i]['users'][j] = null;console.log('Line 578');
+              index2 = i;
             }
           }
-          if (allUsersRolled)
+        }
+        for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+        {//Achicar array para que los desconectados no aparezcan como que no votaron.
+          if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
+          {console.log('Line 586.');
+            var aux = [];
+            for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+            {
+              if (game.rooms[index]['teams'][i]['users'][j] != null)
+              {
+                aux.push(game.rooms[index]['teams'][i]['users'][j]);
+              }
+              else
+              {
+                console.log('Line 596.');
+              }
+            }
+            game.rooms[index]['teams'][i]['users'] = [...aux];
+          }
+        }
+        for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+        {//Achicar array para que los desconectados no aparezcan como que no votaron.
+          if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
+          {console.log('Line 600.');
+            for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+            {
+              if (game.rooms[index]['teams'][i]['users'][j] == null)
+              {
+                console.log('null...');
+              }
+            }
+          }
+        }
+        switch (type)
+        {
+          case 'allUsersVotation':
+            allUsersVotation(socket, JSON.stringify(message));
+            break;
+          case 'questionArea2':
+            questionArea2(socket, JSON.stringify(message));
+            break;
+          case 'update':
+            message['rooms'] = game.rooms;console.log('Line 624.');//area 1, llega aquí (aparéntemente sin usuario en null)
+            socket.emit('update', message);
+            socket.broadcast.emit('update', message);
+            break;
+        }
+      }
+    }
+	});
+});
+function questionArea2(socket, data)
+{
+  var message = JSON.parse(data);
+  var index = game.searchRoomCode(message['roomCode'], false);
+  if (index != -1)
+  {
+    //game.rooms[index]['teams'][i]['sendedQuestions'].push(game.questions['area' + data['area']][j]['question']);
+    for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+    {
+      if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
+      {
+        for (var j = 0; j < game.questions['area' + message['area']].length; j++)
+        {//console.log(game.questions['area' + message['area']][j]['question'], message['question']);
+          if (game.questions['area' + message['area']][j]['question'] == message['question'])
+          {//console.log('Line 541.');
+            for (var k = 0; k < game.questions['area' + message['area']][j]['options'].length; k++)
+            {//console.log(game.questions['area' + message['area']][j]['options'][k]['option'], message['answer']);
+              if (game.questions['area' + message['area']][j]['options'][k]['option'] == message['answer'])
+              {//Pendiente ver por qué no llega a este punto.
+                game.rooms[index]['teams'][i]['scoreArea' + message['area']] += game.questions['area' + message['area']][j]['options'][k]['score'];
+                k = game.questions['area' + message['area']][j]['options'].length;
+              }
+            }
+            j = game.questions['area' + message['area']].length;
+          }
+        }
+        message['rooms'] = game.rooms;
+        //Hay que lanzar el dado.
+        //Reiniciar si lanzaron todos.
+        var allUsersRolled = true;
+        for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+        {
+          if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
+          {
+            allUsersRolled = false;
+            j = game.rooms[index]['teams'][i]['users'].length;
+          }
+        }
+        if (allUsersRolled)
+        {
+          for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+          {
+            game.rooms[index]['teams'][i]['users'][j]['rolledDice'] = false;
+          }
+        }
+        for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+        {
+          if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
+          {
+            message['userName'] = game.rooms[index]['teams'][i]['users'][j]['userName'];
+            message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
+            message['rooms'] = game.rooms;
+            socket.emit('showSpinner', message);
+            socket.broadcast.emit('showSpinner', message);
+            //Es necesario detener el bucle para que tire de a uno a la vez.
+            j = game.rooms[index]['teams'][i]['users'].length;
+          }
+        }
+        //socket.emit('resultArea2', message);
+        //socket.broadcast.emit('resultArea2', message);
+      }
+    }
+  }
+}
+function allUsersVotation(socket, data)
+{
+  var message = JSON.parse(data);
+  console.log(message);
+  var index = game.searchRoomCode(message['roomCode'], false);
+  if (index != -1)
+  {
+    //game.rooms[index]['teams'][i]['sendedQuestions'].push(game.questions['area' + data['area']][j]['question']);
+    for (var i = 0; i < game.rooms[index]['teams'].length; i++)
+    {
+      if (game.rooms[index]['teams'][i]['teamName'] == message['teamName'])
+      {
+        var allUsersVoted = true;
+        for (var k = 0; k < game.rooms[index]['teams'][i]['users'].length; k++)
+        {//Se "recicla" esa variable para usarla en la votación de respuestas en vez de la elección del líder.
+          if ((game.rooms[index]['teams'][i]['users'][k]['userName'] == message['userName']) && 
+              (game.rooms[index]['teams'][i]['users'][k]['userSurname'] == message['userSurname']))
+          {
+            game.rooms[index]['teams'][i]['users'][k]['vote'] = true;
+          }
+          if (game.rooms[index]['teams'][i]['users'][k]['vote'])
+          {
+            console.log(game.rooms[index]['teams'][i]['users'][k]['userName'] + ' ' + game.rooms[index]['teams'][i]['users'][k]['userSurname'] + ' eligió una respuesta.');
+          }
+          if ((!game.rooms[index]['teams'][i]['users'][k]['vote']) && (!game.rooms[index]['teams'][i]['users'][k]['leader']))
+          {
+            allUsersVoted = false;
+          }
+        }
+        /*"question" : question, 
+        "answer" : answer, 
+        "area" : area, */
+        //var index2 = -1;
+        console.log('Pregunta: ' + message['question']);
+        for (var j = 0; j < game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']].length; j++)
+        {
+          if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['question'] == message['question'])
+          {//Se encontró la pregunta.
+            //message['question']['options'] = game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['options'];//?
+            //index2 = j;
+            //if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].length)
+            //{//Esa pregunta tiene al menos respuesta registrada.
+            var found = false;
+            for (var k = 0; k < game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].length; k++)
+            {
+              if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'][k]['answer'] == message['answer'])
+              {//Alguien ya eligió esa repuesta préviamente
+                game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'][k]['votes'] += 1;
+                found = true;
+              }
+            }
+            if (!found)
+            {//Nadie eligió esa repuesta préviamente.
+              console.log('No estaba: ' + message['answer']);
+              game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].push({
+                'answer' : message['answer'], 
+                'votes' : 1
+              });
+            }
+            else
+            {
+              console.log('Ya estaba: ' + message['answer']);
+              /*game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].push({
+                'answer' : message['answer'], 
+                'votes' : 1
+              });*/
+            }
+          }
+        }
+        /*game.rooms[index]['teams'][i]['sendedQuestions']['area' + area].push({
+          'question' : game.questions['area' + area][j]['question'], 
+          'finalAnswer' : '', 
+          'otherAnswers' : []
+        });*/
+        message['rooms'] = game.rooms;
+        //message['area'] = data['area'];
+        if (allUsersVoted)
+        {//Tiene que decidir el líder.//Falta pasarle las opciones.
+          //message['question'] = game.questions['area' + area][j];
+          console.log('Line 537: ' + message['question'] + ', ' + message['area']);
+          for (var j = 0; j < game.questions['area' + message['area']].length; j++)
+          {
+            if (game.questions['area' + message['area']][j]['question'] == message['question'])
+            {console.log('Line 541');
+              message['question'] = game.questions['area' + message['area']][j];
+            }
+          }
+          socket.emit('leaderVotation', message);
+          socket.broadcast.emit('leaderVotation', message);
+        }
+        else
+        {//Para informar al admin sobre el estado de la votación.
+          socket.emit('allUsersVotationAdmin', message);
+          socket.broadcast.emit('allUsersVotationAdmin', message);
+        }
+      }
+    }
+    //message['voteAnswerAllTeam'] = game.questions['area' + data['area']][j];
+    //socket.emit('question', message);
+    //socket.broadcast.emit('voteAnswerAllTeam', message);
+  }
+}
+function voteLeader(socket, data)
+{
+  var message = JSON.parse(data);
+  index = game.searchRoomCode(message['roomCode'], false);
+  index2 = game.searchTeam(message['teamName'], index);
+  if (index2 != -1)
+  {
+    console.log(message['userNameVoting'], message['userSurnameVoting']);
+    for (var i = 0; i < game.rooms[index]['teams'][index2]['users'].length; i++)
+    {
+      if ((game.rooms[index]['teams'][index2]['users'][i]['userName'] == message['userNameVoting']) && 
+        (game.rooms[index]['teams'][index2]['users'][i]['userSurname'] == message['userSurnameVoting']))
+      {
+        game.rooms[index]['teams'][index2]['users'][i]['vote'] = true;
+        console.log(game.rooms[index]['teams'][index2]['users'][i]['userName'] + ' ' + game.rooms[index]['teams'][index2]['users'][i]['userSurname'] + ' ha votado.');
+      }
+      if ((game.rooms[index]['teams'][index2]['users'][i]['userName'] == message['userNameVoted']) && 
+        (game.rooms[index]['teams'][index2]['users'][i]['userSurname'] == message['userSurnameVoted']))
+      {
+        game.rooms[index]['teams'][index2]['users'][i]['votes'] += 1;
+        console.log(game.rooms[index]['teams'][index2]['users'][i]['userName'] + ' ' + game.rooms[index]['teams'][index2]['users'][i]['userSurname'] + ' tiene ' + game.rooms[index]['teams'][index2]['users'][i]['votes'] + ' votos.');
+      }
+    }
+    var votationComplete = true;
+    for (var i = 0; i < game.rooms[index]['teams'][index2]['users'].length; i++)
+    {//Ver si ya votaron todos en el team.
+      if (!game.rooms[index]['teams'][index2]['users'][i]['vote'])
+      {
+        votationComplete = false;
+        i = game.rooms[index]['teams'][index2]['users'].length;
+      }
+    }
+    if (votationComplete)
+    {//Ver si hay algún ganador.
+      console.log('Todos votaron en el equipo: ' + game.rooms[index]['teams'][index2]['teamName']);
+      var maxVotesIndex = 0;
+      for (var i = 1; i < game.rooms[index]['teams'][index2]['users'].length; i++)
+      {
+        if (game.rooms[index]['teams'][index2]['users'][i]['votes'] > game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['votes'])
+        {
+          maxVotesIndex = i;
+        }
+      }
+      for (var i = 0; i < game.rooms[index]['teams'][index2]['users'].length; i++)
+      {
+        if ((game.rooms[index]['teams'][index2]['users'][i]['votes'] == game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['votes']) && (i != maxVotesIndex))
+        {
+          maxVotesIndex = -1;
+          i = game.rooms[index]['teams'][index2]['users'].length;
+        }
+      }
+      if (maxVotesIndex != -1)
+      {//Hay un ganador.
+        console.log(game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['userName'] + ' ' + game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['userSurname'] + ' es el lider del equipo: ' + game.rooms[index]['teams'][index2]['teamName']);
+        game.rooms[index]['teams'][index2]['users'][maxVotesIndex]['leader'] = true;
+        game.rooms[index]['teams'][index2]['full'] = true;//Pendiente ver que funcione.
+        var allUsersInTeams = true;
+        var allUsersVoted = true;
+        for (var i = 0; i < game.rooms[index]['users'].length; i++)
+        {
+          var found = false;
+          for (var j = 0; j < game.rooms[index]['teams'].length; j++)
+          {
+              for (var k = 0; k < game.rooms[index]['teams'][j]['users'].length; k++)
+              {
+                  if (!game.rooms[index]['teams'][j]['users'][k]['vote'])
+                  {
+                    allUsersVoted = false;
+                  }
+                  if ((game.rooms[index]['teams'][j]['users'][k]['userName'] == game.rooms[index]['users'][i]['userName']) || 
+                      (game.rooms[index]['teams'][j]['users'][k]['userSurname'] == game.rooms[index]['users'][i]['userSurname']))
+                  {
+                      found = true;
+                  }
+              }
+          }
+          if (!found)
+          {
+            allUsersInTeams = false;
+          }
+        }
+        if (allUsersInTeams && allUsersVoted)
+        {
+          //Hay que lanzar el dado.
+          //Pendiente ver si se puede optimizar. Buscar rolledDice.
+          var teamsWithPreviousLeaderDisconnected = [];
+          for (var i = 0; i < game.rooms[index]['teams'].length; i++)
           {
             for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
             {
               game.rooms[index]['teams'][i]['users'][j]['rolledDice'] = false;
+              if ((game.rooms[index]['teams'][i]['users'][j]['status'] == 'answeringQuestionArea1') ||
+                (game.rooms[index]['teams'][i]['users'][j]['status'] == 'answeringQuestionArea2') || 
+                (game.rooms[index]['teams'][i]['status'] == 'leaderVotation'))//Pendiente ver si está bien.
+              {//Esto es para evitar que se reinicie la pregunta actual luego de elejir a otro lider porque el anterior se desconectó.
+                teamsWithPreviousLeaderDisconnected.push(i);
+              }
             }
           }
-          for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
+          for (var i = 0; i < game.rooms[index]['teams'].length; i++)
           {
-            if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
+            for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)
             {
-              message['userName'] = game.rooms[index]['teams'][i]['users'][j]['userName'];
-              message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
-              message['rooms'] = game.rooms;
-              socket.emit('showSpinner', message);
-              socket.broadcast.emit('showSpinner', message);
-              //Es necesario detener el bucle para que tire de a uno a la vez.
-              j = game.rooms[index]['teams'][i]['users'].length;
+              if (!game.rooms[index]['teams'][i]['users'][j]['rolledDice'])
+              {//Pendiente evitar que se reinicien las preguntas luego de elejir a otro lider porque el anterior se desconectó.
+                message['userName'] = game.rooms[index]['teams'][i]['users'][j]['userName'];
+                message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
+                message['rooms'] = game.rooms;
+                message['status'] = 'Starting Game.';
+                if (teamsWithPreviousLeaderDisconnected.indexOf(i) == -1)
+                {
+                  socket.emit('showSpinner', message);
+                  socket.broadcast.emit('showSpinner', message);
+                }//Sino significa que se tiene que continuar con la pregunta pero con otro líder.
+                //Pendiente ver que el nuevo lider no reciba esa pregunta hasta que le corresponda.
+                //Es necesario detener el bucle para que tire de a uno a la vez.
+                j = game.rooms[index]['teams'][i]['users'].length;
+              }
             }
           }
-          //socket.emit('resultArea2', message);
-          //socket.broadcast.emit('resultArea2', message);
+          //message['rooms'] = game.rooms;
         }
-      }
-    }
-  });
-  socket.on('disconnect', () => {
-    /*console.log(socket.id);
-		userInfo = game.userDisconected(socket.id);
-    var message = {
-      'type' : 'userDisconected', 
-      'roomCode' : userInfo[0], 
-      'userName' : userInfo[1]['userName'], 
-      'userSurname' : userInfo[1]['userSurname']
-    }
-    index = game.searchRoomCode(userInfo[0], false);
-    if (index != -1)
-    {
-      if ((game.rooms[index]['selectedUser'] == undefined) || (game.rooms[index]['selectedUser'] == '') || (game.rooms[index]['selectedUser'] == userInfo[1]))
-      {
-        game.rooms[index]['selectedUser'] = '';
-        game.rooms[index]['word'] = null;
-        if (game.rooms[index]['usersTurns'].length)
-            {
-              if (game.rooms[index]['users'].length >= 2)
-              {//Cuando se va el selectedUser pero quedan otros.
-                game.rooms[index]['selectedUser'] = game.rooms[index]['usersTurns'][Math.floor(Math.random() * Math.floor(game.rooms[index]['usersTurns'].length))];
-                message['selectedUser'] = game.rooms[index]['selectedUser'];
-                game.rooms[index]['usersUsed'].push(game.rooms[index]['selectedUser']);
-                var aux = [];
-                message['words'] = aux;
-                message['round'] = [...game.rooms[index]['round']];
-                message['full'] = game.rooms[index]['full'];
-                message['subType'] = 'reasignedSelectedUser';
-              }
-            }
-            else
-            {//No hay turnos disponibles.
-              if (game.rooms[index]['users'].length > 1)
-              {//Debería pasar a la siguiente ronda o terminar el juego.
-                if (game.rooms[index]['round'][0] < game.rooms[index]['round'][1])
-                {
-                  game.rooms[index]['round'][0] += 1;
-                  message['round'] = [...game.rooms[index]['round']];
-                  message['word'] = game.rooms[index]['word'];
-                  message['full'] = game.rooms[index]['full'];
-                  message['subType'] = 'nextTurn';
-                  message['round'] = [...game.rooms[index]['round']];
-                  game.rooms[index]['usersUsed'] = [];
-                  game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
-                }
-                else
-                {
-                  message['word'] = game.rooms[index]['word'];
-                  message['subType'] = 'gameOver';
-                }
-              }
-              else
-              {//Volver al estado inicial.
-                game.rooms[index]['round'] = [1, rounds];
-              }
-            }
+        /*else
+        {
+          message['rooms'] = game.rooms;
+          socket.emit('voteLeader', message);
+          socket.broadcast.emit('voteLeader', message);
+        }*/
       }
       else
       {
-        if (!(game.rooms[index]['users'].length > 1))
-        {
-          if ((game.rooms[index]['word'] != undefined) && (game.rooms[index]['word'] != ''))
-          {//El que queda gana por abandono si es que en algún momento se seleccionó una palabra.
-            message['word'] = game.rooms[index]['word'];
-            message['subType'] = 'gameOver';
-          }
-          else
-          {//Quedó sólamente el selectedUser.
-            game.rooms[index]['selectedUser'] = '';
-            game.rooms[index]['full'] = false;
+        if (allUsersVoted)
+        {//Pendiente reiniciar votación. Puede ser necesario cuando se desconecta alguno durante la elección del lider.
+          for (var j = 0; j < game.rooms[index]['teams'].length; j++)
+          {
+            if (game.rooms[index]['teams'][j]['teamName'] == message['teamName'])
+            {
+              for (var k = 0; k < game.rooms[index]['teams'][j]['users'].length; k++)
+              {
+                  game.rooms[index]['teams'][j]['users'][k]['vote'] = false;
+              }
+              message['rooms'] = game.rooms;
+              for (var k = 0; k < game.rooms[index]['teams'][j]['users'].length; k++)
+              {
+                message['userName'] = game.rooms[index]['teams'][j]['users'][k]['userName'];
+                message['userSurname'] = game.rooms[index]['teams'][j]['users'][k]['userSurname'];
+                socket.emit('update', message);//update a todos los usuarios del team.
+                socket.broadcast.emit('update', message);
+              }
+            }
           }
         }
-      }
-      game.rooms[index]['usersTurns'] = [...game.usersInRoom(game.rooms[index]['roomCode'], game.rooms[index]['usersUsed'])];
-      message['full'] = game.rooms[index]['full'];
-      //Si es la primer ronda, 19 users, full, word null, usersUsed == []
-      if ((game.rooms[index]['round'][0] == 1) && game.rooms[index]['full'] && (game.rooms[index]['users'].length < maxUsers)
-         && ((game.rooms[index]['word'] == null) || (game.rooms[index]['word'] == undefined))
-         && (game.rooms[index]['usersUsed'].length <= 1)
-      )
-      {
-        game.rooms[index]['full'] = false;
-      }
-      var index;
-      for (var i = 0; i < game.rooms.length; i++)
-      {
-        if (message['roomCode'] == game.rooms[i]['roomCode'])
-        {
-          index = i;
-        }
-      }
-      if ((index != undefined) && (!game.rooms[index]['usersIds'].length))
-      {
-        game.rooms[index]['full'] = true;
+        /*socket.emit('voteLeader', message);
+        socket.broadcast.emit('voteLeader', message);*/
       }
     }
-    socket.broadcast.emit('userDisconected', message);*/
-	});
-});
+  }
+}
