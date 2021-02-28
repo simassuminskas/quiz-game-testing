@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="./css/styles.css">
 </head>
 <body id="body" style="background-image: url('./img/1.png');background-size: cover;" onload="document.getElementById('rulesLink').href = location + 'rules/'">
+    <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <br>
     <a href="" id="rulesLink" target="_blank" style="position: right;">RULES</a>
     <div id="divLogin" style="display: block;">
@@ -38,13 +39,13 @@
         <label id="statusInfo"></label>
         <label id="userInfo"></label>
     </center>
-    <center><canvas id="spinner" width="500" height="500" style="display: none;"></canvas></center>
+    <center><div id="spinner" style="display: none;"></div></center>
     <center id="area1" style="display: none;">
         <h4 id="lblDilemmas">DILEMMAS</h4>
         <table id="area1Table" style="width: 80%; text-align: center;" rules="cols">
             <tr>
-                <td>QUESTION</td>
-                <td>ANSWERS</td>
+                <td id="area1LblQuestion">QUESTION</td>
+                <td id="area1LblAnswers">ANSWERS</td>
             </tr>
             <tr>
                 <td><br><div id="area1QuestionsDiv"></div></td>
@@ -58,8 +59,8 @@
         <h4 id="lblKnowledge">KNOWLEDGE ABOUT US</h4>
         <table style="width: 80%; text-align: center;" rules="cols">
             <tr>
-                <td>QUESTION</td>
-                <td>ANSWERS</td>
+                <td id="area2LblQuestion">QUESTION</td>
+                <td id="area2LblAnswers">ANSWERS</td>
             </tr>
             <tr>
                 <td><br><div id="area2QuestionsDiv">...</div></td>

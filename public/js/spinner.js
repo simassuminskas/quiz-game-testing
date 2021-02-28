@@ -1,151 +1,150 @@
-var options = ["DILEMMAS", "KNOWLEDGE ABOUT US", "RISKS AND OPPORTUNITIES"];
-var fontSizes = [50, 25, 22];
+var padding = {top:20, right:40, bottom:0, left:0},
+    w = 500 - padding.left - padding.right,
+    h = 500 - padding.top  - padding.bottom,
+    r = Math.min(w, h)/2,
+    rotation = 0,
+    oldrotation = 0,
+    picked = 100000,
+    oldpick = [],
+    color = d3.scale.category20();//category20c()
+    //randomNumbers = getRandomNumbers();
+    //http://osric.com/bingo-card-generator/?title=HTML+and+CSS+BINGO!&words=padding%2Cfont-family%2Ccolor%2Cfont-weight%2Cfont-size%2Cbackground-color%2Cnesting%2Cbottom%2Csans-serif%2Cperiod%2Cpound+sign%2C%EF%B9%A4body%EF%B9%A5%2C%EF%B9%A4ul%EF%B9%A5%2C%EF%B9%A4h1%EF%B9%A5%2Cmargin%2C%3C++%3E%2C{+}%2C%EF%B9%A4p%EF%B9%A5%2C%EF%B9%A4!DOCTYPE+html%EF%B9%A5%2C%EF%B9%A4head%EF%B9%A5%2Ccolon%2C%EF%B9%A4style%EF%B9%A5%2C.html%2CHTML%2CCSS%2CJavaScript%2Cborder&freespace=true&freespaceValue=Web+Design+Master&freespaceRandom=false&width=5&height=5&number=35#results
+var data = [
+    {"label":"DILEMMAS",  "value":1}, 
+    {"label":"KNOWLEDGE ABOUT US",  "value":2}, 
+    {"label":"RISKS & OPPORTUNITIES",  "value":3}, 
+    {"label":"DILEMMAS",  "value":1}, 
+    {"label":"KNOWLEDGE ABOUT US",  "value":2}, 
+    {"label":"RISKS & OPPORTUNITIES",  "value":3}, 
+    {"label":"DILEMMAS",  "value":1}, 
+    {"label":"KNOWLEDGE ABOUT US",  "value":2}, 
+    {"label":"RISKS & OPPORTUNITIES",  "value":3}, 
+    {"label":"DILEMMAS",  "value":1}, 
+    {"label":"KNOWLEDGE ABOUT US",  "value":2}, 
+    {"label":"RISKS & OPPORTUNITIES",  "value":3}
+];
+var svg = d3.select('#spinner')
+    .append("svg")
+    .data([data])
+    .attr("width",  w + padding.left + padding.right)
+    .attr("height", h + padding.top + padding.bottom);
+var container = svg.append("g")
+    .attr("class", "chartholder")
+    .attr("transform", "translate(" + (w/2 + padding.left) + "," + (h/2 + padding.top) + ")");
+var vis = container
+    .append("g");
 
-// Initialize Variables
-var inicioAngulo = 0;
-var tiemoutSpin = null;
-var optRuleta;
-var SpinArcStart = 10;
-var SpinTime = 0;
-var SpinTimeTotal = 0;
-var arc = Math.PI / (options.length / 2);
+var pie = d3.layout.pie().sort(null).value(function(d){return 1;});
+// declare an arc generator function
+var arc = d3.svg.arc().outerRadius(r);
+// select paths, use arc generator to draw
+var arcs = vis.selectAll("g.slice")
+    .data(pie)
+    .enter()
+    .append("g")
+    .attr("class", "slice");
 
-// Evento de girar del index principal.
-document.getElementById("spinner").addEventListener("click", spin);
-
-function byte2Hex(n) {
-  var nybHexString = "0123456789ABCDEF";
-  return String(nybHexString.substr((n >> 4) & 0x0F,1)) + nybHexString.substr(n & 0x0F,1);
-}
-
-// Función para RGB.
-function RGB2Color(r,g,b) {
-    return '#' + byte2Hex(r) + byte2Hex(g) + byte2Hex(b);
-}
-
-// Obtenemos los colores, determinando el RGB.
-function getColor2RGB(item, maxitem) {
-  var fase = 0;
-  var centrar = 128;
-  var width = 127;
-  var frecuencia = Math.PI*2/maxitem;
-// R G B.
-  red   = Math.sin(frecuencia*item+2+fase) * width + centrar;
-  green = Math.sin(frecuencia*item+0+fase) * width + centrar;
-  blue  = Math.sin(frecuencia*item+4+fase) * width + centrar;
-  return RGB2Color(red,green,blue);
-}
-function drawSpin() {
-  // Obtenemos el canvas desde el Id Canvas.
-  var canvas = document.getElementById("spinner");
-  if (canvas.getContext)
-  {
-    var outsideRadius = 200;
-    var textRadius = 100;
-    var insideRadius = 0;//Esto indica la distancia de los colores con el centro.
-    optRuleta = canvas.getContext("2d");
-    optRuleta.clearRect(0,0,500,500);
-    optRuleta.strokeStyle = "white";
-    optRuleta.lineWidth = 2;
-    for(var i = 0; i < options.length; i++)
-    {
-      optRuleta.font = fontSizes[i] + 'px Verdana, Arial';
-      //optRuleta.font = '35px Verdana, Arial';
-      var angle = inicioAngulo + i * arc;
-      optRuleta.fillStyle = getColor2RGB(i, options.length);
-      optRuleta.beginPath();
-      optRuleta.arc(250, 250, outsideRadius, angle, angle + arc, false);
-      optRuleta.arc(250, 250, insideRadius, angle + arc, angle, true);
-      optRuleta.stroke();
-      optRuleta.fill();
-      optRuleta.save();
-      optRuleta.shadowOffsetX = -1;
-      optRuleta.shadowOffsetY = -1;
-      optRuleta.shadowBlur = 0;
-      optRuleta.shadowColor = "rgb(220,110,220)";
-      optRuleta.fillStyle = "black";
-      optRuleta.translate(250 + Math.cos(angle + arc / 2) * textRadius,
-                    250 + Math.sin(angle + arc / 2) * textRadius);
-      optRuleta.rotate(angle + arc / 2 + Math.PI / 2);
-      var text = options[i];
-      optRuleta.fillText(text, - optRuleta.measureText(text).width / 2, 0);
-      optRuleta.restore();
+arcs.append("path")
+    .attr("fill", function(d, i){ return color(i); })
+    .attr("d", function (d) { return arc(d); });
+// add the text
+arcs.append("text").attr("transform", function(d){
+    d.innerRadius = 0;
+    d.outerRadius = r;
+    d.angle = (d.startAngle + d.endAngle)/2;
+    return "rotate(" + (d.angle * 180 / Math.PI - 90) + ")translate(" + (d.outerRadius -10) +")";
+})
+.attr("text-anchor", "end")
+.text( function(d, i) {
+    return data[i].label;
+});
+//container.on("click", spin);
+function spin(d){
+    container.on("click", null);
+    //all slices have been seen, all done
+    console.log("OldPick: " + oldpick.length, "Data length: " + data.length);
+    if(oldpick.length == data.length){
+        console.log("done");
+        container.on("click", null);
+        return;
     }
-    // Flecha, color y "movimiento".
-    optRuleta.fillStyle = "red";
-    optRuleta.beginPath();
-    optRuleta.moveTo(250 - 4, 250 - (outsideRadius + 5));
-    optRuleta.lineTo(250 + 4, 250 - (outsideRadius + 5));
-    optRuleta.lineTo(250 + 4, 250 - (outsideRadius - 5));
-    optRuleta.lineTo(250 + 9, 250 - (outsideRadius - 5));
-    optRuleta.lineTo(250 + 0, 250 - (outsideRadius - 13));
-    optRuleta.lineTo(250 - 9, 250 - (outsideRadius - 5));
-    optRuleta.lineTo(250 - 4, 250 - (outsideRadius - 5));
-    optRuleta.lineTo(250 - 4, 250 - (outsideRadius + 5));
-    optRuleta.fill();
-  }
+    var  ps       = 360/data.length,
+         pieslice = Math.round(1440/data.length),
+         rng      = Math.floor((Math.random() * 1440) + 360);
+    rotation = (Math.round(rng / ps) * ps);
+    picked = Math.round(data.length - (rotation % 360)/ps);
+    picked = picked >= data.length ? (picked % data.length) : picked;
+    rotation += 90 - Math.round(ps/2);
+    vis.transition()
+        .duration(3000)
+        .attrTween("transform", rotTween)
+        .each("end", function(){
+            //mark question as seen
+            d3.select(".slice:nth-child(" + (picked + 1) + ") path");
+                //.attr("fill", "#111");
+            oldrotation = rotation;
+            /* Get the result value from object "data" */
+            console.log(data[picked].value);
+            socket.emit('spin', JSON.stringify({
+                userName: userName, 
+                userSurname: userSurname, 
+                roomCode: roomCode, 
+                teamName: teamName, 
+                area: data[picked].value
+            }));
+            document.getElementById('spinner').style.display = 'none';
+            /* Comment the below line for restrict spin to sngle time */
+            //container.on("click", spin);
+        });
+}
+//make arrow
+svg.append("g")
+    .attr("transform", "translate(" + (w + padding.left + padding.right) + "," + ((h/2)+padding.top) + ")")
+    .append("path")
+    .attr("d", "M-" + (r*.15) + ",0L0," + (r*.05) + "L0,-" + (r*.05) + "Z")
+    .style({"fill":"black"});
+//draw spin circle
+container.append("circle")
+    .attr("id", 'circle')
+    .attr("cx", 0)
+    .attr("cy", 0)
+    .attr("r", 60)
+    .style({"fill":"white","cursor":"pointer"});
+
+document.getElementById('circle').onclick = function(){
+    spin();
 }
 
-function spin() {
-  SpinAngleStart = Math.random() * 10 + 10;
-  SpinTime = 0;
-  SpinTimeTotal = Math.random() * 3 + 4 * 1000;
-  spin2();
+//spin text
+container.append("text")
+    .attr("x", 0)
+    .attr("y", 15)
+    .attr("text-anchor", "middle")
+    .text("SPIN")
+    .style({"font-weight":"bold", "font-size":"30px"});
+
+function rotTween(to) {
+  var i = d3.interpolate(oldrotation % 360, rotation);
+  return function(t) {
+    return "rotate(" + i(t) + ")";
+  };
 }
 
-// Función que realiza el giro de la ruleta.
-function spin2() {
-  SpinTime =  SpinTime + 30;
-  if(SpinTime >= SpinTimeTotal) {
-    detenerRotacionRuleta();
-    return;
-  }
-  var SpinAngle = SpinAngleStart - mathOperations(SpinTime, 0, SpinAngleStart, SpinTimeTotal);
-  inicioAngulo += (SpinAngle * Math.PI / 180);
-  drawSpin();
-  tiemoutSpin = setTimeout('spin2()', 5);
-}
-// Detener la ruleta.
-function detenerRotacionRuleta() {
-  clearTimeout(tiemoutSpin);
-  var degrees = inicioAngulo * 180 / Math.PI + 90;
-  var arcd = arc * 180 / Math.PI;
-  var index = Math.floor((360 - degrees % 360) / arcd);
-  if (options[index] == 'DILEMMAS')
-  {
-    index = 1;
-  }
-  else
-  {
-    if (options[index] == 'KNOWLEDGE ABOUT US')
+function getRandomNumbers()
+{
+    var array = new Uint16Array(1000);
+    var scale = d3.scale.linear().range([360, 1440]).domain([0, 100000]);
+    if(window.hasOwnProperty("crypto") && typeof window.crypto.getRandomValues === "function")
     {
-      index = 2;
+        window.crypto.getRandomValues(array);
+        console.log("works");
     }
     else
     {
-      if (options[index] == 'RISKS AND OPPORTUNITIES')
-      {
-        index = 3;
-      }
+        //no support for crypto, get crappy random numbers
+        for(var i=0; i < 1000; i++){
+            array[i] = Math.floor(Math.random() * 100000) + 1;
+        }
     }
-  }
-  index = 1;
-  optRuleta.save();
-  optRuleta.font = 'bold 30px Verdana, Arial';
-  socket.emit('spin', JSON.stringify({
-    userName: userName, 
-    userSurname: userSurname, 
-    roomCode: roomCode, 
-    teamName: teamName, 
-    area: index
-  }));
-  document.getElementById('spinner').style.display = 'none';
+    return array;
 }
-function mathOperations(SpinTime, b, SpinAngleStart, SpinTimeTotal)
-{
-  var ts = (SpinTime/=SpinTimeTotal)*SpinTime;
-  var tc = ts*SpinTime;
-  return b+SpinAngleStart*(tc + -3*ts + 3*SpinTime);
-}
-// Llamamos nuestra función que invocará las demás.
-drawSpin();

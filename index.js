@@ -98,7 +98,7 @@ io.on('connection', (socket) => {
 		{
 			game.rooms.push({
 				'roomCode' : message['roomCode'], 
-				'users' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : undefined, 'votes' : 0, 'vote' : false}], 
+				'users' : [{'userName' : message['userName'], 'userSurname' : message['userSurname'], 'votes' : 0, 'vote' : false}], 
 				'usersIds' : [socket.id], 
 				'private' : private, 
 				'full' : false, 
@@ -131,7 +131,7 @@ io.on('connection', (socket) => {
             (message['userSurname'] != undefined) && (message['userSurname'] != ''))
 					{
             //Pendiente ver si sobran datos en el JSON.
-						game.rooms[index]['users'].push({'userName' : message['userName'], 'userSurname' : message['userSurname'], 'userType' : message['userType'], 'votes' : 0, 'vote' : message['vote']});
+						game.rooms[index]['users'].push({'userName' : message['userName'], 'userSurname' : message['userSurname'], 'votes' : 0, 'vote' : message['vote']});
 						/*if (game.rooms[index]['users'].length == maxUsers)//Pendiente usar el 'full' por cada team.
 						{console.log('Line 132.');
 							game.rooms[index]['full'] = true;
@@ -184,10 +184,10 @@ io.on('connection', (socket) => {
     socket.emit('update', message);
     socket.broadcast.emit('update', message);
 	});
-  socket.on('voteLeader', (data) => {//Pendiente asegurarse de que no pueda votar sin estar en ese team.
+  socket.on('voteLeader', (data) => {//console.log('Line 187.');//Pendiente asegurarse de que no pueda votar sin estar en ese team.
     voteLeader(socket, data);
   });
-  socket.on('spin', (data) => {
+  socket.on('spin', (data) => {console.log(data);
     var message = JSON.parse(data);
     var index = game.searchRoomCode(message['roomCode'], false);
     var index2 = -1;
@@ -237,19 +237,19 @@ io.on('connection', (socket) => {
                   'otherAnswers' : [], 
                   'evaluation' : []
                 });
+                game.rooms[index]['teams'][i]['users'][index2]['status'] = 'answeringQuestionArea1';
                 for (var k = 0; k < game.rooms[index]['teams'][i]['users'].length; k++)
                 {//Se "recicla" esa variable para usarla en la votación de respuestas en vez de la elección del líder.
                   game.rooms[index]['teams'][i]['users'][k]['vote'] = false;
                   if (game.rooms[index]['teams'][i]['users'][k]['leader'])
-                  {
-                    game.rooms[index]['teams'][i]['users'][index2]['status'] = 'waitingAnsweringQuestionArea1';
+                  {console.log('Asignando status: \'waitingAnsweringQuestionArea1\'');
+                    game.rooms[index]['teams'][i]['users'][k]['status'] = 'waitingAnsweringQuestionArea1';
                   }
                 }
                 message['question'] = game.questions['area' + area][j];
                 message['rooms'] = game.rooms;
                 message['area'] = area;
                 //message['teamName'] = game.rooms[index]['teams'][i]['teamName'];
-                game.rooms[index]['teams'][i]['users'][index2]['status'] = 'answeringQuestionArea1';
                 socket.emit('question', message);
                 socket.broadcast.emit('question', message);
                 j = game.questions['area' + area].length;//Pendiente ver si hace falta quitar esto para enviar a todos los usuario que no sean el lider.
@@ -541,6 +541,7 @@ io.on('connection', (socket) => {
                   console.log('Line 541: ' + message['teamName']);
                   message['userName'] = '';
                   message['userSurname'] = '';
+                  message['newLeader'] = true;
                   type = 'update';//Ver qué hacer con la pregunta que debían responder y que pasará luego de volver a elejir al lider.
                 }
                 if (game.rooms[index]['teams'][i]['status'] == 'leaderVotation')
@@ -548,6 +549,7 @@ io.on('connection', (socket) => {
                   message['teamName'] = game.rooms[index]['teams'][i]['teamName'];console.log('Line 548: ' + message['teamName']);
                   message['userName'] = '';
                   message['userSurname'] = '';
+                  message['newLeader'] = true;
                   type = 'update';//Ver qué hacer con la pregunta que debían responder y que pasará luego de volver a elejir al lider.
                 }
               }
@@ -727,7 +729,7 @@ function allUsersVotation(socket, data)
         "answer" : answer, 
         "area" : area, */
         //var index2 = -1;
-        console.log('Pregunta: ' + message['question']);
+        //console.log('Pregunta: ' + message['question']);
         for (var j = 0; j < game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']].length; j++)
         {
           if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['question'] == message['question'])
@@ -741,21 +743,22 @@ function allUsersVotation(socket, data)
             {
               if (game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'][k]['answer'] == message['answer'])
               {//Alguien ya eligió esa repuesta préviamente
-                game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'][k]['votes'] += 1;
+                //game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'][k]['votes'] += 1;
+                game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'][k]['votes'].push({userName: message['userName'], userSurname: message['userSurname']});
                 found = true;
               }
             }
             if (!found)
             {//Nadie eligió esa repuesta préviamente.
-              console.log('No estaba: ' + message['answer']);
+              //console.log('No estaba: ' + message['answer']);
               game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].push({
                 'answer' : message['answer'], 
-                'votes' : 1
+                'votes' : [{userName: message['userName'], userSurname: message['userSurname']}]
               });
             }
             else
             {
-              console.log('Ya estaba: ' + message['answer']);
+              //console.log('Ya estaba: ' + message['answer']);
               /*game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].push({
                 'answer' : message['answer'], 
                 'votes' : 1
@@ -773,7 +776,7 @@ function allUsersVotation(socket, data)
         if (allUsersVoted)
         {//Tiene que decidir el líder.//Falta pasarle las opciones.
           //message['question'] = game.questions['area' + area][j];
-          console.log('Line 537: ' + message['question'] + ', ' + message['area']);
+          //console.log('Line 537: ' + message['question'] + ', ' + message['area']);
           for (var j = 0; j < game.questions['area' + message['area']].length; j++)
           {
             if (game.questions['area' + message['area']][j]['question'] == message['question'])
@@ -781,6 +784,10 @@ function allUsersVotation(socket, data)
               message['question'] = game.questions['area' + message['area']][j];
             }
           }
+          /*message['otherAnswers'] = game.rooms[index]['teams'][i]['sendedQuestions']['area1'][game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']].length - 1]['otherAnswers'];
+          socket.emit('showArea1PartialResult', message);
+          socket.broadcast.emit('showArea1PartialResult', message);*/
+          //Mostrar los resultados antes de eso.
           socket.emit('leaderVotation', message);
           socket.broadcast.emit('leaderVotation', message);
         }
@@ -905,11 +912,13 @@ function voteLeader(socket, data)
                 message['userSurname'] = game.rooms[index]['teams'][i]['users'][j]['userSurname'];
                 message['rooms'] = game.rooms;
                 message['status'] = 'Starting Game.';
-                if (teamsWithPreviousLeaderDisconnected.indexOf(i) == -1)
+                //if (teamsWithPreviousLeaderDisconnected.indexOf(i) == -1)
+                if (!message['newLeader'])
                 {
                   socket.emit('showSpinner', message);
                   socket.broadcast.emit('showSpinner', message);
-                }//Sino significa que se tiene que continuar con la pregunta pero con otro líder.
+                }//Sino significa que se tiene que continuar con la pregunta pero con otro líder. Pendiente mostrar (leader).
+                //El otro usuario se queda trabajo en la evaluación personal.
                 //Pendiente ver que el nuevo lider no reciba esa pregunta hasta que le corresponda.
                 //Es necesario detener el bucle para que tire de a uno a la vez.
                 j = game.rooms[index]['teams'][i]['users'].length;

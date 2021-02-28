@@ -16,7 +16,7 @@ var drawingTools;
 var canvasDisplay = 'none';
 var pr = false;
 
-function showTeamInfo()
+function showTeamInfo(newLeader = false)
 {
     document.getElementById('teamInfo').style.display = 'block';
     var html = '';
@@ -45,6 +45,13 @@ function showTeamInfo()
                 if (teams[userInTeamIndex]['users'][k]['leader'])
                 {
                     indexLeaderElected = k;
+                    if (teams[userInTeamIndex]['users'][k]['status'] == 'waitingAnsweringQuestionArea1')
+                    {
+                        document.getElementById('area1').style.display = 'none';
+                        document.getElementById('area2').style.display = 'none';
+                        document.getElementById('area3').style.display = 'none';
+                        document.getElementById('submitAnswerButton').style.display = 'none';
+                    }
                 }
             }
             for (var k = 0; k < teams[userInTeamIndex]['users'].length; k++)
@@ -61,7 +68,7 @@ function showTeamInfo()
                 }
                 if ((teams[userInTeamIndex]['users'].length > 1) && (indexLeaderElected == -1) && (!vote))
                 {//Se debe habilitar la elección de lider.
-                    html += '<button id="vl_' + userInTeamIndex + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + userInTeamIndex + ', \'' + teams[userInTeamIndex]['users'][k]['userName'] + '\', \'' + teams[userInTeamIndex]['users'][k]['userSurname'] + '\');document.getElementById(this.id).style.display = \'none\';">Vote for leader</button>';
+                    html += '<button id="vl_' + userInTeamIndex + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + userInTeamIndex + ', \'' + teams[userInTeamIndex]['users'][k]['userName'] + '\', \'' + teams[userInTeamIndex]['users'][k]['userSurname'] + '\', ' + newLeader + ');document.getElementById(this.id).style.display = \'none\';">Vote for leader</button>';
                 }
             }
             html += '</div>';

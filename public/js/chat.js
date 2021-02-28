@@ -74,7 +74,7 @@ socket.on('update', (data) => {//message['newTeam']
                 }
             }
         }
-        showTeamInfo();
+        showTeamInfo(data['newLeader']);
         //console.log('Teams:');
         //console.log(teams);
     }
@@ -95,13 +95,105 @@ socket.on('showSpinner', (data) => {
             (data['userSurname'] == userSurname))
         {
             document.getElementById('area3').style.display = 'none';
+            /*tmp_code*/
             document.getElementById('spinner').style.display = 'block';
+            /*socket.emit('spin', JSON.stringify({
+                userName: userName, 
+                userSurname: userSurname, 
+                roomCode: roomCode, 
+                teamName: teamName, 
+                area: 1
+            }));*/
+            /*tmp_code*/
         }
         showTeamInfo();
         showGameInfo();
     }
 });
-socket.on('question', (data) => {//El problema está cuando recibe una pregunta del área 1 desde otro equipo.
+socket.on('showArea1PartialResult', (data) => {console.log(data);
+    if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
+    {console.log('Line 115.');
+        area = data['area'];
+        teams = getTeams(data['rooms']);
+        for (var i = 0; i < teams.length; i++)
+        {
+            if ((teams[i]['teamName'] == data['teamName']) && (data['teamName'] == teamName) && (data['area'] == 1))
+            {console.log('Line 121.');
+                document.getElementById('area1').style.display = 'block';
+                document.getElementById('area1QuestionsDiv').innerHTML = '';
+                document.getElementById('area1AnswersDiv').innerHTML = '';
+                
+                //document.getElementById('area1VotingResultsLeftDiv').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
+                //<hr style="width:50%;text-align:left;margin-left:0"> 
+                /*game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].push({
+                    'answer' : message['answer'], 
+                    'votes' : [{userName: message['userName'], userSurname: message['userSurname']}];
+                });*/
+                var maxVotes = data['otherAnswers'][0]['votes'].length;
+                for (var k = 1; k < data['otherAnswers'].length; k++)
+                {
+                    if (data['otherAnswers'][k]['votes'].length > maxVotes)
+                    {
+                        maxVotes = data['otherAnswers'][k]['votes'].length;
+                    }
+                }
+                /*var html = '';
+                for (var j = 0; j < data['question']['options'].length; j++)
+                {//50/100 = 0.5
+                    var v = false;
+                    for (var k = 0; k < data['otherAnswers'].length; k++)
+                    {
+                        if (data['otherAnswers'][k]['answer'] == data['question']['options'][j]['option'])
+                        {
+                            html += '<hr style="width: ' + ((data['otherAnswers'][k]['votes'].length / maxVotes) * 100) + '%; height: 5%; color: white;"><br>';
+                            //'position: absolute; left: ' + document.getElementById('lbl_question_option_' + j).offsetLeft + 'px; top: ' + document.getElementById('lbl_question_option_' + j).offsetBottom + 'px;">';
+                            v = true;
+                            k = data['otherAnswers'].length;
+                        }
+                    }
+                    if (!v)
+                    {
+                        html += '<hr style="width: 0%; height: 5%; color: white;"><br>';
+                    }
+                }
+                console.log(html);  
+                document.getElementById('area1QuestionsDiv').innerHTML = html;*/
+                html = '';
+                for (var j = 0; j < data['question']['options'].length; j++)
+                {
+                    html += '<label id="lbl_question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
+                }
+                document.getElementById('area1AnswersDiv').innerHTML = html;
+                for (var j = 0; j < data['question']['options'].length; j++)
+                {//50/100 = 0.5
+                    for (var k = 0; k < data['otherAnswers'].length; k++)
+                    {
+                        if (data['otherAnswers'][k]['answer'] == data['question']['options'][j]['option'])
+                        {
+                            //var usersList = [];
+                            var html = '<span id="lbl_question_option_" style="display:none; position: absolute; left: ' + document.getElementById('lbl_question_option_' + j).offsetLeft + 'px; top: ' + document.getElementById('lbl_question_option_' + j).offsetBottom + 'px;">';
+                            for (var l = 0; l < data['otherAnswers'][k]['votes'].length; l++)
+                            {//[{userName: message['userName'], userSurname: message['userSurname']}]
+                                //usersList.push(data['otherAnswers'][k]['votes'][l]['userName'] + ' ' + data['otherAnswers'][k]['votes'][l]['userSurname']);
+                                html += data['otherAnswers'][k]['votes'][l]['userName'] + ' ' + data['otherAnswers'][k]['votes'][l]['userSurname'] + '<br>';
+                                //.offsetBottom -> a la misma abajo
+                                //.offsetLeft -> a la izquierda
+                                //onmouseover
+                                //onmouseleave
+                            }
+                            html += '</span>';
+                            document.getElementById('area1AnswersDiv').innerHTML += html;
+                            k = data['otherAnswers'].length;
+                        }
+                    }
+                }
+                //html += '<button onclick="submitAnswer(\'allUsersVotation\');">Submit answer</button>';
+                //document.getElementById('nextButton').style.display = 'block';
+            }
+        }
+    }
+});
+socket.on('question', (data) => {
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
         area = data['area'];
@@ -120,30 +212,27 @@ socket.on('question', (data) => {//El problema está cuando recibe una pregunta 
                         leader = true;
                     }
                 }
-                if ((data['teamName'] == teamName))console.log('Line 157: ' + leader + ', ' + data['teamName'] + ', ' + data['area'] + ', ' + leader);
+                document.getElementById('area3').style.display = 'none';
+                if (((data['area'] == 1) && (!leader)) || ((data['area'] == 2) && (data['userName'] == userName) && (data['userSurname'] == userSurname)))
                 {
-                    document.getElementById('area3').style.display = 'none';
-                    if (((data['area'] == 1) && (!leader)) || ((data['area'] == 2) && (data['userName'] == userName) && (data['userSurname'] == userSurname)))
+                    document.getElementById('area' + data['area']).style.display = 'block';
+                    document.getElementById('area' + data['area'] + 'QuestionsDiv').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
+                    var html = '';
+                    for (var j = 0; j < data['question']['options'].length; j++)
                     {
-                        document.getElementById('area' + data['area']).style.display = 'block';
-                        document.getElementById('area' + data['area'] + 'QuestionsDiv').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
-                        var html = '';
-                        for (var j = 0; j < data['question']['options'].length; j++)
-                        {
-                            html += '<input type="radio" id="question_option_' + j + '" name="answer">';
-                            html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
-                        }
-                        //html += '<button onclick="submitAnswer(\'allUsersVotation\');">Submit answer</button>';
-                        document.getElementById('area' + data['area'] + 'AnswersDiv').innerHTML = html;
-                        document.getElementById('submitAnswerButton').style.display = 'block';
-                        if (area == 2)
-                        {
-                            answerType = 'questionArea2';
-                        }
-                        else
-                        {
-                            answerType = 'allUsersVotation';
-                        }
+                        html += '<input type="radio" id="question_option_' + j + '" name="answer">';
+                        html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
+                    }
+                    //html += '<button onclick="submitAnswer(\'allUsersVotation\');">Submit answer</button>';
+                    document.getElementById('area' + data['area'] + 'AnswersDiv').innerHTML = html;
+                    document.getElementById('submitAnswerButton').style.display = 'block';
+                    if (area == 2)
+                    {
+                        answerType = 'questionArea2';
+                    }
+                    else
+                    {
+                        answerType = 'allUsersVotation';
                     }
                 }
             }
@@ -335,8 +424,8 @@ function joinTeam(userName, userSurname, roomCode, index)
         roomCode: roomCode
     }));
 }
-function voteLeader(userNameVoting, userSurnameVoting, roomCode, teamIndex, userNameVoted, userSurnameVoted)
-{
+function voteLeader(userNameVoting, userSurnameVoting, roomCode, teamIndex, userNameVoted, userSurnameVoted, newLeader = false)
+{console.log('newLeader == ' + newLeader);
     for (var i = 0; i < teams[teamIndex]['users'].length; i++)
     {
         console.log('vl_' + teamIndex + '_' + i);
@@ -347,6 +436,7 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, teamIndex, user
     //Pendiente ver por qué el último que vota no recibe la información sobre quién es el líder.
     socket.emit('voteLeader', JSON.stringify({
         type: 'voteLeader',
+        newLeader: newLeader,
         userNameVoted: userNameVoted, 
         userSurnameVoted: userSurnameVoted, 
         userNameVoting: userNameVoting, 
