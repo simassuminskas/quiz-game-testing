@@ -37,7 +37,6 @@ var vis = container
 var pie = d3.layout.pie().sort(null).value(function(d){return 1;});
 // declare an arc generator function
 var arc = d3.svg.arc().outerRadius(r);
-// select paths, use arc generator to draw
 var arcs = vis.selectAll("g.slice")
     .data(pie)
     .enter()
