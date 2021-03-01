@@ -59,55 +59,63 @@ arcs.append("text").attr("transform", function(d){
     return data[i].label;
 });
 //container.on("click", spin);
+var pickedArea;
 function spin(d){
-    container.on("click", null);
-    //all slices have been seen, all done
-    console.log("OldPick: " + oldpick.length, "Data length: " + data.length);
-    if(oldpick.length == data.length){
-        console.log("done");
+    if (pickedArea == undefined)
+    {
         container.on("click", null);
-        return;
+        //all slices have been seen, all done
+        console.log("OldPick: " + oldpick.length, "Data length: " + data.length);
+        if(oldpick.length == data.length){
+            console.log("done");
+            container.on("click", null);
+            return;
+        }
+        var  ps       = 360/data.length,
+             pieslice = Math.round(1440/data.length),
+             rng      = Math.floor((Math.random() * 1440) + 360);
+        rotation = (Math.round(rng / ps) * ps);
+        picked = Math.round(data.length - (rotation % 360)/ps);
+        picked = picked >= data.length ? (picked % data.length) : picked;
+        rotation += 90 - Math.round(ps/2);
+        vis.transition()
+            .duration(3000)
+            .attrTween("transform", rotTween)
+            .each("end", function(){
+                //mark question as seen
+                d3.select(".slice:nth-child(" + (picked + 1) + ") path");
+                    //.attr("fill", "#111");
+                oldrotation = rotation;
+                /* Get the result value from object "data" */
+                pickedArea = data[picked].value;
+                /* Comment the below line for restrict spin to sngle time */
+                //container.on("click", spin);
+            });
     }
-    var  ps       = 360/data.length,
-         pieslice = Math.round(1440/data.length),
-         rng      = Math.floor((Math.random() * 1440) + 360);
-    rotation = (Math.round(rng / ps) * ps);
-    picked = Math.round(data.length - (rotation % 360)/ps);
-    picked = picked >= data.length ? (picked % data.length) : picked;
-    rotation += 90 - Math.round(ps/2);
-    vis.transition()
-        .duration(3000)
-        .attrTween("transform", rotTween)
-        .each("end", function(){
-            //mark question as seen
-            d3.select(".slice:nth-child(" + (picked + 1) + ") path");
-                //.attr("fill", "#111");
-            oldrotation = rotation;
-            /* Get the result value from object "data" */
-            console.log(data[picked].value);
-            socket.emit('spin', JSON.stringify({
-                userName: userName, 
-                userSurname: userSurname, 
-                roomCode: roomCode, 
-                teamName: teamName, 
-                area: data[picked].value
-            }));
-            if (data[picked].value == 1)
-            {
-                document.getElementById('lblArea').innerHTML = 'DILEMMAS';
-            }
-            if (data[picked].value == 2)
-            {
-                document.getElementById('lblArea').innerHTML = 'KNOWLEDGE ABOUT US';
-            }
-            if (data[picked].value == 3)
-            {
-                document.getElementById('lblArea').innerHTML = 'RISKS & OPPORTUNITIES';
-            }
-            document.getElementById('spinner').style.display = 'none';
-            /* Comment the below line for restrict spin to sngle time */
-            //container.on("click", spin);
-        });
+    else
+    {
+        socket.emit('spin', JSON.stringify({
+            userName: userName, 
+            userSurname: userSurname, 
+            roomCode: roomCode, 
+            teamName: teamName, 
+            area: pickedArea
+        }));
+        if (pickedArea == 1)
+        {
+            document.getElementById('lblArea').innerHTML = 'DILEMMAS';
+        }
+        if (pickedArea == 2)
+        {
+            document.getElementById('lblArea').innerHTML = 'KNOWLEDGE ABOUT US';
+        }
+        if (pickedArea == 3)
+        {
+            document.getElementById('lblArea').innerHTML = 'RISKS & OPPORTUNITIES';
+        }
+        document.getElementById('spinner').style.display = 'none';
+        pickedArea = undefined;
+    }
 }
 //make arrow
 svg.append("g")
