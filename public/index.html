@@ -8,12 +8,13 @@
     <title>Quiz Game</title>
     <style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap');</style>
     <link rel="stylesheet" type="text/css" href="./css/styles.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 </head>
 <body id="body" style="background-image: url('./img/1.png');background-size: cover;" onload="document.getElementById('rulesLink').href = location + 'rules/'">
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
     <br>
     <a href="" id="rulesLink" target="_blank" style="position: right;">RULES</a>
-    <div id="divLogin" style="display: block;">
+    <div id="divLogin">
         <div id="welcomeText">
             <h5>WELCOME TO</h5>
             <h1 style="font-size: 400%;">THE<br>VALUE GAME</h1>
@@ -39,10 +40,12 @@
         <label id="statusInfo"></label>
         <label id="userInfo"></label>
     </center>
+    <center><label id="lblArea"></label></center>
     <center><div id="spinner" style="display: none;"></div></center>
     <center id="area1" style="display: none;">
-        <h4 id="lblDilemmas">DILEMMAS</h4>
-        <table id="area1Table" style="width: 80%; text-align: center;" rules="cols">
+        <div id="area1Info"></div>
+        <label id="lblLightBoxArea1Header"></label><hr>
+        <table id="area1Table" style="text-align: center;" rules="cols">
             <tr>
                 <td id="area1LblQuestion">QUESTION</td>
                 <td id="area1LblAnswers">ANSWERS</td>
@@ -53,26 +56,27 @@
             </tr>
         </table>
         <div id="personalEvaluation"></div>
+        <div id="nextBtnDivArea1" style="padding-left: 90%; padding-bottom: 1%;"></div>
     </center>
     <center><button id="submitPersonalEvaluation" style="display: none;" onclick="submitPersonalEvaluation();">SUBMIT</button></center>
     <center id="area2" style="display: none;">
-        <h4 id="lblKnowledge">KNOWLEDGE ABOUT US</h4>
-        <table style="width: 80%; text-align: center;" rules="cols">
+        <div id="area2Info"></div>
+        <table id="area2Table" style="width: 80%; text-align: center;" rules="cols">
             <tr>
                 <td id="area2LblQuestion">QUESTION</td>
                 <td id="area2LblAnswers">ANSWERS</td>
             </tr>
             <tr>
-                <td><br><div id="area2QuestionsDiv">...</div></td>
-                <td><div id="area2AnswersDiv">...</div></td>
+                <td><br><div id="area2QuestionsDiv"></div></td>
+                <td><div id="area2AnswersDiv"></div></td>
             </tr>
         </table>
+        <div id="nextBtnDivArea2" style="padding-left: 90%; padding-bottom: 1%;"></div>
     </center>
     <center id="area3" style="display: none;">
-        <h4 id="lblRo">RISKS & OPPORTUNITIES</h4>
-        <div id="area3TextAndPoints"></div>
+        <div id="area3Info"></div>
+        <div id="nextBtnDivArea3" style="padding-left: 90%; padding-bottom: 1%;"></div>
     </center>
-    <center><button id="submitAnswerButton" style="display: none;" onclick="submitAnswer();">SUBMIT ANSWER</button></center>
     <div id="divGameFinished" style="display: none;">
         <div id="congratulationsText">
             <h1>CONGRATULATIONS! YOU</h1>

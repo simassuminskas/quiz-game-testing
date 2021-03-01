@@ -1,6 +1,6 @@
 var padding = {top:20, right:40, bottom:0, left:0},
-    w = 500 - padding.left - padding.right,
-    h = 500 - padding.top  - padding.bottom,
+    w = 617 - padding.left - padding.right,
+    h = 617 - padding.top  - padding.bottom,
     r = Math.min(w, h)/2,
     rotation = 0,
     oldrotation = 0,
@@ -92,6 +92,18 @@ function spin(d){
                 teamName: teamName, 
                 area: data[picked].value
             }));
+            if (data[picked].value == 1)
+            {
+                document.getElementById('lblArea').innerHTML = 'DILEMMAS';
+            }
+            if (data[picked].value == 2)
+            {
+                document.getElementById('lblArea').innerHTML = 'KNOWLEDGE ABOUT US';
+            }
+            if (data[picked].value == 3)
+            {
+                document.getElementById('lblArea').innerHTML = 'RISKS & OPPORTUNITIES';
+            }
             document.getElementById('spinner').style.display = 'none';
             /* Comment the below line for restrict spin to sngle time */
             //container.on("click", spin);
@@ -121,7 +133,7 @@ container.append("text")
     .attr("y", 15)
     .attr("text-anchor", "middle")
     .text("SPIN")
-    .style({"font-weight":"bold", "font-size":"30px"});
+    .style({"font-weight":"bold", "font-size":"25px"});
 
 function rotTween(to) {
   var i = d3.interpolate(oldrotation % 360, rotation);

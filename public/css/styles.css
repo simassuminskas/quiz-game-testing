@@ -7,14 +7,48 @@
 #congratulationsText{
 	text-align: center;
 }
-#area3{
-	text-align: center;
+#area3 {
+  text-align: center;
+  display: block;
+  position: absolute;
+  z-index: 1;
+  padding-top: 2%;
+  top: 10%;
+  left: 9%;
+  width: 80%;
+  background-color: #b64a58;
+  opacity: 0.8;
+  border: dotted;
 }
 #spinner{
     width:40%;
 }
 /*------------------------------------*/
 #spinner{
-    width:500px;
-    height:500px;
+    width:617px;
+    height:617px;
+}
+#area1 {
+  display: block;
+  position: absolute;
+  z-index: 1;
+  padding-top: 2%;
+  top: 10%;
+  left: 9%;
+  width: 80%;
+  background-color: #b64a58;
+  opacity: 0.8;
+  border: dotted;
+}
+#area2 {
+  display: block;
+  position: absolute;
+  z-index: 1;
+  padding-top: 2%;
+  top: 10%;
+  left: 9%;
+  width: 80%;
+  background-color: #b64a58;
+  opacity: 0.8;
+  border: dotted;
 }

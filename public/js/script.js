@@ -50,7 +50,6 @@ function showTeamInfo(newLeader = false)
                         document.getElementById('area1').style.display = 'none';
                         document.getElementById('area2').style.display = 'none';
                         document.getElementById('area3').style.display = 'none';
-                        document.getElementById('submitAnswerButton').style.display = 'none';
                     }
                 }
             }
