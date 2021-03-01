@@ -123,6 +123,8 @@ socket.on('showArea1PartialResult', (data) => {console.log(data);
         {
             if ((teams[i]['teamName'] == data['teamName']) && (data['teamName'] == teamName) && (data['area'] == 1))
             {console.log('Line 121.');
+                document.getElementById('area3').style.display = 'none';
+                document.getElementById('area2').style.display = 'none';
                 document.getElementById('area1').style.display = 'block';
                 document.getElementById('area1QuestionsDiv').innerHTML = '';
                 document.getElementById('area1AnswersDiv').innerHTML = '';
@@ -240,11 +242,12 @@ socket.on('question', (data) => {
                         leader = true;
                     }
                 }
-                document.getElementById('area3').style.display = 'none';
                 if ((data['area'] == 1) && (!leader))
                 {
-                    document.getElementById('personalEvaluation').innerHTML = '';
+                    document.getElementById('area3').style.display = 'none';
+                    document.getElementById('area2').style.display = 'none';
                     document.getElementById('area1').style.display = 'block';
+                    document.getElementById('personalEvaluation').innerHTML = '';
                     document.getElementById('area1Table').style.display = 'block';
                     document.getElementById('area1QuestionsDiv').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
                     var html = '';
@@ -263,9 +266,11 @@ socket.on('question', (data) => {
                 }
                 if ((data['area'] == 2) && (data['userName'] == userName) && (data['userSurname'] == userSurname))
                 {
+                    document.getElementById('area3').style.display = 'none';
+                    document.getElementById('area1').style.display = 'none';
+                    document.getElementById('area2').style.display = 'block';
                     options = data['question']['options'];
                     nextStep = 'area2Question';
-                    document.getElementById('area2').style.display = 'block';
                     document.getElementById('area2Table').style.display = 'none';
                     document.getElementById('area2Info').innerHTML = '<br><br>NOW PLEASE CHOOSE THE  RIGHT ANSWER';
                     document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
@@ -615,6 +620,8 @@ socket.on('ro', (data) => {
         console.log(data);
         if ((data['teamName'] == teamName) && (data['userName'] == userName) && (data['userSurname'] == userSurname))
         {console.log(document.getElementById('spinner').style.display);
+            document.getElementById('area1').style.display = 'none';
+            document.getElementById('area2').style.display = 'none';
             document.getElementById('area3').style.display = 'block';
             nextStep = 'area3Card';
             text = data['ro']['text'];
