@@ -716,7 +716,7 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, teamIndex, user
     document.getElementById('area1').style.display = 'none';
     document.getElementById('submitPersonalEvaluation').style.display = 'none';
 }*/
-function login(newTeam = false)
+function login()
 {
     if ((!connected) && (userName === undefined) && (userSurname === undefined))
     {
@@ -726,8 +726,7 @@ function login(newTeam = false)
             'type' : 'update', 
             'userName' : userName, 
             'userSurname' : userSurname, 
-            'teamName' : document.getElementById('teamName').value, 
-            'newTeam' : newTeam
+            'teamName' : document.getElementById('teamName').value
         });
         socket.emit('update', data);
     }
