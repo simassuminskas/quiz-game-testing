@@ -1,11 +1,23 @@
 #welcomeText{
 	text-align: center;
+	font-family: 'Quicksand', sans-serif;
 }
 #teamsInfo{
 	text-align: center;
-}
+	font-family: 'Quicksand', sans-serif;
+	}
+
+#lblSurname{
+		font-family: 'Quicksand', sans-serif;
+	}
+	
+#lblName{
+		font-family: 'Quicksand', sans-serif;
+	}
+
 #congratulationsText{
 	text-align: center;
+	font-family: 'Quicksand', sans-serif;
 }
 #area3 {
   text-align: center;
@@ -19,14 +31,17 @@
   background-color: #b64a58;
   opacity: 0.8;
   border: dotted;
+	font-family: 'Quicksand', sans-serif;
 }
 #spinner{
     width:40%;
+	font-family: 'Quicksand', sans-serif;
 }
 /*------------------------------------*/
 #spinner{
     width:617px;
     height:617px;
+	font-family: 'Quicksand', sans-serif;
 }
 #area1 {
   display: block;
@@ -39,6 +54,7 @@
   background-color: #b64a58;
   opacity: 0.8;
   border: dotted;
+	font-family: 'Quicksand', sans-serif;
 }
 #area2 {
   display: block;
@@ -51,4 +67,5 @@
   background-color: #b64a58;
   opacity: 0.8;
   border: dotted;
+	font-family: 'Quicksand', sans-serif;
 }
