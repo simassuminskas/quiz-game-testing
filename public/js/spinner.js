@@ -58,6 +58,7 @@ arcs.append("text").attr("transform", function(d){
     return data[i].label;
 });
 //container.on("click", spin);
+var pickedArea;
 function sendArea()
 {
     if (pickedArea != undefined)
@@ -85,7 +86,6 @@ function sendArea()
         pickedArea = undefined;
     }
 }
-var pickedArea;
 function spin(d){
     if (pickedArea == undefined)
     {
@@ -143,7 +143,7 @@ container.append("text")
     .attr("y", 15)
     .attr("text-anchor", "middle")
     .text("SPIN")
-    .style({"font-weight":"bold", "font-size":"25px"});
+    .style({"font-weight":"bold", "font-size":"25px", "cursor":"pointer"});
 
 function rotTween(to) {
   var i = d3.interpolate(oldrotation % 360, rotation);

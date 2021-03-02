@@ -68,7 +68,7 @@ function showTeamInfo(newLeader = false)
                 if ((teams[userInTeamIndex]['users'].length > 1) && (indexLeaderElected == -1) && (!vote))
                 {//Se debe habilitar la elección de lider.
                     document.getElementById('lblChooseLeader').innerHTML = 'PLASE CHOSE YOUR LEADER';
-                    html += '<button id="vl_' + userInTeamIndex + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + userInTeamIndex + ', ' + k + ', \'' + teams[userInTeamIndex]['users'][k]['userName'] + '\', \'' + teams[userInTeamIndex]['users'][k]['userSurname'] + '\', ' + newLeader + ');">Vote for leader</button>';
+                    html += '<br><button id="vl_' + userInTeamIndex + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + userInTeamIndex + ', ' + k + ', \'' + teams[userInTeamIndex]['users'][k]['userName'] + '\', \'' + teams[userInTeamIndex]['users'][k]['userSurname'] + '\', ' + newLeader + ');" style="display: \'block\';">Vote for leader</button>';
                 }
             }
             html += '</div>';
@@ -91,7 +91,7 @@ function showGameInfo()
                         (teams[j]['users'][k]['userSurname'] == userSurname))
                     {
                         document.getElementById('teamScore').style.display = 'block';
-                        document.getElementById('teamScore').innerHTML = 'Team score: DILEMMAS: ' + teams[j]['scoreArea1'] + ' KNOWLEDGE ABOUT US: ' + teams[j]['scoreArea2'] + ' RISKS AND OPPORTUNITIES: ' + teams[j]['scoreArea3'];
+                        document.getElementById('teamScore').innerHTML = 'TEAM SCORE:<br><br>DILEMMAS: ' + teams[j]['scoreArea1'] + '<br><br>KNOWLEDGE ABOUT US: ' + teams[j]['scoreArea2'] + '<br><br>RISKS AND OPPORTUNITIES: ' + teams[j]['scoreArea3'];
                     }
                 }
             }

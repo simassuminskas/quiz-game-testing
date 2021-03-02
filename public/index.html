@@ -36,10 +36,10 @@
     <center><label id="lblChooseLeader"></label></center>
     <center id="teamInfo" style="display: none;"></center>
     <center id="gameInfo" style="display: none;">
-        <label id="teamScore"></label>
         <label id="statusInfo"></label>
         <label id="userInfo"></label>
     </center>
+    <div id="teamScore"></div>
     <center><label id="lblArea"></label></center>
     <center><div id="spinner" style="display: none;" onclick="sendArea();"></div></center>
     <center id="area1" style="display: none;">
@@ -56,7 +56,7 @@
             </tr>
         </table>
         <div id="personalEvaluation"></div>
-        <div id="nextBtnDivArea1" style="padding-left: 90%; padding-bottom: 1%;"></div>
+        <div id="nextBtnDivArea1" style="padding-left: 90%; padding-bottom: 1%; display: none;"><i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i></div>
     </center>
     <center><button id="submitPersonalEvaluation" style="display: none;" onclick="submitPersonalEvaluation();">SUBMIT</button></center>
     <center id="area2" style="display: none;">
@@ -71,7 +71,7 @@
                 <td><div id="area2AnswersDiv"></div></td>
             </tr>
         </table>
-        <div id="nextBtnDivArea2" style="padding-left: 90%; padding-bottom: 1%;"></div>
+        <div id="nextBtnDivArea2" style="padding-left: 90%; padding-bottom: 1%; display: none;"><i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i></div>
     </center>
     <center id="area3" style="display: none;">
         <div id="area3Info"></div>
