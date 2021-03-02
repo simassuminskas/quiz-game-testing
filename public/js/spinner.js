@@ -58,6 +58,33 @@ arcs.append("text").attr("transform", function(d){
     return data[i].label;
 });
 //container.on("click", spin);
+function sendArea()
+{
+    if (pickedArea != undefined)
+    {
+        socket.emit('spin', JSON.stringify({
+            userName: userName, 
+            userSurname: userSurname, 
+            roomCode: roomCode, 
+            teamName: teamName, 
+            area: pickedArea
+        }));
+        if (pickedArea == 1)
+        {
+            document.getElementById('lblArea').innerHTML = 'DILEMMAS';
+        }
+        if (pickedArea == 2)
+        {
+            document.getElementById('lblArea').innerHTML = 'KNOWLEDGE ABOUT US';
+        }
+        if (pickedArea == 3)
+        {
+            document.getElementById('lblArea').innerHTML = 'RISKS & OPPORTUNITIES';
+        }
+        document.getElementById('spinner').style.display = 'none';
+        pickedArea = undefined;
+    }
+}
 var pickedArea;
 function spin(d){
     if (pickedArea == undefined)
@@ -91,44 +118,20 @@ function spin(d){
                 //container.on("click", spin);
             });
     }
-    else
-    {
-        socket.emit('spin', JSON.stringify({
-            userName: userName, 
-            userSurname: userSurname, 
-            roomCode: roomCode, 
-            teamName: teamName, 
-            area: pickedArea
-        }));
-        if (pickedArea == 1)
-        {
-            document.getElementById('lblArea').innerHTML = 'DILEMMAS';
-        }
-        if (pickedArea == 2)
-        {
-            document.getElementById('lblArea').innerHTML = 'KNOWLEDGE ABOUT US';
-        }
-        if (pickedArea == 3)
-        {
-            document.getElementById('lblArea').innerHTML = 'RISKS & OPPORTUNITIES';
-        }
-        document.getElementById('spinner').style.display = 'none';
-        pickedArea = undefined;
-    }
 }
 //make arrow
 svg.append("g")
     .attr("transform", "translate(" + (w + padding.left + padding.right) + "," + ((h/2)+padding.top) + ")")
     .append("path")
     .attr("d", "M-" + (r*.15) + ",0L0," + (r*.05) + "L0,-" + (r*.05) + "Z")
-    .style({"fill":"white"});
+    .style({"fill":"black"});
 //draw spin circle
 container.append("circle")
     .attr("id", 'circle')
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", 60)
-    .style({"fill":"red","cursor":"pointer"});
+    .style({"fill":"white","cursor":"pointer"});
 
 document.getElementById('circle').onclick = function(){
     spin();
@@ -137,7 +140,7 @@ document.getElementById('circle').onclick = function(){
 //spin text
 container.append("text")
     .attr("x", 0)
-    .attr("y", 18)
+    .attr("y", 15)
     .attr("text-anchor", "middle")
     .text("SPIN")
     .style({"font-weight":"bold", "font-size":"25px"});

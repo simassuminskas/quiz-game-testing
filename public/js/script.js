@@ -67,7 +67,8 @@ function showTeamInfo(newLeader = false)
                 }
                 if ((teams[userInTeamIndex]['users'].length > 1) && (indexLeaderElected == -1) && (!vote))
                 {//Se debe habilitar la elección de lider.
-                    html += '<button id="vl_' + userInTeamIndex + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + userInTeamIndex + ', \'' + teams[userInTeamIndex]['users'][k]['userName'] + '\', \'' + teams[userInTeamIndex]['users'][k]['userSurname'] + '\', ' + newLeader + ');document.getElementById(this.id).style.display = \'none\';">Vote for leader</button>';
+                    document.getElementById('lblChooseLeader').innerHTML = 'PLASE CHOSE YOUR LEADER';
+                    html += '<button id="vl_' + userInTeamIndex + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + userInTeamIndex + ', ' + k + ', \'' + teams[userInTeamIndex]['users'][k]['userName'] + '\', \'' + teams[userInTeamIndex]['users'][k]['userSurname'] + '\', ' + newLeader + ');">Vote for leader</button>';
                 }
             }
             html += '</div>';

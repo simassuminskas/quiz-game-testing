@@ -793,7 +793,8 @@ function allUsersVotation(socket, data)
           {
             console.log(game.rooms[index]['teams'][i]['users'][k]['userName'] + ' ' + game.rooms[index]['teams'][i]['users'][k]['userSurname'] + ' eligió una respuesta.');
           }
-          if ((!game.rooms[index]['teams'][i]['users'][k]['vote']) && (!game.rooms[index]['teams'][i]['users'][k]['leader']))
+          //if ((!game.rooms[index]['teams'][i]['users'][k]['vote']) && (!game.rooms[index]['teams'][i]['users'][k]['leader']))
+          if (!game.rooms[index]['teams'][i]['users'][k]['vote'])
           {
             allUsersVoted = false;
           }
