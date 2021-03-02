@@ -121,14 +121,14 @@ svg.append("g")
     .attr("transform", "translate(" + (w + padding.left + padding.right) + "," + ((h/2)+padding.top) + ")")
     .append("path")
     .attr("d", "M-" + (r*.15) + ",0L0," + (r*.05) + "L0,-" + (r*.05) + "Z")
-    .style({"fill":"black"});
+    .style({"fill":"white"});
 //draw spin circle
 container.append("circle")
     .attr("id", 'circle')
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", 60)
-    .style({"fill":"white","cursor":"pointer"});
+    .style({"fill":"red","cursor":"pointer"});
 
 document.getElementById('circle').onclick = function(){
     spin();
@@ -137,7 +137,7 @@ document.getElementById('circle').onclick = function(){
 //spin text
 container.append("text")
     .attr("x", 0)
-    .attr("y", 15)
+    .attr("y", 18)
     .attr("text-anchor", "middle")
     .text("SPIN")
     .style({"font-weight":"bold", "font-size":"25px"});
