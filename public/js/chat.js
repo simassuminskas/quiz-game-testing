@@ -752,14 +752,19 @@ function login()
 {
     if ((!connected) && (userName === undefined) && (userSurname === undefined))
     {
-        userName = $('#nameInput').val().replace(regex, ' ').trim();
-        userSurname = $('#surnameInput').val().replace(regex, ' ').trim();
-        var data = JSON.stringify({
-            'type' : 'update', 
-            'userName' : userName, 
-            'userSurname' : userSurname, 
-            'teamName' : document.getElementById('teamName').value
-        });
-        socket.emit('update', data);
+        auxUserName = document.getElementById('nameInput').value;
+        auxUserSurname = document.getElementById('surnameInput').value;
+        if (auxUserName.length && auxUserSurname.length)
+        {
+            userName = $('#nameInput').val().replace(regex, ' ').trim();
+            userSurname = $('#surnameInput').val().replace(regex, ' ').trim();
+            var data = JSON.stringify({
+                'type' : 'update', 
+                'userName' : userName, 
+                'userSurname' : userSurname, 
+                'teamName' : document.getElementById('teamName').value
+            });
+            socket.emit('update', data);
+        }
     }
 }
