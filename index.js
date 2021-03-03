@@ -732,7 +732,7 @@ function questionArea2(socket, data)
               if (game.questions['area' + message['area']][j]['options'][k]['option'] == message['answer'])
               {//Pendiente ver por qué no llega a este punto.
                 game.rooms[index]['teams'][i]['scoreArea' + message['area']] += game.questions['area' + message['area']][j]['options'][k]['score'];
-                message['score'] = game.questions['area' + message['area']][j]['options'][k]['score']
+                message['score'] = game.questions['area' + message['area']][j]['options'][k]['score'];
                 k = game.questions['area' + message['area']][j]['options'].length;
               }
             }
@@ -757,7 +757,7 @@ function questionArea2(socket, data)
           {
             game.rooms[index]['teams'][i]['users'][j]['rolledDice'] = false;
           }
-        }
+        }console.log('Score: ' + message['score'])
         socket.emit('showResultArea2', message);
         socket.broadcast.emit('showResultArea2', message);
         /*for (var j = 0; j < game.rooms[index]['teams'][i]['users'].length; j++)

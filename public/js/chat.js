@@ -215,12 +215,16 @@ socket.on('showResultArea2', (data) => {
                 {
                     r = 'CORRECT';
                 }
-                document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + data['score'];
                 if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
                 {
+                    document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + data['score'];
                     nextStep = 'showSpinner';
                     document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                     document.getElementById('nextBtnDivArea2').style.display = 'block';
+                }
+                else
+                {
+                    document.getElementById('area2Info').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + data['score'];
                 }
             }
         }
@@ -278,15 +282,19 @@ socket.on('question', (data) => {
                     document.getElementById('area2').style.display = 'block';
                     options = data['question']['options'];
                     document.getElementById('area2Table').style.display = 'none';
-                    document.getElementById('area2Info').innerHTML = '<br><br>NOW PLEASE CHOOSE THE  RIGHT ANSWER';
                     document.getElementById('lblArea').innerHTML = 'KNOWLEDGE ABOUT US';
                     if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
                     {
+                        document.getElementById('area2Info').innerHTML = '<br><br>NOW PLEASE CHOOSE THE RIGHT ANSWER';
                         dataUserName = data['userName'];
                         dataUserSurname = data['userSurname'];
                         nextStep = 'area2Question';
                         document.getElementById('nextBtnDivArea2').style.display = 'block';
                         document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
+                    }
+                    else
+                    {
+                        document.getElementById('area2Info').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL CHOOSE THE ANSWER';
                     }
                 }
             }
@@ -296,6 +304,7 @@ socket.on('question', (data) => {
 socket.on('area2Question', (data) => {
     if ((data['roomCode'] == roomCode) && (data['teamName'] == teamName) && (data['userName'] != userName) && (data['userSurname'] != userSurname) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
+        document.getElementById('area2Info').innerHTML = data['userName'] + ' ' + data['userSurname'] + ' IS ANSWERING THE QUESTION :';
         document.getElementById('area2Table').style.display = 'block';
         document.getElementById('area2QuestionsDiv').innerHTML = '<label id="question">' + data['question'] + '</label>';
         var html = '';
@@ -621,14 +630,18 @@ socket.on('ro', (data) => {
             document.getElementById('area3').style.display = 'block';
             text = data['ro']['text'];
             score = data['ro']['score'];
-            document.getElementById('area3Info').innerHTML = '<br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
             if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
             {
+                document.getElementById('area3Info').innerHTML = '<br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
                 dataUserName = data['userName'];
                 dataUserSurname = data['userSurname'];
                 nextStep = 'area3Card';
                 document.getElementById('nextBtnDivArea3').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                 document.getElementById('nextBtnDivArea3').style.display = 'block';
+            }
+            else
+            {
+                document.getElementById('area3Info').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL OPEN THE<br>CARD<br>&<br>SEE THE RESULT';
             }
             showGameInfo();
         }
