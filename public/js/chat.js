@@ -207,7 +207,7 @@ socket.on('showResultArea2', (data) => {
         teams = getTeams(data['rooms']);
         for (var j = 0; j < teams.length; j++)
         {
-            if ((teams[j]['teamName'] == data['teamName']) && (data['teamName'] == teamName) && (data['userName'] == userName) && (data['userSurname'] == userSurname))
+            if ((teams[j]['teamName'] == data['teamName']) && (data['teamName'] == teamName))
             {
                 document.getElementById('area2Table').style.display = 'none';
                 var r = 'INCORRECT';
@@ -215,13 +215,19 @@ socket.on('showResultArea2', (data) => {
                 {
                     r = 'CORRECT';
                 }
-                nextStep = 'showSpinner';
                 document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + data['score'];
-                document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
+                if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
+                {
+                    nextStep = 'showSpinner';
+                    document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
+                    document.getElementById('nextBtnDivArea2').style.display = 'block';
+                }
             }
         }
     }
 });
+var dataUserName;
+var dataUserSurname;
 socket.on('question', (data) => {
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
@@ -265,21 +271,45 @@ socket.on('question', (data) => {
                     document.getElementById('lblArea').innerHTML = 'DILEMMAS';
                     nextStep = 'allUsersVotation';
                 }
-                if ((data['area'] == 2) && (data['userName'] == userName) && (data['userSurname'] == userSurname))
+                if (data['area'] == 2)
                 {
                     document.getElementById('area3').style.display = 'none';
                     document.getElementById('area1').style.display = 'none';
                     document.getElementById('area2').style.display = 'block';
                     options = data['question']['options'];
-                    nextStep = 'area2Question';
                     document.getElementById('area2Table').style.display = 'none';
                     document.getElementById('area2Info').innerHTML = '<br><br>NOW PLEASE CHOOSE THE  RIGHT ANSWER';
-                    document.getElementById('nextBtnDivArea2').style.display = 'block';
-                    document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                     document.getElementById('lblArea').innerHTML = 'KNOWLEDGE ABOUT US';
+                    if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
+                    {
+                        dataUserName = data['userName'];
+                        dataUserSurname = data['userSurname'];
+                        nextStep = 'area2Question';
+                        document.getElementById('nextBtnDivArea2').style.display = 'block';
+                        document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
+                    }
                 }
             }
         }
+    }
+});
+socket.on('area2Question', (data) => {
+    if ((data['roomCode'] == roomCode) && (data['teamName'] == teamName) && (data['userName'] != userName) && (data['userSurname'] != userSurname) && (document.getElementById('divGameFinished').style.display == 'none'))
+    {
+        document.getElementById('area2Table').style.display = 'block';
+        document.getElementById('area2QuestionsDiv').innerHTML = '<label id="question">' + data['question'] + '</label>';
+        var html = '';
+        for (var j = 0; j < data['options'].length; j++)
+        {
+            html += '<label id="lbl_question_option_' + j + '">' + data['options'][j]['option'] + '</label><br>';
+        }
+        document.getElementById('area2AnswersDiv').innerHTML = html;
+    }
+});
+socket.on('area3Card', (data) => {
+    if ((data['roomCode'] == roomCode) && (data['teamName'] == teamName) && (data['userName'] != userName) && (data['userSurname'] != userSurname) && (document.getElementById('divGameFinished').style.display == 'none'))
+    {
+        document.getElementById('area3Info').innerHTML = document.getElementById('area3Info').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: ' + data['score'];
     }
 });
 function showNextStep()
@@ -376,14 +406,6 @@ function showNextStep()
                 YOUR SCORE FOR THE ANSWER:<br>
                 ` + score + `<br>`;//Pendiente la parte de los comentarios.
             nextStep = 'personalEvaluation';console.log('Line 347.');
-            /*socket.emit('showFinalAnswer', JSON.stringify({
-                "userName" : userName, 
-                "userSurname" : userSurname, 
-                "teamName" : teamName, 
-                "question" : question, 
-                "area" : area, 
-                "roomCode" : roomCode
-            }));*/
         break;
         case 'questionArea2':
             socket.emit('questionArea2', JSON.stringify({
@@ -407,31 +429,35 @@ function showNextStep()
             document.getElementById('nextBtnDivArea3').style.display = 'none';
         break;
         case 'area2Question':
-            /*socket.emit('questionArea2', JSON.stringify({
+            socket.emit('area2Question', JSON.stringify({
                 "userName" : userName, 
                 "userSurname" : userSurname, 
                 "teamName" : teamName, 
                 "question" : question, 
-                "answer" : answer, 
-                "area" : area, 
+                "options" : options, 
                 "roomCode" : roomCode
-            }));*/
+            }));
             document.getElementById('area2Table').style.display = 'block';
             document.getElementById('area2QuestionsDiv').innerHTML = '<label id="question">' + question + '</label>';
             var html = '';
             for (var j = 0; j < options.length; j++)
             {
-                //html += '<input type="radio" id="question_option_' + j + '" name="answer">';
                 html += '<input type="radio" id="question_option_' + j + '" name="answer" onchange="document.getElementById(\'nextBtnDivArea2\').style.display = \'block\'">';
                 html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + options[j]['option'] + '</label><br>';
             }
             document.getElementById('area2AnswersDiv').innerHTML = html;
-            //document.getElementById('area2AnswersDiv').innerHTML = '<input type="radio" id="question_option_0" name="answer" onchange="document.getElementById(\'nextBtnDivArea2\').style.display = \'none\'">';
             nextStep = 'questionArea2';
-            //document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
             document.getElementById('nextBtnDivArea2').style.display = 'none';
         break;
         case 'area3Card':
+            socket.emit('area3Card', JSON.stringify({
+                "userName" : userName, 
+                "userSurname" : userSurname, 
+                "teamName" : teamName, 
+                "text" : text, 
+                "score" : score, 
+                "roomCode" : roomCode
+            }));
             document.getElementById('area3Info').innerHTML = document.getElementById('area3Info').innerHTML = '<br><br>' + text + '<br>' + 'SCORE: ' + score;
             nextStep = 'showSpinner';
             document.getElementById('nextBtnDivArea3').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
@@ -583,22 +609,27 @@ var text;
 socket.on('ro', (data) => {
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
-        document.getElementById('area3').style.top = (parseInt(document.getElementById('lblArea').offsetTop) + 35) + 'px';
-        document.getElementById('lblArea').innerHTML = 'RISKS & OPPORTUNITIES';
-        area = data['area'];
         teams = getTeams(data['rooms']);
         console.log(data);
-        if ((data['teamName'] == teamName) && (data['userName'] == userName) && (data['userSurname'] == userSurname))
+        if (data['teamName'] == teamName)
         {console.log(document.getElementById('spinner').style.display);
+            document.getElementById('area3').style.top = (parseInt(document.getElementById('lblArea').offsetTop) + 35) + 'px';
+            document.getElementById('lblArea').innerHTML = 'RISKS & OPPORTUNITIES';
+            area = data['area'];
             document.getElementById('area1').style.display = 'none';
             document.getElementById('area2').style.display = 'none';
             document.getElementById('area3').style.display = 'block';
-            nextStep = 'area3Card';
             text = data['ro']['text'];
             score = data['ro']['score'];
             document.getElementById('area3Info').innerHTML = '<br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
-            document.getElementById('nextBtnDivArea3').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
-            document.getElementById('nextBtnDivArea3').style.display = 'block';
+            if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
+            {
+                dataUserName = data['userName'];
+                dataUserSurname = data['userSurname'];
+                nextStep = 'area3Card';
+                document.getElementById('nextBtnDivArea3').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
+                document.getElementById('nextBtnDivArea3').style.display = 'block';
+            }
             showGameInfo();
         }
         /*if ((data['area'] == 2) && (data['userName'] == userName) && (data['userSurname'] == userSurname))

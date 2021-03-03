@@ -419,6 +419,14 @@ io.on('connection', (socket) => {
       }
     }
   });
+  socket.on('area2Question', (data) => {
+    var message = JSON.parse(data);
+    socket.broadcast.emit('area2Question', message);
+  });
+  socket.on('area3Card', (data) => {
+    var message = JSON.parse(data);
+    socket.broadcast.emit('area3Card', message);
+  });
   socket.on('personalEvaluation', (data) => {//input range
     var message = JSON.parse(data);
     var index = game.searchRoomCode(message['roomCode'], false);
