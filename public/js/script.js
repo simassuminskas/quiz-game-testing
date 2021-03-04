@@ -108,9 +108,7 @@ function showGameInfo()
                     if ((teams[j]['users'][k]['userName'] == userName) && 
                         (teams[j]['users'][k]['userSurname'] == userSurname))
                     {
-                        //document.getElementById('teamScore').style.display = 'block';
-                        //document.getElementById('teamScore').innerHTML = 'TEAM SCORE:<br><br>DILEMMAS: ' + teams[j]['scoreArea1'] + '<br><br>KNOWLEDGE ABOUT US: ' + teams[j]['scoreArea2'] + '<br><br>RISKS AND OPPORTUNITIES: ' + teams[j]['scoreArea3'];
-                        document.getElementById('gameInfo').innerHTML = 'DILEMMAS:<br>' + teams[j]['scoreArea1'] + '<br><br>KNOWLEDGE ABOUT US:<br>' + teams[j]['scoreArea2'] + '<br><br>RISKS & OPPORTUNITIES:<br>' + teams[j]['scoreArea3'];
+                        document.getElementById('gameInfo').innerHTML = '<div style="padding-right: 5%; padding-left: 5%; padding-top: 5%; padding-bottom: 5%;">DILEMMAS:<br>' + teams[j]['scoreArea1'] + '<br><br>KNOWLEDGE ABOUT US:<br>' + teams[j]['scoreArea2'] + '<br><br>RISKS & OPPORTUNITIES:<br>' + teams[j]['scoreArea3'] + '</div>';
                     }
                 }
             }
@@ -125,7 +123,7 @@ function gameFinished()
         {
             if (teams[j]['teamName'] == teamName)
             {
-                document.getElementById('teamScore2').innerHTML = 'DILEMMAS: ' + teams[j]['scoreArea1'] + ' KNOWLEDGE ABOUT US: ' + teams[j]['scoreArea2'] + ' RISKS AND OPPORTUNITIES: ' + teams[j]['scoreArea3'];
+                document.getElementById('gameInfo').innerHTML = '<div style="padding-right: 5%; padding-left: 5%; padding-top: 5%; padding-bottom: 5%;">DILEMMAS:<br>' + teams[j]['scoreArea1'] + '<br><br>KNOWLEDGE ABOUT US:<br>' + teams[j]['scoreArea2'] + '<br><br>RISKS & OPPORTUNITIES:<br>' + teams[j]['scoreArea3'] + '</div>';
             }
         }
     }

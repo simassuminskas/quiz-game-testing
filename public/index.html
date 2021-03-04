@@ -14,6 +14,7 @@
 </head>
 <body id="body" style="background-image: url('./img/1.png');background-size: cover;" onload="document.getElementById('rulesLink').href = location + 'rules/';">
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <div id="gameInfo" style=""></div>
     <br>
     <a href="" id="rulesLink" target="_blank" style="position: right; font-family: 'Quicksand', serif; color: #a48f8c; text-decoration:none;">RULES</a>
     <div id="divLogin">
@@ -35,10 +36,6 @@
         </center>
     </div>
     <center id="teamInfo" style="font-family: 'Quicksand', serif; /*border: dotted; width: 25%;*/ display: none;"></center>
-    <div id="gameInfo" style="">
-        <!--<label id="statusInfo"></label>
-        <label id="userInfo"></label>-->
-    </div>
     <div id="teamScore"></div>
     <center><label id="lblArea"></label></center>
     <center><div id="spinner" style="display: none;" onclick="sendArea();"></div></center>
