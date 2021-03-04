@@ -7,7 +7,6 @@ var padding = {top:20, right:40, bottom:0, left:0},
     picked = 100000,
     oldpick = [],
     color = d3.scale.category20();//category20c()
-    //randomNumbers = getRandomNumbers();
     //http://osric.com/bingo-card-generator/?title=HTML+and+CSS+BINGO!&words=padding%2Cfont-family%2Ccolor%2Cfont-weight%2Cfont-size%2Cbackground-color%2Cnesting%2Cbottom%2Csans-serif%2Cperiod%2Cpound+sign%2C%EF%B9%A4body%EF%B9%A5%2C%EF%B9%A4ul%EF%B9%A5%2C%EF%B9%A4h1%EF%B9%A5%2Cmargin%2C%3C++%3E%2C{+}%2C%EF%B9%A4p%EF%B9%A5%2C%EF%B9%A4!DOCTYPE+html%EF%B9%A5%2C%EF%B9%A4head%EF%B9%A5%2Ccolon%2C%EF%B9%A4style%EF%B9%A5%2C.html%2CHTML%2CCSS%2CJavaScript%2Cborder&freespace=true&freespaceValue=Web+Design+Master&freespaceRandom=false&width=5&height=5&number=35#results
 var data = [
     {"label":"DILEMMAS",  "value":1}, 
@@ -20,9 +19,10 @@ var data = [
     {"label":"KNOWLEDGE ABOUT US",  "value":2}, 
     {"label":"RISKS & OPPORTUNITIES",  "value":3}, 
     {"label":"DILEMMAS",  "value":1}, 
-    {"label":"KNOWLEDGE ABOUT US",  "value":2}, 
-    {"label":"RISKS & OPPORTUNITIES",  "value":3}
+    {"label":"KNOWLEDGE ABOUT US", "value":2}, 
+    {"label":"RISKS & OPPORTUNITIES", "value":3}
 ];
+var colours = ['#ac0034', '#ffffff', '#c4b3b0', '#ac0034', '#ffffff', '#c4b3b0', '#ac0034', '#ffffff', '#c4b3b0', '#ac0034', '#ffffff', '#c4b3b0'];
 var svg = d3.select('#spinner')
     .append("svg")
     .data([data])
@@ -44,7 +44,7 @@ var arcs = vis.selectAll("g.slice")
     .attr("class", "slice");
 
 arcs.append("path")
-    .attr("fill", function(d, i){ return color(i); })
+    .attr("fill", function(d, i){ return colours[i]; })
     .attr("d", function (d) { return arc(d); });
 // add the text
 arcs.append("text").attr("transform", function(d){
@@ -126,12 +126,18 @@ svg.append("g")
     .attr("d", "M-" + (r*.15) + ",0L0," + (r*.05) + "L0,-" + (r*.05) + "Z")
     .style({"fill":"black"});
 //draw spin circle
+container.append("circle2")
+    .attr("id", 'circle2')
+    .attr("cx", 0)
+    .attr("cy", 0)
+    .attr("r", 10)
+    .style({"fill":"white","cursor":"pointer"});
 container.append("circle")
     .attr("id", 'circle')
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", 60)
-    .style({"fill":"white","cursor":"pointer"});
+    .style({"fill":"#ac0034","cursor":"pointer"});
 
 document.getElementById('circle').onclick = function(){
     spin();
@@ -143,30 +149,11 @@ container.append("text")
     .attr("y", 15)
     .attr("text-anchor", "middle")
     .text("SPIN")
-    .style({"font-weight":"bold", "font-size":"25px", "cursor":"pointer"});
+    .style({"fill":"#f6adb6", "font-weight":"bold", "font-size":"25px", "cursor":"pointer"});
 
 function rotTween(to) {
   var i = d3.interpolate(oldrotation % 360, rotation);
   return function(t) {
     return "rotate(" + i(t) + ")";
   };
-}
-
-function getRandomNumbers()
-{
-    var array = new Uint16Array(1000);
-    var scale = d3.scale.linear().range([360, 1440]).domain([0, 100000]);
-    if(window.hasOwnProperty("crypto") && typeof window.crypto.getRandomValues === "function")
-    {
-        window.crypto.getRandomValues(array);
-        console.log("works");
-    }
-    else
-    {
-        //no support for crypto, get crappy random numbers
-        for(var i=0; i < 1000; i++){
-            array[i] = Math.floor(Math.random() * 100000) + 1;
-        }
-    }
-    return array;
 }
