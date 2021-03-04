@@ -23,6 +23,7 @@ var data = [
     {"label":"RISKS & OPPORTUNITIES", "value":3}
 ];
 var colours = ['#ac0034', '#ffffff', '#c4b3b0', '#ac0034', '#ffffff', '#c4b3b0', '#ac0034', '#ffffff', '#c4b3b0', '#ac0034', '#ffffff', '#c4b3b0'];
+var textColours = ['#f6adb6', '#000000', '#ac0034', '#f6adb6', '#000000', '#ac0034', '#f6adb6', '#000000', '#ac0034', '#f6adb6', '#000000', '#ac0034'];
 var svg = d3.select('#spinner')
     .append("svg")
     .data([data])
@@ -41,7 +42,8 @@ var arcs = vis.selectAll("g.slice")
     .data(pie)
     .enter()
     .append("g")
-    .attr("class", "slice");
+    .attr("class", "slice")
+    .attr("fill", function(d, i){ return textColours[i]; });
 
 arcs.append("path")
     .attr("fill", function(d, i){ return colours[i]; })
@@ -149,7 +151,7 @@ container.append("text")
     .attr("y", 15)
     .attr("text-anchor", "middle")
     .text("SPIN")
-    .style({"fill":"#f6adb6", "font-weight":"bold", "font-size":"25px", "cursor":"pointer"});
+    .style({"fill":"#f6adb6", "font-weight":"bold", "font-size":"260%", "cursor":"pointer"});
 
 function rotTween(to) {
   var i = d3.interpolate(oldrotation % 360, rotation);
