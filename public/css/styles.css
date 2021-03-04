@@ -1,23 +1,11 @@
 #welcomeText{
 	text-align: center;
-	font-family: 'Quicksand', sans-serif;
 }
 #teamsInfo{
 	text-align: center;
-	font-family: 'Quicksand', sans-serif;
-	}
-
-#lblSurname{
-		font-family: 'Quicksand', sans-serif;
-	}
-	
-#lblName{
-		font-family: 'Quicksand', sans-serif;
-	}
-
+}
 #congratulationsText{
 	text-align: center;
-	font-family: 'Quicksand', sans-serif;
 }
 #area3 {
   text-align: center;
@@ -26,22 +14,33 @@
   z-index: 1;
   padding-top: 2%;
   top: 10%;
-  left: 9%;
+  left: 7%;
   width: 80%;
   background-color: #b64a58;
   opacity: 0.8;
   border: dotted;
-	font-family: 'Quicksand', sans-serif;
 }
 #spinner{
     width:40%;
-	font-family: 'Quicksand', sans-serif;
 }
 /*------------------------------------*/
 #spinner{
     width:617px;
     height:617px;
-	font-family: 'Quicksand', sans-serif;
+}
+#gameInfo {
+    background-color: white;
+    font-family: 'Quicksand', serif;
+  display: none;
+  position: absolute;
+  z-index: 1;
+  left: 88%;
+  /*top: 10%;
+  left: 9%;*/
+  width: 10%;
+  /*background-color: #b64a58;
+  opacity: 0.8;*/
+  padding-right: 7%;
 }
 #area1 {
   display: block;
@@ -49,12 +48,11 @@
   z-index: 1;
   padding-top: 2%;
   top: 10%;
-  left: 9%;
+  left: 7%;
   width: 80%;
   background-color: #b64a58;
   opacity: 0.8;
   border: dotted;
-	font-family: 'Quicksand', sans-serif;
 }
 #area2 {
   display: block;
@@ -62,10 +60,9 @@
   z-index: 1;
   padding-top: 2%;
   top: 10%;
-  left: 9%;
+  left: 7%;
   width: 80%;
   background-color: #b64a58;
   opacity: 0.8;
   border: dotted;
-	font-family: 'Quicksand', sans-serif;
 }

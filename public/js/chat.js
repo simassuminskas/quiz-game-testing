@@ -33,25 +33,31 @@ socket.on('update', (data) => {//message['newTeam']
         {
             if (!connected)
             {
+                document.getElementById('divLogin').style.display = 'block';
+                document.getElementById('loginFields').style.display = 'none';
                 roomCode = data['roomCode'];
                 teams = getTeams(data['rooms']);
                 teamName = data['teamName'];
                 connected = true;
                 document.getElementById('body').style.backgroundColor = "white";
                 document.getElementById('body').style.backgroundImage = "url('./img/2.png')";
+                //document.getElementById('lblPlease').innerHTML = '<br><br><br>';
             }
-            teams = getTeams(data['rooms']);
-            document.getElementById('divLogin').style.display = 'none';
-            document.getElementById('teamInfo').style.display = 'block';
+            /*if (data['teamName'] == teamName)
+            {
+                teams = getTeams(data['rooms']);
+                document.getElementById('teamInfo').style.display = 'block';
+            }*/
             //showTeamInfo();
         }
         else
         {//data['newTeam']
-            if (connected)
-            {console.log('Ya estaba conectado.');
+            if (connected && (data['teamName'] == teamName))
+            {console.log('Ya estaba conectado y viene otro.');
                 teams = getTeams(data['rooms']);
-                document.getElementById('divLogin').style.display = 'none';
-                document.getElementById('teamInfo').style.display = 'block';
+                /*document.getElementById('divLogin').style.display = 'none';
+                document.getElementById('loginFields').style.display = 'none';*/
+                //document.getElementById('lblPlease').innerHTML = 'PLEASE CHOOSE YOUR LEADER<br><br><br>';
             }
             //if (connected)
             {
@@ -81,7 +87,7 @@ socket.on('update', (data) => {//message['newTeam']
     }
 });
 socket.on('showSpinner', (data) => {
-    document.getElementById('lblChooseLeader').innerHTML = '';
+    document.getElementById('divLogin').style.display = 'none';
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {console.log('Line 84.')
         document.getElementById('lblArea').innerHTML = '';
@@ -111,7 +117,8 @@ socket.on('showSpinner', (data) => {
             }));*/
             /*tmp_code*/
         }
-        showTeamInfo();
+        //showTeamInfo();
+        document.getElementById('teamInfo').style.display = 'none';
         showGameInfo();
     }
 });

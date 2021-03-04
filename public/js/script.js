@@ -16,6 +16,15 @@ var drawingTools;
 var canvasDisplay = 'none';
 var pr = false;
 
+function verifyLogin()
+{
+    userName = $('#nameInput').val().replace(regex, ' ').trim();
+    userSurname = $('#surnameInput').val().replace(regex, ' ').trim();
+    if (userName.length && userSurname.length)
+    {
+        
+    }
+}
 function showTeamInfo(newLeader = false)
 {
     document.getElementById('teamInfo').style.display = 'block';
@@ -38,7 +47,7 @@ function showTeamInfo(newLeader = false)
         }
         if (userInTeamIndex != -1)
         {console.log('Line 40.');
-            html += '<label>' + teams[userInTeamIndex]['teamName'] + '</label>';
+            html += '<label>TEAM<br>"' + teams[userInTeamIndex]['teamName'] + '"<br></label>';
             var indexLeaderElected = -1;
             for (var k = 0; k < teams[userInTeamIndex]['users'].length; k++)
             {
@@ -52,6 +61,15 @@ function showTeamInfo(newLeader = false)
                         document.getElementById('area3').style.display = 'none';
                     }
                 }
+            }
+            if (teams[userInTeamIndex]['users'].length == 1)
+            {
+                document.getElementById('lblPlease').innerHTML = '<br><br><br>';
+            }
+            if (teams[userInTeamIndex]['users'].length > 1)
+            {
+                document.getElementById('lblPlease').innerHTML = 'PLEASE CHOOSE YOUR LEADER<br><br><br>';
+                showGameInfo();
             }
             for (var k = 0; k < teams[userInTeamIndex]['users'].length; k++)
             {
@@ -67,8 +85,8 @@ function showTeamInfo(newLeader = false)
                 }
                 if ((teams[userInTeamIndex]['users'].length > 1) && (indexLeaderElected == -1) && (!vote))
                 {//Se debe habilitar la elección de lider.
-                    document.getElementById('lblChooseLeader').innerHTML = 'PLASE CHOSE YOUR LEADER';
-                    html += '<br><button id="vl_' + userInTeamIndex + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + userInTeamIndex + ', ' + k + ', \'' + teams[userInTeamIndex]['users'][k]['userName'] + '\', \'' + teams[userInTeamIndex]['users'][k]['userSurname'] + '\', ' + newLeader + ');" style="display: \'block\';">Vote for leader</button>';
+                    //document.getElementById('lblChooseLeader').innerHTML = 'PLASE CHOSE YOUR LEADER';
+                    html += '<br><button id="vl_' + userInTeamIndex + '_' + k + '" onclick="voteLeader(userName, userSurname, roomCode, ' + userInTeamIndex + ', ' + k + ', \'' + teams[userInTeamIndex]['users'][k]['userName'] + '\', \'' + teams[userInTeamIndex]['users'][k]['userSurname'] + '\', ' + newLeader + ');" style="background-color: #c5b3b1; display: \'block\'; border-radius: 12px; font-size: 100%;">VOTE FOR LEADER</button>';
                 }
             }
             html += '</div>';
@@ -90,8 +108,9 @@ function showGameInfo()
                     if ((teams[j]['users'][k]['userName'] == userName) && 
                         (teams[j]['users'][k]['userSurname'] == userSurname))
                     {
-                        document.getElementById('teamScore').style.display = 'block';
-                        document.getElementById('teamScore').innerHTML = 'TEAM SCORE:<br><br>DILEMMAS: ' + teams[j]['scoreArea1'] + '<br><br>KNOWLEDGE ABOUT US: ' + teams[j]['scoreArea2'] + '<br><br>RISKS AND OPPORTUNITIES: ' + teams[j]['scoreArea3'];
+                        //document.getElementById('teamScore').style.display = 'block';
+                        //document.getElementById('teamScore').innerHTML = 'TEAM SCORE:<br><br>DILEMMAS: ' + teams[j]['scoreArea1'] + '<br><br>KNOWLEDGE ABOUT US: ' + teams[j]['scoreArea2'] + '<br><br>RISKS AND OPPORTUNITIES: ' + teams[j]['scoreArea3'];
+                        document.getElementById('gameInfo').innerHTML = 'DILEMMAS:<br>' + teams[j]['scoreArea1'] + '<br><br>KNOWLEDGE ABOUT US:<br>' + teams[j]['scoreArea2'] + '<br><br>RISKS & OPPORTUNITIES:<br>' + teams[j]['scoreArea3'];
                     }
                 }
             }
