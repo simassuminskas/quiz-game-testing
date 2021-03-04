@@ -122,18 +122,30 @@ function spin(d){
     }
 }
 //make arrow
+/*var imgs = svg.selectAll("img").data([0]);
+    imgs.enter()
+        .append("img")
+        .attr("xlink:href", "@Url.Content(\"./img/Asset 2.png\")")
+        .attr("x", "60")
+        .attr("y", "60")
+        .attr("width", "20")
+        .attr("height", "20");*/
+//svg.append("svg:image")
+var arrowX;
 svg.append("g")
     .attr("transform", "translate(" + (w + padding.left + padding.right) + "," + ((h/2)+padding.top) + ")")
     .append("path")
     .attr("d", "M-" + (r*.15) + ",0L0," + (r*.05) + "L0,-" + (r*.05) + "Z")
-    .style({"fill":"black"});
+    .attr("id", "arrowSvg");
+    //.attr("xlink:href", "@Url.Content(\"./img/Asset 2.png\")");
+    //.style({"fill":"white"});
 //draw spin circle
-container.append("circle2")
+/*container.append("circle2")
     .attr("id", 'circle2')
     .attr("cx", 0)
     .attr("cy", 0)
     .attr("r", 10)
-    .style({"fill":"white","cursor":"pointer"});
+    .style({"fill":"white","cursor":"pointer"});*/
 container.append("circle")
     .attr("id", 'circle')
     .attr("cx", 0)
@@ -151,8 +163,12 @@ container.append("text")
     .attr("y", 15)
     .attr("text-anchor", "middle")
     .text("SPIN")
+    .attr("id", "circleText")
     .style({"fill":"#f6adb6", "font-weight":"bold", "font-size":"260%", "cursor":"pointer"});
 
+document.getElementById('circleText').onclick = function(){
+    spin();
+}
 function rotTween(to) {
   var i = d3.interpolate(oldrotation % 360, rotation);
   return function(t) {
