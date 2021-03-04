@@ -38,8 +38,9 @@
   /*top: 10%;
   left: 9%;*/
   width: 10%;
-  /*background-color: #b64a58;
-  opacity: 0.8;*/
+  /*background-color: #b64a58;*/
+  text-align: right;
+  opacity: 0.7;
   padding-right: 7%;
 }
 #area1 {
