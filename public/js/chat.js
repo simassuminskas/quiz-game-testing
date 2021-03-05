@@ -208,6 +208,7 @@ socket.on('showArea1PartialResult', (data) => {console.log(data);
     }
 });
 var nextStep;
+var beforeStep;
 socket.on('showResultArea2', (data) => {
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
@@ -278,6 +279,7 @@ socket.on('question', (data) => {
                     document.getElementById('area' + data['area'] + 'AnswersDiv').innerHTML = html;
                     //document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                     document.getElementById('nextBtnDivArea1').style.display = 'none';
+                    document.getElementById('beforeBtnDivArea1').style.display = 'none';
                     
                     document.getElementById('lblArea').innerHTML = 'DILEMMAS';
                     nextStep = 'allUsersVotation';
@@ -313,7 +315,9 @@ socket.on('area2Question', (data) => {
     {
         document.getElementById('area2Info').innerHTML = data['userName'] + ' ' + data['userSurname'] + ' IS ANSWERING THE QUESTION :';
         document.getElementById('area2Table').style.display = 'block';
+        //document.getElementById('area2QuestionsDiv').innerHTML = '<label style="color: transparent;">000000000000000000000000000000000000000000000000</label>';
         document.getElementById('area2QuestionsDiv').innerHTML = '<label id="question">' + data['question'] + '</label>';
+        //document.getElementById('area2QuestionsDiv').innerHTML += '<label style="color: transparent;">000000000000000000000000000000000000000000000000</label>';
         var html = '';
         for (var j = 0; j < data['options'].length; j++)
         {
@@ -328,6 +332,38 @@ socket.on('area3Card', (data) => {
         document.getElementById('area3Info').innerHTML = document.getElementById('area3Info').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: ' + data['score'];
     }
 });
+function showBeforeStep()
+{
+    switch (beforeStep)
+    {
+        case 'showFinalAnswer':
+            document.getElementById('lblLightBoxArea1Header').innerHTML = '';
+            document.getElementById('personalEvaluation').innerHTML = `
+                YOUR FINAL ANSWER WAS:<br>
+                ` + finalAnswer + `<br><br>
+                YOUR SCORE FOR THE ANSWER:<br>
+                ` + score + `<br>`;//Pendiente la parte de los comentarios.
+            nextStep = 'personalEvaluation';
+            beforeStep = 'detailedExplanationOfAnswers';
+        break;
+        case 'detailedExplanationOfAnswers':
+            document.getElementById('lblLightBoxArea1Header').innerHTML = 'DETAILED EXPLANATION OF ANSWERS';
+            var html = '';
+            for (var i = 0; i < options.length; i++)
+            {
+                html += '<label id="lbl_question_option_' + i + '">' + options[i]['option'] + '</label><br>' + options[i]['score'] + ' ' + options[i]['response'] + '<br><br>';
+            }
+            document.getElementById('personalEvaluation').innerHTML = html;
+            document.getElementById('nextBtnDivArea1').style.display = 'block';
+            document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
+
+            document.getElementById('beforeBtnDivArea1').style.display = 'none';
+        
+            nextStep = 'showFinalAnswer';
+            //beforeStep = 'detailedExplanationOfAnswers';
+        break;
+    }
+}
 function showNextStep()
 {
     var answer;
@@ -355,6 +391,7 @@ function showNextStep()
             }));
             //document.getElementById('nextBtnDivArea1').style.display = 'none';
             document.getElementById('nextBtnDivArea1').innerHTML = '';
+            document.getElementById('beforeBtnDivArea1').innerHTML = '';
         break;
         case 'leaderVotation':
             socket.emit('leaderVotation', JSON.stringify({
@@ -367,6 +404,7 @@ function showNextStep()
                 "roomCode" : roomCode
             }));
             document.getElementById('nextBtnDivArea1').style.display = 'none';
+            document.getElementById('beforeBtnDivArea1').style.display = 'none';
         break;
         case 'personalEvaluation':console.log('Line 297.');
             /*document.getElementById('lblLightBoxArea1Header').innerHTML = '';
@@ -383,6 +421,9 @@ function showNextStep()
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' PONTS?<br><br><input type="range" id="personalEvaluationRange" min="0" max="4">';
+            beforeStep = 'showFinalAnswer';
+            document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
+            document.getElementById('beforeBtnDivArea1').style.display = 'block';
             showGameInfo();
             //Pendiente ver si mantener este mensaje para el del siguiente turno.
             /*socket.emit('personalEvaluation', JSON.stringify({
@@ -400,6 +441,7 @@ function showNextStep()
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('nextBtnDivArea1').style.display = 'none';
+            document.getElementById('beforeBtnDivArea1').style.display = 'none';
             var evaluation = parseInt(document.getElementById('personalEvaluationRange').value) + 1;
             document.getElementById('personalEvaluation').innerHTML = 'THANK FOR YOUR ENGAGEMENT<br>PLEASE TAKE TURNS IN SPINING A WHELL';
             //Pendiente ver si mantener este mensaje para el del siguiente turno.
@@ -422,6 +464,9 @@ function showNextStep()
                 YOUR SCORE FOR THE ANSWER:<br>
                 ` + score + `<br>`;//Pendiente la parte de los comentarios.
             nextStep = 'personalEvaluation';console.log('Line 347.');
+            document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
+            document.getElementById('beforeBtnDivArea1').style.display = 'block';
+            beforeStep = 'detailedExplanationOfAnswers';
         break;
         case 'questionArea2':
             socket.emit('questionArea2', JSON.stringify({
@@ -440,9 +485,13 @@ function showNextStep()
                 "teamName" : teamName, 
                 "roomCode" : roomCode
             }));
-            document.getElementById('nextBtnDivArea1').style.display = 'none';
-            document.getElementById('nextBtnDivArea2').style.display = 'none';
-            document.getElementById('nextBtnDivArea3').style.display = 'none';
+            try
+            {
+                document.getElementById('nextBtnDivArea1').style.display = 'none';
+                document.getElementById('beforetBtnDivArea1').style.display = 'none';
+                document.getElementById('nextBtnDivArea2').style.display = 'none';
+                document.getElementById('nextBtnDivArea3').style.display = 'none';
+            }catch{}
         break;
         case 'area2Question':
             socket.emit('area2Question', JSON.stringify({
@@ -474,7 +523,9 @@ function showNextStep()
                 "score" : score, 
                 "roomCode" : roomCode
             }));
-            document.getElementById('area3Info').innerHTML = document.getElementById('area3Info').innerHTML = '<br><br>' + text + '<br>' + 'SCORE: ' + score;
+            //<div id="card"></div>
+            //document.getElementById('cardContent').innerHTML = '<br><br>' + text + '<br>' + 'SCORE: ' + score;
+            document.getElementById('area3Info').innerHTML = '<br><br>' + text + '<br>' + 'SCORE: ' + score;
             nextStep = 'showSpinner';
             document.getElementById('nextBtnDivArea3').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
         break;
@@ -508,6 +559,7 @@ socket.on('detailedExplanationOfAnswers', (data) => {
         finalAnswer = data['finalAnswer'];
         score = data['score'];
         bestAnswerScore = data['bestAnswerScore'];
+        options = data['options'];
 
         var html = '';
         for (var i = 0; i < data['options'].length; i++)
@@ -546,6 +598,7 @@ socket.on('leaderVotation', (data) => {
             document.getElementById('personalEvaluation').innerHTML = '';
             document.getElementById('area1Table').style.display = 'block';
             document.getElementById('area1').style.display = 'block';
+            document.getElementById('area1').style.backgroundColor = "#ac0034";
             document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE BEST MOST APPROPIATE ANSWER WITH THE TEAM & LEADER WILL SUBMIT THE FINAL DECISSION.';
             document.getElementById('area1QuestionsDiv').innerHTML = '<label id="question">' + data['question']['question'] + '</label><br>';
             question = data['question']['question'];
@@ -573,6 +626,8 @@ socket.on('leaderVotation', (data) => {
                 //document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                 document.getElementById('nextBtnDivArea1').style.display = 'none';
                 document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
+                document.getElementById('beforeBtnDivArea1').style.display = 'none';
+                document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             }
             document.getElementById('area1AnswersDiv').innerHTML = html;
             //document.getElementById('submitAnswerButton').style.display = 'block';
@@ -610,7 +665,8 @@ socket.on('personalEvaluation', (data) => {
             //document.getElementById('submitPersonalEvaluation').style.display = 'block';
             nextStep = 'personalEvaluation';
             document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
-            
+            beforeStep = 'showFinalAnswer';
+            document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('personalEvaluation').style.display = 'block';
             document.getElementById('lblLightBoxArea1Header').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' POINTS';
             document.getElementById('area1Table').style.display = 'none';

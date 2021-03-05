@@ -11,6 +11,8 @@
     <!--<style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap');</style>-->
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet">
+    <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
 </head>
 <body id="body" style="background-image: url('./img/1.png');background-size: cover;" onload="document.getElementById('rulesLink').href = location + 'rules/';/*document.getElementById('spinner').style.display = 'block';document.getElementById('divLogin').style.display = 'none';*/">
     <!--<img id="spinnerArrow" src="./img/Asset 2.png" style="position: absolute; left: 10%; width: 3%;">
@@ -55,15 +57,18 @@
             </tr>
         </table>
         <div id="personalEvaluation"></div>
-        <div id="nextBtnDivArea1" style="padding-left: 90%; padding-bottom: 1%; display: none;"><i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i></div>
+        <div>
+            <div id="beforeBtnDivArea1" style="padding-right: 90%; padding-bottom: 1%; display: none;"><i class="fas fa-angle-left fa-2x" onclick="showNextStep();"></i></div>
+            <div id="nextBtnDivArea1" style="padding-left: 90%; padding-bottom: 1%; display: none;"><i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i></div>
+        </div>
     </center>
     <center><button id="submitPersonalEvaluation" style="display: none;" onclick="submitPersonalEvaluation();">SUBMIT</button></center>
     <center id="area2" style="display: none; font-family: 'Quicksand', serif; color: white; border-color: black;">
         <div id="area2Info"></div>
-        <table id="area2Table" rules="cols">
+        <table id="area2Table" style="text-align: center; position: relative;" rules="cols">
             <tr>
-                <td id="area2LblQuestion" style="width: 70%;">QUESTION</td>
-                <td id="area2LblAnswers" style="width: 30%;">ANSWERS</td>
+                <td id="area2LblQuestion" style="/*width: 70%;*/">QUESTION</td>
+                <td id="area2LblAnswers" style="/*width: 30%;*/">ANSWERS</td>
             </tr>
             <tr>
                 <td><br><div id="area2QuestionsDiv"></div></td>
@@ -74,6 +79,17 @@
     </center>
     <center id="area3" style="display: none; font-family: 'Quicksand', serif; color: white; border-color: black;">
         <div id="area3Info"></div>
+        <!--<div class="wrapper cards">
+            <div class="container">
+                <div id="card">
+                  <div class="front" id="frontCard"></div>
+                  <div class="back">
+                    <div class="content" id="backCard">
+                    </div>
+                  </div>
+                </div>
+            </div>
+        </div>-->
         <div id="nextBtnDivArea3" style="padding-left: 90%; padding-bottom: 1%;"></div>
     </center>
     <div id="divGameFinished" style="display: none;">
@@ -94,6 +110,7 @@
     <script src="js/chat.js"></script>
     <script src="js/script.js"></script>
     <script src="js/spinner.js"></script>
+    <!--<script src="js/card.js"></script>-->
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 </body>
 </html>
