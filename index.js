@@ -389,6 +389,7 @@ io.on('connection', (socket) => {
             if (game.questions['area' + message['area']][j]['question'] == message['question'])
             {
               message['options'] = game.questions['area' + message['area']][j]['options'];
+              message['topic'] = game.questions['area' + message['area']][j]['topic'];
               j = game.questions['area' + message['area']].length;
             }
           }
@@ -408,7 +409,7 @@ io.on('connection', (socket) => {
               j = game.questions['area' + message['area']].length;
             }
           }
-          console.log(message['options'][0]['option'])
+          //console.log(message['options'][0]['option'])
           message['rooms'] = game.rooms;
           socket.emit('detailedExplanationOfAnswers', message);
           socket.broadcast.emit('detailedExplanationOfAnswers', message);

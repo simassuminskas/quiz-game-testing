@@ -57,10 +57,16 @@
             </tr>
         </table>
         <div id="personalEvaluation"></div>
-        <div>
-            <div id="beforeBtnDivArea1" style="padding-right: 90%; padding-bottom: 1%; display: none;"><i class="fas fa-angle-left fa-2x" onclick="showNextStep();"></i></div>
-            <div id="nextBtnDivArea1" style="padding-left: 90%; padding-bottom: 1%; display: none;"><i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i></div>
-        </div>
+        <!--<div style="display: flex;">
+            <div id="beforeBtnDivArea1" style="padding-left: 5%; padding-bottom: 1%; display: none;"><i class="fas fa-angle-left fa-2x" onclick="showNextStep();"></i></div>
+            <div id="nextBtnDivArea1" style="padding-right: 5%; padding-bottom: 1%; display: none;"><i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i></div>
+        </div>-->
+        <table>
+            <tr>
+                <td id="beforeBtnDivArea1Td"><center id="beforeBtnDivArea1" style="padding-bottom: 1%; display: none;"><i class="fas fa-angle-left fa-2x" onclick="showNextStep();"></i></center></td>
+                <td id="nextBtnDivArea1Td"><center id="nextBtnDivArea1" style="padding-bottom: 1%; display: none;"><i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i></center></td>
+            </tr>
+        </table>
     </center>
     <center><button id="submitPersonalEvaluation" style="display: none;" onclick="submitPersonalEvaluation();">SUBMIT</button></center>
     <center id="area2" style="display: none; font-family: 'Quicksand', serif; color: white; border-color: black;">

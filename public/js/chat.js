@@ -351,8 +351,9 @@ function showBeforeStep()
             var html = '';
             for (var i = 0; i < options.length; i++)
             {
-                html += '<label id="lbl_question_option_' + i + '">' + options[i]['option'] + '</label><br>' + options[i]['score'] + ' ' + options[i]['response'] + '<br><br>';
+                html += '<label id="lbl_question_option_' + i + '">' + options[i]['option'] + '</label><br>' + options[i]['score'] + ' ' + options[i]['response'] + '<br>';
             }
+            html += '<label style="text-align: right">' + topic + '</label><br><br>';
             document.getElementById('personalEvaluation').innerHTML = html;
             document.getElementById('nextBtnDivArea1').style.display = 'block';
             document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
@@ -560,12 +561,14 @@ socket.on('detailedExplanationOfAnswers', (data) => {
         score = data['score'];
         bestAnswerScore = data['bestAnswerScore'];
         options = data['options'];
+        topic = data['topic'];
 
         var html = '';
         for (var i = 0; i < data['options'].length; i++)
         {
             html += '<label id="lbl_question_option_' + i + '">' + data['options'][i]['option'] + '</label><br>' + data['options'][i]['score'] + ' ' + data['options'][i]['response'] + '<br><br>';
         }
+        html += '<label style="text-align: right">' + data['topic'] + '</label><br><br>';
         document.getElementById('personalEvaluation').innerHTML = html;
         document.getElementById('nextBtnDivArea1').style.display = 'block';
         document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
@@ -595,6 +598,8 @@ socket.on('leaderVotation', (data) => {
         }console.log('Line 252: ' + leader + ', ' + teamIndex + ', ' + data['teamName']);
         if ((teamIndex != -1) && (data['teamName'] == teamName))
         {
+            //beforeBtnDivArea1Td
+            //nextBtnDivArea1Td
             document.getElementById('personalEvaluation').innerHTML = '';
             document.getElementById('area1Table').style.display = 'block';
             document.getElementById('area1').style.display = 'block';
