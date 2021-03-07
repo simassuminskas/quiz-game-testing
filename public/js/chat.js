@@ -280,8 +280,8 @@ socket.on('question', (data) => {
                     //document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                     document.getElementById('nextBtnDivArea1').style.display = 'none';
                     document.getElementById('beforeBtnDivArea1').style.display = 'none';
-                    
-                    document.getElementById('lblArea').innerHTML = 'DILEMMAS';
+                    //document.getElementById('lblArea').innerHTML = 'DILEMMAS';
+                    document.getElementById('lblLightBoxArea1Header').innerHTML = 'Read the dilemma & chose the best answer individually.';
                     nextStep = 'allUsersVotation';
                 }
                 if (data['area'] == 2)
@@ -353,7 +353,7 @@ function showBeforeStep()
             {
                 html += '<label id="lbl_question_option_' + i + '">' + options[i]['option'] + '</label><br>' + options[i]['score'] + ' ' + options[i]['response'] + '<br>';
             }
-            html += '<label style="text-align: right">' + topic + '</label><br><br>';
+            html += '<label style="text-align: right; font-family: \'Quicksand\', serif; font-size: 150%; color: black;">' + topic + '</label><br><br>';
             document.getElementById('personalEvaluation').innerHTML = html;
             document.getElementById('nextBtnDivArea1').style.display = 'block';
             document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
@@ -421,7 +421,7 @@ function showNextStep()
             
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('area1Table').style.display = 'none';
-            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' PONTS?<br><br><input type="range" id="personalEvaluationRange" min="0" max="4">';
+            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' PONTS?<br><br>Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
             beforeStep = 'showFinalAnswer';
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('beforeBtnDivArea1').style.display = 'block';
@@ -568,7 +568,7 @@ socket.on('detailedExplanationOfAnswers', (data) => {
         {
             html += '<label id="lbl_question_option_' + i + '">' + data['options'][i]['option'] + '</label><br>' + data['options'][i]['score'] + ' ' + data['options'][i]['response'] + '<br><br>';
         }
-        html += '<label style="text-align: right">' + data['topic'] + '</label><br><br>';
+        html += '<label style="text-align: right; font-family: \'Quicksand\', serif; font-size: 150%; color: black;">' + data['topic'] + '</label><br><br>';
         document.getElementById('personalEvaluation').innerHTML = html;
         document.getElementById('nextBtnDivArea1').style.display = 'block';
         document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
@@ -665,7 +665,7 @@ socket.on('personalEvaluation', (data) => {
             /*var html = '<label id="question">' + data['question'] + '</label><br>';
             html += '<label>Final answer</label><br>';
             html += '<label>' + data['answer'] + '</label><br>';*/
-            var html = '<input type="range" id="personalEvaluationRange" min="0" max="4">';
+            var html = 'Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
 
             //document.getElementById('submitPersonalEvaluation').style.display = 'block';
             nextStep = 'personalEvaluation';
