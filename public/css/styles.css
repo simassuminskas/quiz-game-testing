@@ -23,6 +23,8 @@
   background-color: #b64a58;
   opacity: 0.8;
   border: dotted;
+  padding: 10px;
+  box-shadow: 5px 10px 8px #000;
 }
 #spinner{
     width:40%;
@@ -53,6 +55,8 @@
   background-color: #b64a58;
   opacity: 0.8;
   border: dotted;
+	padding: 10px;
+box-shadow: 5px 10px 8px #000;
 }
 #area2 {
   display: block;
@@ -65,4 +69,6 @@
   background-color: #b64a58;
   opacity: 0.8;
   border: dotted;
+	padding: 10px;
+box-shadow: 5px 10px 8px #000;
 }
