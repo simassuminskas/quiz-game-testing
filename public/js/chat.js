@@ -218,14 +218,17 @@ socket.on('showResultArea2', (data) => {
             if ((teams[j]['teamName'] == data['teamName']) && (data['teamName'] == teamName))
             {
                 document.getElementById('area2Table').style.display = 'none';
+                score = options[score]['score'];
                 var r = 'INCORRECT';
-                if (data['score'] > 0)
+                //if (data['score'] > 0)
+                if (score > 0)
                 {
                     r = 'CORRECT';
                 }
                 if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
                 {
-                    document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + data['score'];
+                    //document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + data['score'];
+                    document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + score;
                     nextStep = 'showSpinner';
                     document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                     document.getElementById('nextBtnDivArea2').style.display = 'block';
@@ -508,7 +511,7 @@ function showNextStep()
             var html = '';
             for (var j = 0; j < options.length; j++)
             {
-                html += '<input type="radio" id="question_option_' + j + '" name="answer" onchange="document.getElementById(\'nextBtnDivArea2\').style.display = \'block\'">';
+                html += '<input type="radio" id="question_option_' + j + '" name="answer" onchange="document.getElementById(\'nextBtnDivArea2\').style.display = \'block\'; score = ' + j + ';">';
                 html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + options[j]['option'] + '</label><br>';
             }
             document.getElementById('area2AnswersDiv').innerHTML = html;
