@@ -75,7 +75,7 @@
   width: 70%;
   background-color: #c43f56;
   opacity: 0.8;
-  border: 3px solid;
+  border-width: 3px;
   border-color: #c43f56;
 	
 box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.3);
@@ -110,7 +110,7 @@ box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.3);
   width: 70%;
   background-color: #c43f56;
   opacity: 0.8;
-  border: 3px solid;
+  border-width: 3px;
   border-color: #c43f56;
 	
 box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.3);
@@ -127,7 +127,7 @@ box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.3);
   width: 70%;
   background-color: #c43f56;
   opacity: 0.8;
-  border: 3px solid;
+  border-width: 3px;
   border-color: #c43f56;
 	
 box-shadow:
