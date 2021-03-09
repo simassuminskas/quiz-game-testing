@@ -3,7 +3,7 @@
 	font-size: 16px;
   background-color: white;
   color: black;
-  border-radius: 10px;
+  border-radius: 15px;
   border: 2px solid #555555;
   transition: 0.3s;
 	cursor: pointer;
@@ -14,10 +14,10 @@
 	font-size: 16px;
   background-color: #555555;
   color: white;
-  border-radius: 10px;
+  border-radius: 15px;
   border: 2px solid #555555;
 	cursor: pointer;
-	width: 50px;
+	width: 60px;
 }
 	
 #score {
