@@ -7,7 +7,7 @@
   border: 2px solid #555555;
   transition: 0.3s;
 	cursor: pointer;
-	width: 180px;
+	width: 160px;
 }
 #joinTeam:hover {
   font-family: 'Quicksand';
