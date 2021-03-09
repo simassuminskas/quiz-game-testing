@@ -228,14 +228,14 @@ socket.on('showResultArea2', (data) => {
                 if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
                 {
                     //document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + data['score'];
-                    document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + <h1>score</h1>;
+                    document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + score;
                     nextStep = 'showSpinner';
                     document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                     document.getElementById('nextBtnDivArea2').style.display = 'block';
                 }
                 else
                 {
-                    document.getElementById('area2Info').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + <h1>data['score']</h1>;
+                    document.getElementById('area2Info').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + data['score'];
                 }
             }
         }
@@ -284,7 +284,7 @@ socket.on('question', (data) => {
                     document.getElementById('nextBtnDivArea1').style.display = 'none';
                     document.getElementById('beforeBtnDivArea1').style.display = 'none';
                     //document.getElementById('lblArea').innerHTML = 'DILEMMAS';
-                    document.getElementById('lblLightBoxArea1Header').innerHTML = 'READ THE DILEMMA & CHOOSE THE BEST ANSWER INDIVIDUALLY.';
+                    document.getElementById('lblLightBoxArea1Header').innerHTML = 'Read the dilemma & chose the best answer individually.';
                     nextStep = 'allUsersVotation';
                 }
                 if (data['area'] == 2)
@@ -345,7 +345,7 @@ function showBeforeStep()
                 YOUR FINAL ANSWER WAS:<br>
                 ` + finalAnswer + `<br><br>
                 YOUR SCORE FOR THE ANSWER:<br>
-                `<h1> + score + </h1>`<br>`;//Pendiente la parte de los comentarios.
+                ` + score + `<br>`;//Pendiente la parte de los comentarios.
             nextStep = 'personalEvaluation';
             beforeStep = 'detailedExplanationOfAnswers';
         break;
