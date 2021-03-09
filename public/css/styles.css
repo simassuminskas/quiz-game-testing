@@ -19,12 +19,12 @@
   padding-top: 2%;
   top: 10%;
   left: 7%;
-  width: 60%;
+  width: 70%;
   background-color: #b64a58;
   opacity: 0.8;
   border: dotted;
   padding: 10px;
-  box-shadow: 5px 10px 8px #000;
+  box-shadow: 5px 10px 8px #888888;
 }
 #spinner{
     width:40%;
@@ -56,11 +56,13 @@
   opacity: 0.8;
   border: dotted;
 	padding: 10px;
-box-shadow: 5px 10px 8px #000;
+box-shadow: 5px 10px 8px #888888;
 }
 #area2 {
   display: block;
   position: fixed;
+	margin-left: auto;
+  margin-right: auto;
   z-index: 1;
   padding-top: 2%;
   top: 10%;
@@ -70,5 +72,5 @@ box-shadow: 5px 10px 8px #000;
   opacity: 0.8;
   border: dotted;
 	padding: 10px;
-box-shadow: 5px 10px 8px #000;
+box-shadow: 5px 10px 8px #888888;
 }
