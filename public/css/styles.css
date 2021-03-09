@@ -1,3 +1,11 @@
+#joinTeam{
+  font-family: 'Quicksand';
+  background-color: white;
+  color: black;
+  border-radius: 10px;
+  border: 2px solid #000;
+}
+
 #score {
   font-size: 40px;
 }
