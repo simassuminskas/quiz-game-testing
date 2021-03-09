@@ -5,7 +5,7 @@
   border-radius: 15px;
   border: 2px solid #555555;
   transition: 0.3s;
-	width: 160px;
+	width: 180px;
 }
 #surnameInput{
 	text-align: center;
@@ -14,7 +14,7 @@
   border-radius: 15px;
   border: 2px solid #555555;
   transition: 0.3s;
-	width: 160px;
+	width: 180px;
 }
 
 #teamName{
@@ -24,7 +24,7 @@
   border-radius: 15px;
   border: 2px solid #555555;
   transition: 0.3s;
-	width: 160px;
+	width: 180px;
 }
 
 
@@ -37,7 +37,7 @@
   border: 2px solid #555555;
   transition: 0.3s;
 	cursor: pointer;
-	width: 160px;
+	width: 180px;
 }
 #joinTeam:hover {
   font-family: 'Quicksand';
