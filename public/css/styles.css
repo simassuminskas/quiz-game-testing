@@ -23,9 +23,9 @@
   width: 70%;
   background-color: #c43f56;
   opacity: 0.8;
-  border: dotted;
+  border: none;
 	
-box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.5);
+box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.3);
 }
 #spinner{
     width:40%;
@@ -57,9 +57,9 @@ box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.5);
   width: 70%;
   background-color: #c43f56;
   opacity: 0.8;
-  border: dotted;
+  border: none;
 	
-box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.5);
+box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.3);
 }
 #area2 {
   text-align: center;
