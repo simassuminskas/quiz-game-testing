@@ -72,7 +72,7 @@ position: absolute;
   border: 2px solid #555555;
   transition: 0.3s;
 	cursor: pointer;
-	width: 200px;
+	width: 196px;
 }
 #joinTeam:hover {
   font-family: 'Quicksand';
@@ -82,7 +82,7 @@ position: absolute;
   border-radius: 15px;
   border: 2px solid #555555;
 	cursor: pointer;
-	width: 60px;
+	width: 70px;
 }
 	
 #score {
@@ -344,7 +344,7 @@ button.btnSend {
 #restartPopup {
     position: absolute;
     z-index: 3;
-    display: block;
+    display: none;
     font-family: 'Quicksand', serif;
     background-color: none;
     border: none;
@@ -357,8 +357,7 @@ button.btnSend {
     /*color: white;*/
 }
 #restartBtn {
-	justify-content: center;
-  align-items: center;
+	
 	margin-left: auto;
   margin-right: auto;
   width: 20%;
