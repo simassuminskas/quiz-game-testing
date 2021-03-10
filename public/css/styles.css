@@ -346,8 +346,8 @@ button.btnSend {
     z-index: 3;
     display: none;
     font-family: 'Quicksand', serif;
-    background-color: white;
-    border: dotted;
+    background-color: none;
+    border: none;
     /*color: white;*/
 }
 #restartBtn {
