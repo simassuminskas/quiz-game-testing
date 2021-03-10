@@ -1,32 +1,6 @@
-var mouse = {x: null, y: null};
-var touch;
-var drawingTool = 'pencil';
-var canvas;
-
-var started = false;
-
-var lineColour = '#000000';
-var pencilSize = 0.005;
-var eraserSize = 0.0125;
-
-var ctx;
-var points = [];
-var auxPoints = [];
-var drawingTools;
-var canvasDisplay = 'none';
-var pr = false;
-
-function verifyLogin()
-{
-    userName = $('#nameInput').val().replace(regex, ' ').trim();
-    userSurname = $('#surnameInput').val().replace(regex, ' ').trim();
-    if (userName.length && userSurname.length)
-    {
-        
-    }
-}
 function showTeamInfo(newLeader = false)
 {
+    document.getElementById('lblArea').innerHTML = '';
     document.getElementById('teamInfo').style.display = 'block';
     var html = '';
     var tmp = [];
@@ -125,6 +99,43 @@ function gameFinished()
             {
                 document.getElementById('gameInfo').innerHTML = '<div style="padding-right: 5%; padding-left: 5%; padding-top: 5%; padding-bottom: 5%;">DILEMMAS:<br>' + teams[j]['scoreArea1'] + '<br><br>KNOWLEDGE ABOUT US:<br>' + teams[j]['scoreArea2'] + '<br><br>RISKS & OPPORTUNITIES:<br>' + teams[j]['scoreArea3'] + '</div>';
             }
+        }
+    }
+}
+var data2;
+function restart()
+{
+    document.getElementById('lblArea').innerHTML = '';
+    pickedArea = undefined;
+    document.getElementById('body').style.backgroundColor = "white";
+    document.getElementById('body').style.backgroundImage = "url('./img/2.png')";
+    document.getElementById('restartPopup').style.display = 'none';
+    if (data2['status'] == 'newLeader')
+    {
+        socket.emit('showTeamInfo', JSON.stringify({
+            "userName" : userName, 
+            "userSurname" : userSurname, 
+            "teamName" : data2['teamName'], 
+            "roomCode" : data2['roomCode'], 
+            'status': data2['status'], 
+            'rooms': data2['rooms']
+        }));
+        vote = false;
+        showTeamInfo(true);
+    }
+    else
+    {
+        if (data2['status'] != 'oneUser')
+        {
+            socket.emit('showSpinner', JSON.stringify({
+                "teamName" : data2['teamName'], 
+                "roomCode" : data2['roomCode']
+            }));
+        }
+        else
+        {
+            document.getElementById('divLogin').style.display = 'block';
+            showTeamInfo();
         }
     }
 }
