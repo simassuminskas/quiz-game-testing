@@ -345,6 +345,8 @@ button.btnSend {
     position: absolute;
     z-index: 3;
     display: none;
+	color: white;
+	
    
 }
 #restartBtn {
