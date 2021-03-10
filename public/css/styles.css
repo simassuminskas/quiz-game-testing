@@ -21,7 +21,7 @@
   font-family: 'Quicksand';
 	font-size: 16px;
  table-layout: fixed;
-  column-width: 100px;
+  columns: 300px 2;
 	border:none !important;
  
 }
