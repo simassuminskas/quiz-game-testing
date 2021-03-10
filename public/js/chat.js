@@ -228,7 +228,7 @@ socket.on('showResultArea2', (data) => {
                 if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
                 {
                     //document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + data['score'];
-                    document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + <h1>score</h1>;
+                    document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + score;
                     nextStep = 'showSpinner';
                     document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                     document.getElementById('nextBtnDivArea2').style.display = 'block';
