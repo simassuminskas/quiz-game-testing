@@ -345,20 +345,8 @@ button.btnSend {
     position: absolute;
     z-index: 3;
     display: none;
-    font-family: 'Quicksand', serif;
-    background-color: none;
-    border: none;
-	 margin: auto;
-  justify-content: center;
-  align-items: center;
-	margin-left: auto;
-  margin-right: auto;
-  
-    /*color: white;*/
+   
 }
 #restartBtn {
-	
-	margin-left: auto;
-  margin-right: auto;
   width: 20%;
 }
