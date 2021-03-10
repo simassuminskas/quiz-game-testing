@@ -188,7 +188,7 @@ button {
   border: 0;
   padding: 3px 5px;
   border-radius: 3px;
-	background: #eee;
+	background: #555555;
 }
 
 h1 {
@@ -347,6 +347,7 @@ button.btnSend {
     z-index: 3;
     display: none;
 	color: #fff;
+	text-align: center;
 	
    
 }
