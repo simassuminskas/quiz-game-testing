@@ -343,15 +343,18 @@ button.btnSend {
 
 #restartPopup {
     position: absolute;
+	display: block;
     z-index: 3;
     display: none;
     font-family: 'Quicksand', serif;
     background-color: none;
     border: none;
-	 margin-left: auto; 
-  margin-right: auto;
+	 margin: auto;
     /*color: white;*/
 }
 #restartBtn {
+	display: flex;
+  justify-content: center;
+  align-items: center;
   width: 20%;
 }
