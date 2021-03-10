@@ -350,12 +350,9 @@ button.btnSend {
     border: none;
 	 margin: auto;
 	
-  justify-content: center;
-  align-items: center;
+  
     /*color: white;*/
 }
 #restartBtn {
-	
-  
   width: 20%;
 }
