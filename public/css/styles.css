@@ -1,7 +1,12 @@
 #logo{
 position: absolute;
   bottom: 8px;
-  right: 16px;
+  right: 16px;	
+}
+
+#logo img{
+width: 60%;
+  height: auto;
 	
 }
 
