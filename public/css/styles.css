@@ -117,6 +117,7 @@ box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.3);
 }
 #spinner{
     width:40%;
+	cursor: pointer;
 }
 /*------------------------------------*/
 #spinner{
