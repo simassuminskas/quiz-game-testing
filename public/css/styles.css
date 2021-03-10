@@ -349,7 +349,8 @@ button.btnSend {
     background-color: none;
     border: none;
 	 margin: auto;
-	
+  justify-content: center;
+  align-items: center;
   
     /*color: white;*/
 }
