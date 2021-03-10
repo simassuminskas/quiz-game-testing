@@ -1,3 +1,21 @@
+#area1AnswersDiv{
+	text-align: center;
+  font-family: 'Quicksand';
+	font-size: 16px;
+ table-layout: fixed;
+  width: 50%;
+ 
+}
+
+#area1QuestionsDiv{
+	text-align: center;
+  font-family: 'Quicksand';
+	font-size: 16px;
+ table-layout: fixed;
+  width: 50%;
+ 
+}
+
 #area1Table{
 	text-align: center;
   font-family: 'Quicksand';
