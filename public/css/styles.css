@@ -345,7 +345,7 @@ button.btnSend {
 
 #restartPopup {
     position: absolute;
-    z-index: 3;
+    z-index: 30;
     display: none;
 	color: #fff;
 	text-align: center;
