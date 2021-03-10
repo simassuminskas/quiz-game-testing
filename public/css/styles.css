@@ -6,8 +6,8 @@ position: absolute;
 
 #logo img{
 width: 80%;
-  height: auto;
-	align: right;
+height: auto;
+margin-right: 0;
 	
 }
 
