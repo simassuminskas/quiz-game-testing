@@ -342,9 +342,9 @@ button.btnSend {
 }
 
 #restartPopup {
-    
+    position: absolute;
     z-index: 3;
-    
+    display: block;
     font-family: 'Quicksand', serif;
     background-color: none;
     border: none;
