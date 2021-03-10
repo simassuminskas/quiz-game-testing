@@ -53,15 +53,8 @@ socket.on('update', (data) => {//message['newTeam']
         else
         {//data['newTeam']
             if (connected && (data['teamName'] == teamName))
-            {console.log('Ya estaba conectado y viene otro.');
+            {//console.log('Ya estaba conectado y viene otro.');
                 teams = getTeams(data['rooms']);
-                /*document.getElementById('divLogin').style.display = 'none';
-                document.getElementById('loginFields').style.display = 'none';*/
-                //document.getElementById('lblPlease').innerHTML = 'PLEASE CHOOSE YOUR LEADER<br><br><br>';
-            }
-            //if (connected)
-            {
-                //showTeamInfo(false);
             }
         }
         for (var j = 0; j < teams.length; j++)
@@ -90,6 +83,7 @@ socket.on('showSpinner', (data) => {
     document.getElementById('divLogin').style.display = 'none';
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {console.log('Line 84.')
+        pickedArea = undefined;
         document.getElementById('lblArea').innerHTML = '';
         //document.getElementById('statusInfo').innerHTML = data['status'];
         started = true;
@@ -97,6 +91,7 @@ socket.on('showSpinner', (data) => {
         //updateUsersInfo();
         if (data['teamName'] == teamName)
         {
+            document.getElementById('restartPopup').style.display = 'none';
             document.getElementById('body').style.backgroundColor = "#ac0034";
             document.getElementById('body').style.backgroundImage = "url('./img/3.2.png')";
         }
@@ -122,15 +117,15 @@ socket.on('showSpinner', (data) => {
         showGameInfo();
     }
 });
-socket.on('showArea1PartialResult', (data) => {console.log(data);
+socket.on('showArea1PartialResult', (data) => {//console.log(data);
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
-    {console.log('Line 115.');
+    {//console.log('Line 115.');
         area = data['area'];
         teams = getTeams(data['rooms']);
         for (var i = 0; i < teams.length; i++)
         {
             if ((teams[i]['teamName'] == data['teamName']) && (data['teamName'] == teamName) && (data['area'] == 1))
-            {console.log('Line 121.');
+            {//console.log('Line 121.');
                 document.getElementById('area3').style.display = 'none';
                 document.getElementById('area2').style.display = 'none';
                 document.getElementById('area1').style.display = 'block';
@@ -410,7 +405,7 @@ function showNextStep()
             document.getElementById('nextBtnDivArea1').style.display = 'none';
             document.getElementById('beforeBtnDivArea1').style.display = 'none';
         break;
-        case 'personalEvaluation':console.log('Line 297.');
+        case 'personalEvaluation'://console.log('Line 297.');
             /*document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('nextBtnDivArea1').innerHTML = '';
@@ -467,7 +462,7 @@ function showNextStep()
                 ` + finalAnswer + `<br><br>
                 YOUR SCORE FOR THE ANSWER:<br>
                 ` + score + `<br>`;//Pendiente la parte de los comentarios.
-            nextStep = 'personalEvaluation';console.log('Line 347.');
+            nextStep = 'personalEvaluation';//console.log('Line 347.');
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('beforeBtnDivArea1').style.display = 'block';
             beforeStep = 'detailedExplanationOfAnswers';
@@ -598,7 +593,7 @@ socket.on('leaderVotation', (data) => {
                     }
                 }
             }
-        }console.log('Line 252: ' + leader + ', ' + teamIndex + ', ' + data['teamName']);
+        }//console.log('Line 252: ' + leader + ', ' + teamIndex + ', ' + data['teamName']);
         if ((teamIndex != -1) && (data['teamName'] == teamName))
         {
             //beforeBtnDivArea1Td
@@ -607,7 +602,7 @@ socket.on('leaderVotation', (data) => {
             document.getElementById('area1Table').style.display = 'block';
             document.getElementById('area1').style.display = 'block';
             document.getElementById('area1').style.backgroundColor = "#ac0034";
-            document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE BEST MOST APPROPIATE ANSWER WITH THE TEAM & LEADER WILL SUBMIT THE FINAL DECISSION.';
+            document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE BEST ANSWER WITH THE TEAM & LEADER WILL SUBMIT THE FINAL DECISSION.';
             document.getElementById('area1QuestionsDiv').innerHTML = '<label id="question">' + data['question']['question'] + '</label><br>';
             question = data['question']['question'];
             var html = '';
@@ -690,9 +685,9 @@ socket.on('ro', (data) => {
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
         teams = getTeams(data['rooms']);
-        console.log(data);
+        //console.log(data);
         if (data['teamName'] == teamName)
-        {console.log(document.getElementById('spinner').style.display);
+        {//console.log(document.getElementById('spinner').style.display);
             document.getElementById('area3').style.top = (parseInt(document.getElementById('lblArea').offsetTop) + 35) + 'px';
             document.getElementById('lblArea').innerHTML = 'RISKS & OPPORTUNITIES';
             area = data['area'];
@@ -739,7 +734,6 @@ socket.on('finishGame', (data) => {
             document.getElementById('area1').style.display = 'none';
             document.getElementById('area2').style.display = 'none';
             document.getElementById('area3').style.display = 'none';
-            document.getElementById('submitAnswerButton').style.display = 'none';
             //document.getElementById('submitPersonalEvaluation').style.display = 'none';
             document.getElementById('divGameFinished').style.display = 'block';
             finished = true;
@@ -747,13 +741,33 @@ socket.on('finishGame', (data) => {
         }
     }
 });
-socket.on('error', (data) => {
-    /*if ((id == undefined) || (data['id'] == id))//Pendiente revisar.
+socket.on('showTeamInfo', (data) => {
+    if ((data['roomCode'] == roomCode) && (data['teamName'] == teamName) && (data['userName'] != userName) && (data['userSurname'] != userSurname) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
-        document.getElementById(panelMessages).style.display = 'block';
-        showChat(data.type, data.user, data['error'], '', '');
-        userName = undefined;
-    }*/
+        pickedArea = undefined;
+        document.getElementById('body').style.backgroundColor = "white";
+        document.getElementById('body').style.backgroundImage = "url('./img/2.png')";
+        document.getElementById('restartPopup').style.display = 'none';
+        vote = false;
+        showTeamInfo(true);
+    }
+});
+socket.on('userDisconnected', (data) => {console.log(data);
+    if ((data['roomCode'] == roomCode) && (data['teamName'] == teamName) && (document.getElementById('divGameFinished').style.display == 'none'))
+    {
+        teams = getTeams(data['rooms']);
+        data2 = data;
+        document.getElementById('teamInfo').style.display = 'none';
+        document.getElementById('gameInfo').style.display = 'none';
+        document.getElementById('spinner').style.display = 'none';
+        document.getElementById('area1').style.display = 'none';
+        document.getElementById('area2').style.display = 'none';
+        document.getElementById('area3').style.display = 'none';
+        document.getElementById('restartPopup').style.display = 'block';
+        document.getElementById('lblUserDisconnected').innerHTML = data['userName'] + ' ' + data['userSurname'] + ' disconnected.';
+        document.getElementById('restartPopup').style.top = (document.documentElement.clientWidth * 0.3) + 'px';
+        document.getElementById('restartPopup').style.left = (document.documentElement.clientHeight * 0.4) + 'px';
+    }
 });
 function joinTeam(userName, userSurname, roomCode, index)
 {
@@ -803,22 +817,6 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, teamIndex, user
         }
     }
 }
-/*function submitPersonalEvaluation()
-{
-    var question;
-    question = document.getElementById('question').innerHTML;
-    socket.emit('personalEvaluation', JSON.stringify({
-        "userName" : userName, 
-        "userSurname" : userSurname, 
-        "teamName" : teamName, 
-        "question" : question, 
-        "area" : area, 
-        "evaluation" : parseInt(document.getElementById('personalEvaluationRange').value) + 1, 
-        "roomCode" : roomCode
-    }));
-    document.getElementById('area1').style.display = 'none';
-    document.getElementById('submitPersonalEvaluation').style.display = 'none';
-}*/
 function login()
 {
     if ((!connected) && (userName === undefined) && (userSurname === undefined))
