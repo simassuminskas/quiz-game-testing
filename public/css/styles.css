@@ -110,9 +110,13 @@ button {
 }
 .container:first-child #card #front {
   background: #c43f56;
+  border-radius: 5px;
+  width: 70%;
 }
 .container:first-child #card #back {
   background: #c43f56;
+  border-radius: 5px;
+  width: 70%;
 }
 
 .content {
@@ -230,7 +234,7 @@ button {
   text-align: center;
   margin-left: auto; 
   margin-right: auto;
-  display: block;
+  display: none;
   position: relative;
   z-index: 1;
   padding: 2%;
