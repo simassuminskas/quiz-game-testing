@@ -159,6 +159,14 @@ button {
   border:none !important;
 }
 
+#area1QuestionColumn {
+  width: 100%
+}
+
+#area1AnswersColumn {
+  width: 100%
+}
+
 #area2QuestionColumn {
   width: 100%
 }
