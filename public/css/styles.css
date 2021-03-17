@@ -397,6 +397,7 @@ font-family: 'Quicksand';
 
 }
 
-.lblScore {}
+.lblScore {
+font-size: 300%;}
 
 .lblResponse {}
