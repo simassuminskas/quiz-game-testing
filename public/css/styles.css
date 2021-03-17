@@ -378,7 +378,9 @@ font-family: 'Quicksand';
   padding-bottom: 5%;
 }
 
-.lblOption {}
+.lblOption {
+text-align: left;
+}
 
 .topic {
   text-align: right;
