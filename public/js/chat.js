@@ -67,26 +67,8 @@ socket.on('update', (data) => {//message['newTeam']
 });
 socket.on('showSpinner', (data) => {
     if ((data['roomCode'] == roomCode) && (data['teamName'] == teamName) && (document.getElementById('divGameFinished').style.display == 'none'))
-    {console.log('Line 84.')
-        document.getElementById('divLogin').style.display = 'none';
+    {
         pickedArea = undefined;
-        document.getElementById('lblArea').innerHTML = '';
-        //document.getElementById('statusInfo').innerHTML = data['status'];
-        started = true;
-        teams = getTeams(data['rooms']);
-        //updateUsersInfo();
-        document.getElementById('restartPopup').style.display = 'none';
-        document.getElementById('body').style.backgroundColor = "#ac0034";
-        document.getElementById('body').style.backgroundImage = "url('./img/3.2.png')";
-        
-        /*if ((data['userName'] == userName) && 
-            (data['userSurname'] == userSurname))*/
-        {
-            document.getElementById('area3').style.display = 'none';
-            document.getElementById('area2').style.display = 'none';
-            document.getElementById('area1').style.display = 'none';
-            document.getElementById('spinner').style.display = 'block';
-        }
         if ((data['userName'] == userName) && 
             (data['userSurname'] == userSurname))
         {
@@ -96,6 +78,21 @@ socket.on('showSpinner', (data) => {
         {
             lockWheel = true;
         }
+        document.getElementById('divLogin').style.display = 'none';
+        document.getElementById('lblArea').innerHTML = '';
+        //document.getElementById('statusInfo').innerHTML = data['status'];
+        started = true;
+        teams = getTeams(data['rooms']);
+        //updateUsersInfo();
+        document.getElementById('restartPopup').style.display = 'none';
+        document.getElementById('body').style.backgroundColor = "#ac0034";
+        document.getElementById('body').style.backgroundImage = "url('./img/3.2.png')";
+        
+        document.getElementById('area3').style.display = 'none';
+        document.getElementById('area2').style.display = 'none';
+        document.getElementById('area1').style.display = 'none';
+        document.getElementById('spinner').style.display = 'block';
+
         document.getElementById('teamInfo').style.display = 'none';
         showGameInfo();
     }
@@ -192,7 +189,7 @@ socket.on('showResultArea2', (data) => {
                     //document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br>' + data['score'];
                     document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br><label class="lblScore">' + score + '</label>';
                     nextStep = 'showSpinner';
-                    document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
+                    //document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                     document.getElementById('nextBtnDivArea2').style.display = 'block';
                 }
                 else
@@ -261,17 +258,18 @@ socket.on('question', (data) => {
                     document.getElementById('lblArea').innerHTML = 'KNOWLEDGE ABOUT US';
                     if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
                     {
+                        document.getElementById('nextBtnDivArea2').style.display = 'block';
+                        //document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
+                        //alert();
                         document.getElementById('area2Info').innerHTML = '<br><br>NOW PLEASE CHOOSE THE RIGHT ANSWER';
                         dataUserName = data['userName'];
                         dataUserSurname = data['userSurname'];
                         nextStep = 'area2Question';
-                        document.getElementById('nextBtnDivArea2').style.display = 'block';
-                        document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                     }
                     else
                     {
-                        document.getElementById('area2Info').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL CHOOSE THE ANSWER';
                         document.getElementById('nextBtnDivArea2').style.display = 'none';
+                        document.getElementById('area2Info').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL CHOOSE THE ANSWER';
                     }
                 }
             }
@@ -297,9 +295,12 @@ socket.on('area3Card', (data) => {
     {console.log(data['userName'] + ' ' + data['userSurname']);
         userPlay = true;
         flip('back', false);
-        document.getElementById('back').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore">' + data['score'] + '</label>';
-        document.getElementById('back').innerHTML += '<div id="nextBtnDivArea3" style="padding-left: 90%; padding-bottom: 1%;"></div>';
+        userPlay = false;
         document.getElementById('nextBtnDivArea3').style.display = 'none';
+        document.getElementById('backContent').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore">' + data['score'] + '</label>';
+        //document.getElementById('back').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore">' + data['score'] + '</label>';
+        /*document.getElementById('back').innerHTML += '<div id="nextBtnDivArea3" style="padding-left: 90%; padding-bottom: 1%;"><i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i></div>';
+        document.getElementById('nextBtnDivArea3').style.display = 'none';*/
     }
 });
 function showBeforeStep()
@@ -322,7 +323,7 @@ function showBeforeStep()
             for (var i = 0; i < options.length; i++)
             {
                 //html += '<label class="lblOption" id="lbl_question_option_' + i + '">' + options[i]['option'] + '</label><br>' + options[i]['score'] + ' ' + options[i]['response'] + '<br>';
-                html += '<label class="lblOption" id="lbl_question_option_' + i + '">' + options[i]['option'] + '<br>' + '<label class="lblScore">' + options[i]['score'] + '<br>' + '</label>' + ' ' + '<label class="lblResponse">' + options[i]['response'] + '</label>' + '<br></label>';
+                html += '<label class="lblOption" id="lbl_question_option_' + i + '">' + options[i]['option'] + '<br>' + '<label class="lblScore">' + options[i]['score'] + '</label>' + '<br>' + '<label class="lblResponse">' + options[i]['response'] + '</label>' + '<br></label>';
             }
             html += '<label class="topic">' + topic + '<br><br></label>';
             document.getElementById('personalEvaluation').innerHTML = html;
@@ -444,8 +445,7 @@ function showNextStep()
                 "roomCode" : roomCode, 
                 "scoreIndex" : scoreIndex
             }));
-            document.getElementById('nextBtnDivArea2').innerHTML = '';
-            //document.getElementById('nextBtnDivArea2').style.display = 'none';
+            document.getElementById('nextBtnDivArea2').style.display = 'none';
         break;
         case 'showSpinner':
             socket.emit('showSpinner', JSON.stringify({
@@ -479,7 +479,7 @@ function showNextStep()
             }
             document.getElementById('area2AnswersDiv').innerHTML = html;
             nextStep = 'questionArea2';
-            document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
+            //document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
             document.getElementById('nextBtnDivArea2').style.display = 'none';
         break;
         case 'area3Card':
@@ -614,10 +614,8 @@ socket.on('ro', (data) => {
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
         teams = getTeams(data['rooms']);
-        //console.log(data);
         if (data['teamName'] == teamName)
-        {//console.log(document.getElementById('spinner').style.display);
-            flip('front');
+        {
             document.getElementById('spinner').style.display = 'none';
             document.getElementById('area3').style.top = (parseInt(document.getElementById('lblArea').offsetTop) + 35) + 'px';
             document.getElementById('lblArea').innerHTML = 'RISKS & OPPORTUNITIES';
@@ -630,18 +628,16 @@ socket.on('ro', (data) => {
             if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
             {
                 userPlay = true;
-                //document.getElementById('area3Info').innerHTML = '<br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
                 document.getElementById('front').innerHTML = '<br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
+                flip('front');
                 dataUserName = data['userName'];
                 dataUserSurname = data['userSurname'];
-                //nextStep = 'area3Card';
-                /*document.getElementById('nextBtnDivArea3').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
-                document.getElementById('nextBtnDivArea3').style.display = 'block';*/
             }
             else
             {
-                //document.getElementById('nextBtnDivArea3').style.display = 'none';
-                //document.getElementById('area3Info').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL OPEN THE<br>CARD<br>&<br>SEE THE RESULT';
+                userPlay = true;
+                flip('front');
+                userPlay = false;
                 document.getElementById('front').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL OPEN THE<br>CARD<br>&<br>SEE THE RESULT';
             }
             showGameInfo();
