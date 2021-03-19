@@ -143,11 +143,11 @@ button {
 
 #area1QuestionColumn {
   width: 100%;
-  text-align: right;
+  
 }
 #area1AnswersColumn {
   width: 100%;
-  text-align: left;
+  
 }
 
 #area1Table{
@@ -168,14 +168,14 @@ button {
 
 #area2QuestionColumn {
   width: 100%;
-  text-align: right;
+  
 }
 #area2LblQuestion {}
 #area2QuestionsDiv {}
 
 #area2AnswersColumn {
   width: 100%;
-  text-align: left;
+  
 }
 #area2LblAnswers {}
 #area2AnswersDiv {}
