@@ -143,9 +143,11 @@ button {
 
 #area1QuestionColumn {
   width: 100%;
+  text-align: right;
 }
 #area1AnswersColumn {
   width: 100%;
+  text-align: left;
 }
 
 #area1Table{
