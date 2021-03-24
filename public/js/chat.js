@@ -95,6 +95,7 @@ var started = false;
 socket.on('showSpinner', (data) => {
     if ((data['roomCode'] == roomCode) && (data['teamName'] == teamName) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
+        document.getElementById('lblWheelInfo').innerHTML = '<br>' + data['userName'] + ' ' + data['userSurname'] + ' spins the wheel';
         pickedArea = undefined;
         if ((data['userName'] == userName) && 
             (data['userSurname'] == userSurname))
@@ -103,7 +104,10 @@ socket.on('showSpinner', (data) => {
         }
         else
         {
-            lockWheel = true;
+            if ((data['status'] == undefined) || (data['status'] != 'onlyWheel'))
+            {
+                lockWheel = true;
+            }
         }
         document.getElementById('divLogin').style.display = 'none';
         document.getElementById('lblArea').innerHTML = '';
@@ -222,6 +226,8 @@ socket.on('showResultArea2', (data) => {
                 {
                     document.getElementById('area2Info').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' ANSWER IS ' + r + '!<br>YOUR SCORE:<br><label class="lblScore">' + data['score'] + '</label>';
                 }
+                scoreArea2 += score;
+                showGameInfo();
             }
         }
     }
@@ -237,6 +243,7 @@ socket.on('question', (data) => {
         {
             if ((teams[j]['teamName'] == data['teamName']) && (data['teamName'] == teamName))
             {
+                document.getElementById('lblWheelInfo').innerHTML = '';
                 document.getElementById('spinner').style.display = 'none';
                 document.getElementById('area' + data['area']).style.top = (parseInt(document.getElementById('lblArea').offsetTop) + 35) + 'px';
                 question = data['question']['question'];
@@ -252,7 +259,7 @@ socket.on('question', (data) => {
                 }
                 //if ((data['area'] == 1) && (!leader))
                 if (data['area'] == 1)
-                {
+                {//Pendiente label 'DILEMMAS' arriba de la caja para los usuarios que no giraron la rueda en ese turno.
                     document.getElementById('area3').style.display = 'none';
                     document.getElementById('area2').style.display = 'none';
                     document.getElementById('area1').style.display = 'block';
@@ -324,6 +331,8 @@ socket.on('area3Card', (data) => {
         userPlay = false;
         document.getElementById('nextBtnDivArea3').style.display = 'none';
         document.getElementById('backContent').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore">' + data['score'] + '</label>';
+        scoreArea3 += score;
+        showGameInfo();
         //document.getElementById('back').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore">' + data['score'] + '</label>';
         /*document.getElementById('back').innerHTML += '<div id="nextBtnDivArea3" style="padding-left: 90%; padding-bottom: 1%;"><i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i></div>';
         document.getElementById('nextBtnDivArea3').style.display = 'none';*/
@@ -342,6 +351,8 @@ function showBeforeStep()
                 ` + '<label class="lblScore">' + score + '</label>' + `<br>`;//Pendiente la parte de los comentarios.
             nextStep = 'personalEvaluation';
             beforeStep = 'detailedExplanationOfAnswers';
+            scoreArea1 = scoreTotal;
+            showGameInfo();
         break;
         case 'detailedExplanationOfAnswers':
             document.getElementById('lblLightBoxArea1Header').innerHTML = 'DETAILED EXPLANATION OF ANSWERS';
@@ -368,13 +379,13 @@ function showNextStep()
     var answer;
     var rads = document.getElementsByName('answer');
     for (var i = 0; i < rads.length; i++)
-    {
+    {//El rads tiene más length que lo que tiene el área 2 (3).
         if (rads[i].checked)
         {
             var index = parseInt(rads[i].id.split('_')[rads[i].id.split('_').length - 1]);
             if (index != options.length)//no mutual ...
             {
-                answer = options[index]['option'];
+                answer = options[index]['option'];//Error (es área 2 en pantalla pero lo toma como área 1): 
             }
             else
             {
@@ -456,6 +467,8 @@ function showNextStep()
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('beforeBtnDivArea1').style.display = 'block';
             beforeStep = 'detailedExplanationOfAnswers';
+            scoreArea1 = scoreTotal;
+            showGameInfo();
         break;
         case 'questionArea2':
             socket.emit('questionArea2', JSON.stringify({
@@ -467,7 +480,7 @@ function showNextStep()
                 "area" : area, 
                 "roomCode" : roomCode, 
                 "scoreIndex" : scoreIndex
-            }));
+            }));console.log('chat.js, line 481: scoreIndex == ' + scoreIndex);
             document.getElementById('nextBtnDivArea2').style.display = 'none';
         break;
         case 'showSpinner':
@@ -526,6 +539,7 @@ function showNextStep()
 }
 var finalAnswer;
 var score;
+var scoreTotal;
 var scoreIndex;
 var bestAnswerScore;
 socket.on('detailedExplanationOfAnswers', (data) => {
@@ -538,6 +552,7 @@ socket.on('detailedExplanationOfAnswers', (data) => {
         nextStep = 'showFinalAnswer';
         finalAnswer = data['finalAnswer'];
         score = data['score'];
+        scoreTotal = data['scoreTotal'];
         bestAnswerScore = data['bestAnswerScore'];
         options = data['options'];
         topic = data['topic'];
@@ -640,6 +655,7 @@ socket.on('ro', (data) => {
         teams = getTeams(data['rooms']);
         if (data['teamName'] == teamName)
         {
+            document.getElementById('lblWheelInfo').innerHTML = '';
             document.getElementById('spinner').style.display = 'none';
             document.getElementById('area3').style.top = (parseInt(document.getElementById('lblArea').offsetTop) + 35) + 'px';
             document.getElementById('lblArea').innerHTML = 'RISKS & OPPORTUNITIES';
@@ -648,7 +664,7 @@ socket.on('ro', (data) => {
             document.getElementById('area2').style.display = 'none';
             document.getElementById('area3').style.display = 'block';
             text = data['ro']['text'];
-            score = data['ro']['score'];
+            score = data['ro']['score'];//console.log('chat.js, line 654: score == ' + score);
             if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
             {
                 userPlay = true;
@@ -678,6 +694,7 @@ socket.on('finishGame', (data) => {
             teams = getTeams(data['rooms']);
             document.getElementById('teamInfo').style.display = 'none';
             document.getElementById('gameInfo').style.display = 'none';
+            document.getElementById('lblWheelInfo').innerHTML = '';
             document.getElementById('spinner').style.display = 'none';
             document.getElementById('area1').style.display = 'none';
             document.getElementById('area2').style.display = 'none';
@@ -691,6 +708,8 @@ socket.on('finishGame', (data) => {
 socket.on('showTeamInfo', (data) => {
     if ((data['roomCode'] == roomCode) && (data['teamName'] == teamName) && (data['userName'] != userName) && (data['userSurname'] != userSurname) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
+        document.getElementById('area1AnswersColumn').innerHTML = '';
+        document.getElementById('area2AnswersDiv').innerHTML = '';
         pickedArea = undefined;
         document.getElementById('body').style.backgroundColor = "white";
         document.getElementById('body').style.backgroundImage = "url('./img/2.png')";
