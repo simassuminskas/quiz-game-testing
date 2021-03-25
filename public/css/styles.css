@@ -294,7 +294,8 @@ button {
 }
 
 #lblWheelInfo {
-
+font-style: uppercase;
+color: #000;
 }
 
 #gameInfo {
