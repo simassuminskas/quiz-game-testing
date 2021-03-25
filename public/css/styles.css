@@ -466,3 +466,11 @@ font-family: 'Quicksand';
 }
 
 .lblResponse {}
+
+
+.fas fa-angle-right fa-2x{
+  
+}
+.fas fa-angle-right fa-2x:hover{
+  transform: scale(120%);
+}
