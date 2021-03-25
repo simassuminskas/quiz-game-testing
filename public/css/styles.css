@@ -454,9 +454,12 @@ font-family: 'Quicksand';
 }
 
 .inputRadioOption {
+  transition: 0.2s;
 }
 
-.inputRadioOption {
+.inputRadioOption:hover {
+  background: black;
+  
 }
 
 .otherAnswers {
