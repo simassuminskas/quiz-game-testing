@@ -470,10 +470,10 @@ font-family: 'Quicksand';
 .lblResponse {}
 
 
-.fas fa-angle-right fa-2x{
+.i.fas fa-angle-right fa-2x{
   transition: 0.2s;
 }
-.fas fa-angle-right fa-2x:hover{
+.i.fas fa-angle-right fa-2x:hover{
   transform: scale(120%);
 }
 
