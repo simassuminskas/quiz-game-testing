@@ -294,7 +294,7 @@ button {
 }
 
 #lblWheelInfo {
-font-style: uppercase;
+text-transform: uppercase;
 color: #000;
 }
 
