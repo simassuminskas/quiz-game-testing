@@ -469,8 +469,17 @@ font-family: 'Quicksand';
 
 
 .fas fa-angle-right fa-2x{
-  
+  transition: 0.2s;
 }
 .fas fa-angle-right fa-2x:hover{
+  transform: scale(120%);
+}
+
+
+
+#lbl_question_option_0{
+  transition: 0.2s;
+}
+#lbl_question_option_0:hover{
   transform: scale(120%);
 }
