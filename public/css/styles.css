@@ -288,11 +288,13 @@ button {
 #spinner{
   width:40%;
   cursor: pointer;
-}
-/*------------------------------------*/
-#spinner{
   width:617px;
   height:617px;
+}
+/*------------------------------------*/
+#spinner:hover{
+  width:650px;
+  height:650px;
 }
 
 #lblWheelInfo {
