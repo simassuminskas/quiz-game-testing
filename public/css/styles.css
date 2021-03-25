@@ -483,8 +483,17 @@ font-family: 'Quicksand';
   transition: 0.2s;
 }
 #lbl_question_option_0:hover{
+  border-style: solid;
+}
+
+#question_option_0{
+  transition: 0.2s;
+}
+
+#question_option_0:hover{
   transform: scale(120%);
 }
+
 
 #lblArea{
   font-size: 300%;
