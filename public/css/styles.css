@@ -151,6 +151,13 @@ button {
   text-align: left;
   margin: 10px;
 }
+#area1AnswersColumn:hover {
+  width: 100%;
+  text-align: left;
+  margin: 10px;
+  font-size: 120%;
+}
+
 
 #area1Table{
   text-align: center;
@@ -169,13 +176,17 @@ button {
 }
 
 #area2QuestionColumn {
-  width: 100%
+  width: 100%;
+  text-align: right;
+  margin: 10px;
 }
 #area2LblQuestion {}
 #area2QuestionsDiv {}
 
 #area2AnswersColumn {
-  width: 100%
+  width: 100%;
+  text-align: left;
+  margin: 10px;
 }
 #area2LblAnswers {}
 #area2AnswersDiv {}
@@ -284,7 +295,9 @@ button {
   height:617px;
 }
 
-#lblWheelInfo {}
+#lblWheelInfo {
+
+}
 
 #gameInfo {
   background-color: white;
