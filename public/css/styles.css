@@ -453,7 +453,11 @@ font-family: 'Quicksand';
   color: black;
 }
 
-.inputRadioOption {}
+.inputRadioOption {
+}
+
+.inputRadioOption {
+}
 
 .otherAnswers {
   position: absolute;
@@ -470,6 +474,11 @@ font-family: 'Quicksand';
 .lblResponse {}
 
 
+
+#teamInfo2{
+  background: white;
+  
+}
 
 
 #beforeBtnDivArea1 {
