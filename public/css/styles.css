@@ -513,12 +513,50 @@ font-family: 'Quicksand';
   color: red;
 }
 
+#lbl_question_option_1{
+  transition: 0.2s;
+}
+#lbl_question_option_1:hover{
+  color: red;
+}
+
+#lbl_question_option_2{
+  transition: 0.2s;
+}
+#lbl_question_option_2:hover{
+  color: red;
+}
+
+#lbl_question_option_3{
+  transition: 0.2s;
+}
+#lbl_question_option_3:hover{
+  color: red;
+}
+
+#lbl_question_option_4{
+  transition: 0.2s;
+}
+#lbl_question_option_4:hover{
+  color: red;
+}
+
+#lbl_question_option_5{
+  transition: 0.2s;
+}
+#lbl_question_option_5:hover{
+  color: red;
+}
+
+
+
+
 #question_option_0{
   transition: 0.2s;
 }
 
 #question_option_0:hover{
-  transform: scale(120%);
+  background: red;
 }
 
 
