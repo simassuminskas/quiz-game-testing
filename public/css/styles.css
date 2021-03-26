@@ -454,6 +454,7 @@ font-family: 'Quicksand';
 }
 
 .inputRadioOption {
+  cursor: pointer;
   transition: 0.2s;
 }
 
@@ -485,34 +486,38 @@ font-family: 'Quicksand';
 
 
 #beforeBtnDivArea1 {
+  cursor: pointer;
   transition: 0.2s;
 }
 #beforeBtnDivArea1:hover {
-  transform: scale(120%);
+  color: red;
 }
 
 
 #nextBtnDivArea1 {
+  cursor: pointer;
   transition: 0.2s;
 }
 #nextBtnDivArea1:hover {
-  transform: scale(120%);
+  color: red;
 }
 
 
 #nextBtnDivArea2 {
+  cursor: pointer;
   transition: 0.2s;
 }
 #nextBtnDivArea2:hover {
-  transform: scale(120%);
+  color: red;
 }
 
 
 #nextBtnDivArea3 {
+  cursor: pointer;
   transition: 0.2s;
 }
 #nextBtnDivArea3:hover {
-  transform: scale(120%);
+  color: red;
 }
 
 
