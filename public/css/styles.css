@@ -663,3 +663,21 @@ font-family: 'Quicksand';
   from { -webkit-mask-position: 150%; }
   to { -webkit-mask-position: -50%; }
 }
+
+
+
+.area1 .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  right: 105%;
+}
