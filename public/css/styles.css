@@ -84,7 +84,7 @@ button {
 #card #back {
   display: block;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: 55%;
   height: 100%;
   width: 100%;
   text-align: center;
@@ -111,10 +111,10 @@ button {
   transform: rotateY( 180deg );
 }
 .container:first-child #card #front {
-  background: #c43f56;
+  background: #eee;
 }
 .container:first-child #card #back {
-  background: #c43f56;
+  background: #eee;
 }
 
 .content {
