@@ -453,6 +453,8 @@ font-family: 'Quicksand';
   color: black;
 }
 
+
+
 .inputRadioOption {
   cursor: pointer;
   transition: 0.2s;
@@ -462,6 +464,9 @@ font-family: 'Quicksand';
   background: black;
   
 }
+
+
+
 
 .otherAnswers {
   position: absolute;
@@ -483,6 +488,8 @@ font-family: 'Quicksand';
   background: white;
   
 }
+
+
 
 
 #beforeBtnDivArea1 {
@@ -569,12 +576,51 @@ font-family: 'Quicksand';
 
 
 #question_option_0{
+  cursor: pointer;
   transition: 0.2s;
 }
 
 #question_option_0:hover{
   background: red;
 }
+
+#question_option_1{
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#question_option_1:hover{
+  background: red;
+}
+
+#question_option_2{
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#question_option_3:hover{
+  background: red;
+}
+
+#question_option_4{
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#question_option_4:hover{
+  background: red;
+}
+
+#question_option_5{
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#question_option_5:hover{
+  background: red;
+}
+
+
 
 
 #lblArea{
