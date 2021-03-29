@@ -40,7 +40,7 @@ button {
   float: left;
   width: 48%;
   height: 260px;
-  margin: 10px 0 10px 4%;
+  margin: 10px 10px 10px 4%;
   background: #fff;/*verde*/
   /* Set the depth of the elements */
   -webkit-perspective: 800px;
@@ -52,7 +52,7 @@ button {
 
 .container:first-child {
   background: transparent;
-  margin-left: 30%;
+  margin-left: 20%;
   /*padding-bottom: 10%;*/
 }
 
@@ -279,8 +279,8 @@ button {
   position: relative;
   z-index: 1;
   padding: 2%;
-  border-radius: 5px;
-  width: 70%;
+  border-radius: 10px;
+  width: 50%;
   /*background-color: #c43f56;*/
 }
 #spinner{
@@ -452,7 +452,7 @@ font-family: 'Quicksand';
 .topic {
   text-align: right;
   font-family: Quicksand, serif;
-  font-size: 150%;
+  font-size: 100%;
   color: black;
 }
 
@@ -483,7 +483,9 @@ font-family: 'Quicksand';
   font-size: 300%;
 }
 
-.lblResponse {}
+.lblResponse {
+transform: italic;
+}
 
 
 
