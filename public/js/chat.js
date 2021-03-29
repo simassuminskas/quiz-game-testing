@@ -330,7 +330,7 @@ socket.on('area3Card', (data) => {
         flip('back', false);
         userPlay = false;
         document.getElementById('nextBtnDivArea3').style.display = 'none';
-        document.getElementById('backContent').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore">' + data['score'] + '</label>';
+        document.getElementById('backContent').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore"><br>' + data['score'] + '</label>';
         scoreArea3 += score;
         showGameInfo();
         //document.getElementById('back').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore">' + data['score'] + '</label>';
@@ -360,7 +360,7 @@ function showBeforeStep()
             for (var i = 0; i < options.length; i++)
             {
                 //html += '<label class="lblOption" id="lbl_question_option_' + i + '">' + options[i]['option'] + '</label><br>' + options[i]['score'] + ' ' + options[i]['response'] + '<br>';
-                html += '<label class="lblOption" id="lbl_question_option_' + i + '">' + options[i]['option'] + '<br>' + '<label class="lblScore">' + options[i]['score'] + '</label>' + ' ' + '<label class="lblResponse">' + options[i]['response'] + '</label>' + '<br></label>';
+                html += '<label class="lblOption" id="lbl_question_option_' + i + '">' + options[i]['option'] + '<br>' + '<label class="lblScore">'+ '<br>' + options[i]['score'] + '</label>' + ' ' + '<label class="lblResponse">' + options[i]['response'] + '</label>' + '<br></label>';
             }
             html += '<label class="topic">' + topic + '<br><br></label>';
             document.getElementById('personalEvaluation').innerHTML = html;
@@ -430,7 +430,7 @@ function showNextStep()
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('area1LabelsTable').style.display = 'none';
-            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' PONTS?<br><br>Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
+            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>Compare your answer to the highest scoring response.<br>Are we acting like this today?'<br><br><br><br>Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
             beforeStep = 'showFinalAnswer';
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('beforeBtnDivArea1').style.display = 'block';
@@ -596,7 +596,7 @@ socket.on('leaderVotation', (data) => {
             document.getElementById('area1Table').style.display = 'flex';
             document.getElementById('area1').style.display = 'block';
             document.getElementById('area1').style.backgroundColor = "#ac0034";
-            document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE BEST MOST APPROPIATE ANSWER WITH THE TEAM & LEADER WILL SUBMIT THE FINAL DECISSION.';
+            document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE MOST APPROPIATE ANSWER WITH THE TEAM & LEADER WILL SUBMIT THE FINAL DECISSION.'<br>;
             document.getElementById('area1QuestionColumn').innerHTML = '<label id="question">' + data['question']['question'] + '<br></label>';
             question = data['question']['question'];
             var html = '';
@@ -668,7 +668,7 @@ socket.on('ro', (data) => {
             if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
             {
                 userPlay = true;
-                document.getElementById('front').innerHTML = '<br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
+                document.getElementById('front').innerHTML = '<br><br><br><br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
                 flip('front');
                 dataUserName = data['userName'];
                 dataUserSurname = data['userSurname'];
@@ -801,7 +801,7 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, userIndex, user
         for (var i = 0; i < users.length; i++)
         {
             document.getElementById('vl_' + i).style.display = 'block';
-            document.getElementById('vl_' + i).innerHTML = 'VOTE FOR LEADER';
+            document.getElementById('vl_' + i).innerHTML = 'VOTE FOR LEADER'<br>;
             if (i == userIndex)
             {
                 document.getElementById('vl_' + i).innerHTML = 'CONFIRM';
