@@ -19,7 +19,7 @@ var scoreArea2 = 0;
 var scoreArea3 = 0;
 socket.on('update', (data) => {console.log(data);
     if ((data['userName'] != undefined) && (data['userSurname'] != undefined) && (document.getElementById('divGameFinished').style.display == 'none'))
-    {
+    {//Pendiente modificar para ser más parecido a los otros y que muestre los equipos desde el principio como en otras ocasiones.
         if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
         {
             if (!connected)
@@ -116,7 +116,7 @@ socket.on('showSpinner', (data) => {
         teams = getTeams(data['rooms']);
         //updateUsersInfo();
         document.getElementById('restartPopup').style.display = 'none';
-        document.getElementById('body').style.backgroundColor = "#ac0034";
+        document.getElementById('body').style.backgroundColor = "#eee";
         document.getElementById('body').style.backgroundImage = "url('./img/3.2.png')";
         
         document.getElementById('area3').style.display = 'none';
@@ -139,35 +139,48 @@ socket.on('startSpin', (data) => {
 });
 socket.on('showArea1PartialResult', (data) => {//console.log(data);
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
-    {
+    {//console.log('Line 115.');
         area = data['area'];
         teams = getTeams(data['rooms']);
         for (var i = 0; i < teams.length; i++)
         {
             if ((teams[i]['teamName'] == data['teamName']) && (data['teamName'] == teamName) && (data['area'] == 1))
-            {
+            {//console.log('Line 121.');
                 document.getElementById('area3').style.display = 'none';
                 document.getElementById('area2').style.display = 'none';
                 document.getElementById('area1').style.display = 'block';
                 document.getElementById('area1QuestionColumn').innerHTML = '';
                 document.getElementById('area1AnswersColumn').innerHTML = '';
-                var html = '';
+                //document.getElementById('area1VotingResultsLeftDiv').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
+                //<hr style="width:50%;text-align:left;margin-left:0"> 
+                /*game.rooms[index]['teams'][i]['sendedQuestions']['area' + message['area']][j]['otherAnswers'].push({
+                    'answer' : message['answer'], 
+                    'votes' : [{userName: message['userName'], userSurname: message['userSurname']}];
+                });*/
+                var maxVotes = data['otherAnswers'][0]['votes'].length;
+                for (var k = 1; k < data['otherAnswers'].length; k++)
+                {
+                    if (data['otherAnswers'][k]['votes'].length > maxVotes)
+                    {
+                        maxVotes = data['otherAnswers'][k]['votes'].length;
+                    }
+                }
+                html = '';
                 for (var j = 0; j < data['question']['options'].length; j++)
                 {
-                    //html += '<label class="lblOption" id="lbl_question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
-                    html += '<div class="optionNoSelected" id="lbl_question_option_' + j + '">' + data['question']['options'][j]['option'] + '<br></div><br>';
+                    html += '<label class="lblOption" id="lbl_question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
                 }
                 document.getElementById('area1AnswersColumn').innerHTML = html;
                 for (var j = 0; j < data['question']['options'].length; j++)
-                {
+                {//50/100 = 0.5
                     for (var k = 0; k < data['otherAnswers'].length; k++)
                     {
                         if (data['otherAnswers'][k]['answer'] == data['question']['options'][j]['option'])
                         {
-                            //var usersList = [];//Pendiente revisar esta parte.
-                            var html = '<span class="otherAnswers" style="display:none; left: ' + document.getElementById('lbl_question_option_' + j).offsetLeft + 'px; top: ' + document.getElementById('lbl_question_option_' + j).offsetBottom + 'px;">';
+                            //var usersList = [];
+                            /*here*/var html = '<span class="otherAnswers" style="display:none; left: ' + document.getElementById('lbl_question_option_' + j).offsetLeft + 'px; top: ' + document.getElementById('lbl_question_option_' + j).offsetBottom + 'px;">';
                             for (var l = 0; l < data['otherAnswers'][k]['votes'].length; l++)
-                            {
+                            {//[{userName: message['userName'], userSurname: message['userSurname']}]
                                 html += data['otherAnswers'][k]['votes'][l]['userName'] + ' ' + data['otherAnswers'][k]['votes'][l]['userSurname'] + '<br>';
                             }
                             html += '</span>';
@@ -176,13 +189,15 @@ socket.on('showArea1PartialResult', (data) => {//console.log(data);
                         }
                     }
                 }
+                //html += '<button onclick="submitAnswer(\'allUsersVotation\');">Submit answer</button>';
+                //document.getElementById('nextButton').style.display = 'block';
             }
         }
     }
 });
 var nextStep;
 var beforeStep;
-socket.on('showResultArea2', (data) => {console.log(data);
+socket.on('showResultArea2', (data) => {
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
         teams = getTeams(data['rooms']);
@@ -192,8 +207,7 @@ socket.on('showResultArea2', (data) => {console.log(data);
             {
                 document.getElementById('area2Table').style.display = 'none';
                 //score = options[scoreIndex]['score'];
-                //score = options[data['scoreIndex']]['score'];
-                score = data['score'];
+                score = options[data['scoreIndex']]['score'];
                 var r = 'INCORRECT';
                 //if (data['score'] > 0)
                 if (score > 0)
@@ -243,9 +257,9 @@ socket.on('question', (data) => {
                         leader = true;
                     }
                 }
-                answer = '';
+                //if ((data['area'] == 1) && (!leader))
                 if (data['area'] == 1)
-                {
+                {//Pendiente label 'DILEMMAS' arriba de la caja para los usuarios que no giraron la rueda en ese turno.
                     document.getElementById('area3').style.display = 'none';
                     document.getElementById('area2').style.display = 'none';
                     document.getElementById('area1').style.display = 'block';
@@ -256,17 +270,14 @@ socket.on('question', (data) => {
                     options = data['question']['options'];
                     for (var j = 0; j < data['question']['options'].length; j++)
                     {
-                        //html += '<tr>';
-                        //html += '<td><input type="radio" id="question_option_' + j + '" name="answer" onchange="document.getElementById(\'nextBtnDivArea1\').style.display = \'block\';"></td>';
-                        //html += '<td><label onclick="optionSelected(1, ' + j + ');" id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label></td>';
-                        html += '<div class="optionNoSelected" id="lbl_question_option_' + j + '" onclick="optionSelected(1, ' + j + ');">' + data['question']['options'][j]['option'] + '<br></div><br>';
-                        //html += '</tr><tr></tr>';
+                        html += '<input type="radio" id="question_option_' + j + '" name="answer" onchange="document.getElementById(\'nextBtnDivArea1\').style.display = \'block\';">';
+                        html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br>';
                     }
                     document.getElementById('area1AnswersColumn').innerHTML = html;
                     //document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                     document.getElementById('nextBtnDivArea1').style.display = 'none';
                     document.getElementById('beforeBtnDivArea1').style.display = 'none';
-                    document.getElementById('lblArea').innerHTML = 'DILEMMAS';
+                    //document.getElementById('lblArea').innerHTML = 'DILEMMAS';
                     document.getElementById('lblLightBoxArea1Header').innerHTML = 'READ THE DILEMMA & CHOOSE THE BEST ANSWER INDIVIDUALLY.';
                     nextStep = 'allUsersVotation';
                 }
@@ -307,8 +318,7 @@ socket.on('area2Question', (data) => {
         var html = '';
         for (var j = 0; j < data['options'].length; j++)
         {
-            //html += '<label id="lbl_question_option_' + j + '">' + data['options'][j]['option'] + '</label><br><br>';
-            html += '<div class="optionNoSelected" id="lbl_question_option_' + j + '">' + data['options'][j]['option'] + '<br></div><br>';
+            html += '<label id="lbl_question_option_' + j + '">' + data['options'][j]['option'] + '</label><br>';
         }
         document.getElementById('area2AnswersDiv').innerHTML = html;
     }
@@ -320,7 +330,7 @@ socket.on('area3Card', (data) => {
         flip('back', false);
         userPlay = false;
         document.getElementById('nextBtnDivArea3').style.display = 'none';
-        document.getElementById('backContent').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore">' + data['score'] + '</label>';
+        document.getElementById('backContent').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore"><br>' + data['score'] + '</label>';
         scoreArea3 += score;
         showGameInfo();
         //document.getElementById('back').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore">' + data['score'] + '</label>';
@@ -338,7 +348,7 @@ function showBeforeStep()
                 YOUR FINAL ANSWER WAS:<br>
                 ` + finalAnswer + `<br><br>
                 YOUR SCORE FOR THE ANSWER:<br>
-                ` + '<label class="lblScore">' + score + '</label>' + `<br>`;
+                ` + '<label class="lblScore">' + score + '</label>' + `<br>`;//Pendiente la parte de los comentarios.
             nextStep = 'personalEvaluation';
             beforeStep = 'detailedExplanationOfAnswers';
             scoreArea1 = scoreTotal;
@@ -350,7 +360,7 @@ function showBeforeStep()
             for (var i = 0; i < options.length; i++)
             {
                 //html += '<label class="lblOption" id="lbl_question_option_' + i + '">' + options[i]['option'] + '</label><br>' + options[i]['score'] + ' ' + options[i]['response'] + '<br>';
-                html += '<label class="lblOption" id="lbl_question_option_' + i + '">' + options[i]['option'] + '<br>' + '<label class="lblScore">' + options[i]['score'] + '</label>' + ' ' + '<label class="lblResponse">' + options[i]['response'] + '</label>' + '<br></label>';
+                html += '<label class="lblOption" id="lbl_question_option_' + i + '">' + options[i]['option'] + '<br>' + '<label class="lblScore">'+ '<br>' + options[i]['score'] + '</label>' + ' ' + '<label class="lblResponse">' + options[i]['response'] + '</label>' + '<br></label>';
             }
             html += '<label class="topic">' + topic + '<br><br></label>';
             document.getElementById('personalEvaluation').innerHTML = html;
@@ -364,10 +374,10 @@ function showBeforeStep()
         break;
     }
 }
-var answer;
 function showNextStep()
 {
-    /*var rads = document.getElementsByName('answer');
+    var answer;
+    var rads = document.getElementsByName('answer');
     for (var i = 0; i < rads.length; i++)
     {//El rads tiene más length que lo que tiene el área 2 (3).
         if (rads[i].checked)
@@ -383,10 +393,10 @@ function showNextStep()
             }
             i = rads.length;
         }
-    }*/
+    }
     switch (nextStep)
     {
-        case 'allUsersVotation':
+        case 'allUsersVotation'://Pendiente desactivar los input range (o cambiar por label).
             socket.emit('allUsersVotation', JSON.stringify({
                 "userName" : userName, 
                 "userSurname" : userSurname, 
@@ -420,7 +430,7 @@ function showNextStep()
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('area1LabelsTable').style.display = 'none';
-            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' PONTS?<br><br>Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
+            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>Compare your answer to the highest scoring response.<br>Are we acting like this today?'<br><br><br><br>Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
             beforeStep = 'showFinalAnswer';
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('beforeBtnDivArea1').style.display = 'block';
@@ -434,6 +444,7 @@ function showNextStep()
             document.getElementById('beforeBtnDivArea1').style.display = 'none';
             var evaluation = parseInt(document.getElementById('personalEvaluationRange').value) + 1;
             document.getElementById('personalEvaluation').innerHTML = 'THANK FOR YOUR ENGAGEMENT<br>PLEASE TAKE TURNS IN SPINING A WHELL';
+            //Pendiente ver si mantener este mensaje para el del siguiente turno.
             socket.emit('personalEvaluation', JSON.stringify({
                 "userName" : userName, 
                 "userSurname" : userSurname, 
@@ -451,7 +462,7 @@ function showNextStep()
                 YOUR FINAL ANSWER WAS:<br>
                 ` + finalAnswer + `<br><br>
                 YOUR SCORE FOR THE ANSWER:<br>
-                ` + '<label class="lblScore">' + score + '</label>' + `<br>`;
+                ` + '<label class="lblScore">' + score + '</label>' + `<br>`;//Pendiente la parte de los comentarios.
             nextStep = 'personalEvaluation';//console.log('Line 347.');
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('beforeBtnDivArea1').style.display = 'block';
@@ -467,9 +478,9 @@ function showNextStep()
                 "question" : question, 
                 "answer" : answer, 
                 "area" : area, 
-                "roomCode" : roomCode/*, 
-                "scoreIndex" : scoreIndex*/
-            }));//console.log('scoreIndex == ' + scoreIndex);
+                "roomCode" : roomCode, 
+                "scoreIndex" : scoreIndex
+            }));console.log('chat.js, line 481: scoreIndex == ' + scoreIndex);
             document.getElementById('nextBtnDivArea2').style.display = 'none';
         break;
         case 'showSpinner':
@@ -494,16 +505,13 @@ function showNextStep()
                 "options" : options, 
                 "roomCode" : roomCode
             }));
-            document.getElementById('area1AnswersColumn').innerHTML = '';
             document.getElementById('area2Table').style.display = 'flex';
             document.getElementById('area2QuestionsDiv').innerHTML = '<label id="question">' + question + '</label>';
             var html = '';
             for (var j = 0; j < options.length; j++)
             {
-                //html += '<input class="inputRadioOption" type="radio" id="question_option_' + j + '" name="answer" onchange="document.getElementById(\'nextBtnDivArea2\').style.display = \'block\'; scoreIndex = ' + j + ';">';
-                //html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + options[j]['option'] + '</label><br>';
-                //html += '<label onclick="optionSelected(2, ' + j + ');" id="lbl_question_option_' + j + '">' + options[j]['option'] + '</label><br><br>';
-                html += '<div class="optionNoSelected" id="lbl_question_option_' + j + '" onclick="optionSelected(2, ' + j + ');">' + options[j]['option'] + '<br></div><br>';
+                html += '<input class="inputRadioOption" type="radio" id="question_option_' + j + '" name="answer" onchange="document.getElementById(\'nextBtnDivArea2\').style.display = \'block\'; scoreIndex = ' + j + ';">';
+                html += '<label id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + options[j]['option'] + '</label><br>';
             }
             document.getElementById('area2AnswersDiv').innerHTML = html;
             nextStep = 'questionArea2';
@@ -532,15 +540,11 @@ function showNextStep()
 var finalAnswer;
 var score;
 var scoreTotal;
-//var scoreIndex;
+var scoreIndex;
 var bestAnswerScore;
-var leaderName;
-var leaderSurname;
 socket.on('detailedExplanationOfAnswers', (data) => {
     if ((data['roomCode'] == roomCode) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
-        leaderName = data['userName'];
-        leaderSurname = data['userSurname'];
         document.getElementById('lblLightBoxArea1Header').innerHTML = 'DETAILED EXPLANATION OF ANSWERS';
         document.getElementById('area1Table').style.display = 'none';
         document.getElementById('area1LabelsTable').style.display = 'none';
@@ -592,34 +596,26 @@ socket.on('leaderVotation', (data) => {
             document.getElementById('area1Table').style.display = 'flex';
             document.getElementById('area1').style.display = 'block';
             document.getElementById('area1').style.backgroundColor = "#ac0034";
-            document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE BEST MOST APPROPIATE ANSWER WITH THE TEAM & LEADER WILL SUBMIT THE FINAL DECISSION.';
-            document.getElementById('area1QuestionColumn').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
+            document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE MOST APPROPIATE ANSWER WITH THE TEAM & LEADER WILL SUBMIT THE FINAL DECISSION.'<br>;
+            document.getElementById('area1QuestionColumn').innerHTML = '<label id="question">' + data['question']['question'] + '<br></label>';
             question = data['question']['question'];
             var html = '';
             for (var j = 0; j < data['question']['options'].length; j++)
             {
                 if (leader)
                 {
-                    /*html += '<tr>';
-                    html += '<td><input type="radio" id="question_option_' + j + '" name="answer" onchange="document.getElementById(\'nextBtnDivArea1\').style.display = \'block\';"></td>';
-                    html += '<td><label class="lblOption" id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label></td>';
-                    html += '</tr><tr></tr>';*/
-                    //html += '<label onclick="optionSelected(1, ' + j + ');" id="lbl_question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br><br>';
-                    html += '<div class="optionNoSelected" id="lbl_question_option_' + j + '" onclick="optionSelected(1, ' + j + ');">' + data['question']['options'][j]['option'] + '<br></div><br>';
+                    html += '<input class="inputRadioOption" type="radio" id="question_option_' + j + '" name="answer" onchange="document.getElementById(\'nextBtnDivArea1\').style.display = \'block\';">';
+                    html += '<label class="lblOption" id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '<br></label>';
                 }
                 else
                 {
-                    html += '<label class="lblOption" id="lbl_question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label><br><br>';
+                    html += '<label class="lblOption" id="lbl_question_option_' + j + '">' + data['question']['options'][j]['option'] + '<br></label>';
                 }
             }
             if (leader)
             {
-                /*html += '<tr>';
-                html += '<td><input class="inputRadioOption" type="radio" id="question_option_' + j + '" name="answer" onchange="document.getElementById(\'nextBtnDivArea1\').style.display = \'block\';"></td>';
-                html += '<td><label class="lblOption" id="lbl_question_option_' + j + '" for=question_option_' + j + '">no mutual agreement</label></td>';
-                html += '</tr><tr></tr>';*/
-                //html += '<label onclick="optionSelected(1, ' + j + ');" id="lbl_question_option_' + j + '">no mutual agreement</label><br>';
-                html += '<div class="optionNoSelected" id="lbl_question_option_' + j + '" onclick="optionSelected(1, ' + j + ');">no mutual agreement</div><br>';
+                html += '<input class="inputRadioOption" type="radio" id="question_option_' + j + '" name="answer" onchange="document.getElementById(\'nextBtnDivArea1\').style.display = \'block\';">';
+                html += '<label class="lblOption" id="lbl_question_option_' + j + '" for=question_option_' + j + '">no mutual agreement<br></label>';
                 document.getElementById('nextBtnDivArea1').style.display = 'none';
                 document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                 document.getElementById('beforeBtnDivArea1').style.display = 'none';
@@ -672,7 +668,7 @@ socket.on('ro', (data) => {
             if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
             {
                 userPlay = true;
-                document.getElementById('front').innerHTML = '<br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
+                document.getElementById('front').innerHTML = '<br><br><br><br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
                 flip('front');
                 dataUserName = data['userName'];
                 dataUserSurname = data['userSurname'];
@@ -788,6 +784,7 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, userIndex, user
             document.getElementById('vl_' + i).style.display = 'none';
         }
         vote = true;
+        //Pendiente ver por qué el último que vota no recibe la información sobre quién es el líder.
         socket.emit('voteLeader', JSON.stringify({
             newLeader: newLeader,
             status: status,
@@ -804,7 +801,7 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, userIndex, user
         for (var i = 0; i < users.length; i++)
         {
             document.getElementById('vl_' + i).style.display = 'block';
-            document.getElementById('vl_' + i).innerHTML = 'VOTE FOR LEADER';
+            document.getElementById('vl_' + i).innerHTML = 'VOTE FOR LEADER'<br>;
             if (i == userIndex)
             {
                 document.getElementById('vl_' + i).innerHTML = 'CONFIRM';
@@ -823,6 +820,7 @@ function login()
             userName = $('#nameInput').val().replace(regex, ' ').trim();
             userSurname = $('#surnameInput').val().replace(regex, ' ').trim();
             var data = JSON.stringify({
+                'type' : 'update', 
                 'userName' : userName, 
                 'userSurname' : userSurname, 
                 'teamName' : document.getElementById('teamName').value
@@ -831,11 +829,3 @@ function login()
         }
     }
 }
-socket.on("connect_error", () => {
-  document.getElementById('restartPopup').style.display = 'block';
-  setTimeout(() => {
-    socket.connect();
-    document.getElementById('restartPopup').style.display = 'none';
-  }, 1000);
-});
-socket.on("disconnect", () => {});
