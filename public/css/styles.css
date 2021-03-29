@@ -272,6 +272,7 @@ button {
 }
 #area3 {
   text-align: center;
+  color: #fff;
   margin-left: auto; 
   margin-right: auto;
   display: block;
@@ -290,10 +291,7 @@ button {
   transition: 0.3s;
 }
 /*------------------------------------*/
-#spinner:hover{
-  width:650px;
-  height:650px;
-}
+
 
 #lblWheelInfo {
 text-transform: uppercase;
