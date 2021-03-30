@@ -222,7 +222,7 @@ button {
   font-family: 'Quicksand', serif;
   display: none;
   color: black;
-  background: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.5);
   text-align: center;
   margin-left: auto; 
   margin-right: auto;
