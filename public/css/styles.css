@@ -103,6 +103,7 @@ button {
   text-align: center;
 }
 #card #front {
+  cursor: pointer;
 }
 #card #back {
   -webkit-transform: rotateY( 180deg );
