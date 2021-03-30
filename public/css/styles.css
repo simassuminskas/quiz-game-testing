@@ -299,9 +299,8 @@ text-transform: uppercase;
 color: #000;
   margin-right: 2%;
   padding-bottom: 70px;
-  padding-right: -3em;
-  padding-left: -3em;
-  border-radius: 10px;
+  border-width: 3px;
+  border-color: #771929;
   background-color: rgba(255, 255, 255, 0.3);
   z-index: -1;
 }
