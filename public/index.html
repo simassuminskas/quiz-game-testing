@@ -47,7 +47,6 @@
     <center><label id="lblWheelInfo" style="font-family: 'Quicksand', serif;"></label></center>
     <center><div id="spinner" style="font-family: 'Quicksand'; font-size: 110%; display: none;"></div></center>
     <center id="area1">
-        
         <div id="area1Info"></div>
         <label id="lblLightBoxArea1Header"></label><hr>
         <div id="area1LabelsTable">
@@ -56,7 +55,7 @@
         </div>
         <div id="area1Table">
             <div id="area1QuestionColumn"></div>
-            <div id="area1AnswersColumn"></div>
+            <table id="area1AnswersColumn"></table>
         </div>
         <div id="personalEvaluation"></div>
         <div id="area1BtnsTable">
@@ -107,8 +106,8 @@
     </div>
     <div id="restartPopup">
         <label id="lblUserDisconnected"></label>
-        Click to continue!
-        <br>
+        You have been disconnected.<br>
+        Click to reload page!<br>
         <img id="restartBtn" src="./img/refresh white.png" onclick="restart();">
     </div>
     <div id="logo">
@@ -125,6 +124,8 @@
     <script src="js/script.js"></script>
     <script src="js/spinner.js"></script>
     <script src="js/card.js"></script>
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="js/questions.js"></script>
+    <script src="js/hoverInfo.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>-->
 </body>
 </html>
