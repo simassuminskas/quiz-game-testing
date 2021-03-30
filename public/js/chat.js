@@ -672,7 +672,7 @@ socket.on('ro', (data) => {
             if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
             {
                 userPlay = true;
-                document.getElementById('front').innerHTML = '<br><br><br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
+                document.getElementById('front').innerHTML = '<br><br><br><br><br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
                 flip('front');
                 dataUserName = data['userName'];
                 dataUserSurname = data['userSurname'];
