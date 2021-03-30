@@ -105,6 +105,9 @@ button {
 #card #front {
   cursor: pointer;
 }
+#front {
+  cursor: pointer;
+}
 #card #back {
   -webkit-transform: rotateY( 180deg );
   -moz-transform: rotateY( 180deg );
