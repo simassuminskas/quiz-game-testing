@@ -672,7 +672,7 @@ socket.on('ro', (data) => {
             if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
             {
                 userPlay = true;
-                document.getElementById('front').innerHTML = '<br><br><br><br><br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
+                document.getElementById('front').innerHTML = '<br><br><br><br><br><br><br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
                 flip('front');
                 dataUserName = data['userName'];
                 dataUserSurname = data['userSurname'];
@@ -682,7 +682,7 @@ socket.on('ro', (data) => {
                 userPlay = true;
                 flip('front');
                 userPlay = false;
-                document.getElementById('front').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL OPEN THE<br>CARD<br>&<br>SEE THE RESULT';
+                document.getElementById('front').innerHTML = '<br><br><br><br><br><br><br><br>' + data['userName'] + ' ' + data['userSurname'] + '<br>WILL OPEN THE CARD<br>&<br>SEE THE RESULT';
             }
             showGameInfo();
         }
