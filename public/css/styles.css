@@ -667,7 +667,7 @@ transform: italic;
 #lblLightBoxArea1Header{
   text-decoration: none;
   text-transform: uppercase;
-  
+  padding-bottom: 10px;
   display: inline-block;
   position: relative;
   
