@@ -221,8 +221,8 @@ button {
 #teamInfo2 {
   font-family: 'Quicksand', serif;
   display: none;
-  color: white;
-  background-color: #c43f56;
+  color: black;
+  background: rgba(255, 255, 255, 0.5);
   text-align: center;
   margin-left: auto; 
   margin-right: auto;
@@ -495,11 +495,6 @@ transform: italic;
 
 
 
-#teamInfo2{
-  background: rgba(255, 255, 255, 0.5);
-  font-color: black;
-  
-}
 
 
 
