@@ -20,7 +20,7 @@ function flip(next = 'back', showBtn = true)
           "roomCode" : roomCode
         }));
         document.getElementById('nextBtnDivArea3').style.display = 'block';
-        document.getElementById('backContent').innerHTML = '<br><br><br><br>' + text + '<br>' + 'SCORE:<br>' + '<label class="lblScore">' + score + '</label>';
+        document.getElementById('backContent').innerHTML = '<br><br><br><br><br><br>' + text + '<br><br><br>' + 'SCORE:<br>' + '<label class="lblScore">' + score + '</label>';
         nextStep = 'showSpinner';
         scoreArea3 += score;
         showGameInfo();
