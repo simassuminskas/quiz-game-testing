@@ -581,36 +581,13 @@ transform: italic;
 
 
 
-#optionSelected(1, 0){
-background-color: red;
-}
-#optionSelected(1, 1){
-  background-color: red;
-}
-#optionSelected(1, 2){
-  background-color: red;
-}
-#optionSelected(1, 3){
-  background-color: red;
-}
-#optionSelected(1, 4){
-  background-color: red;
-}
-#optionSelected(1, 5){
-  background-color: red;
+.optionSelected {
+  background-color: grba(255, 255, 255, 0.8);
+  opacity: 0.5;
+  padding: 2px;
 }
 
-
-#optionSelected(2, 0){
-  background-color: red;
-}
-#optionSelected(2, 1){
-  background-color: red;
-}
-#optionSelected(2, 2){
-  background-color: red;
-}
-
+.optionNoSelected {}
 
 
 
