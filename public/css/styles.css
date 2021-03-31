@@ -482,7 +482,8 @@ font-family: 'Quicksand';
   font-size: 300%;
 }
 
-.lblResponse {
+#label.lblResponse
+ {
 transform: italic;
 }
 
@@ -524,7 +525,7 @@ transform: italic;
 
 
 #lbl_question_option_0{
-border: 2px solid #555;
+border: 2px solid #fff;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -532,7 +533,7 @@ border: 2px solid #555;
 }
 
 #lbl_question_option_1{
-border: 2px solid #555;
+border: 2px solid #fff;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -540,7 +541,7 @@ border: 2px solid #555;
 }
 
 #lbl_question_option_2{
-border: 2px solid #555;
+border: 2px solid #fff;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -548,7 +549,7 @@ border: 2px solid #555;
 }
 
 #lbl_question_option_3{
-border: 2px solid #555;
+border: 2px solid #fff;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -556,7 +557,7 @@ border: 2px solid #555;
 }
 
 #lbl_question_option_4{
-border: 2px solid #555;
+border: 2px solid #fff;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -564,7 +565,7 @@ border: 2px solid #555;
 }
 
 #lbl_question_option_5{
-border: 2px solid #555;
+border: 2px solid #fff;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -621,6 +622,10 @@ border: 2px solid black;
   
 }
 
+#lbl_question_option_6:hover{
+display: none;
+  
+}
 
 
 
@@ -636,12 +641,11 @@ border: 2px solid black;
 }
 .optionSelected:hover {
   color: white;
-  cursor: pointer;
   border: 2px solid black;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  background-color: black;
+  
 }
 .optionNoSelected:hover {
   color: white;
@@ -650,7 +654,7 @@ border: 2px solid black;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  background-color: black;
+  
 }
 
 #lblArea{
