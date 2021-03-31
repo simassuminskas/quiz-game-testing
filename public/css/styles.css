@@ -524,7 +524,7 @@ transform: italic;
 
 
 #lbl_question_option_0{
-border: 2px solid black;
+border: 2px solid #eee;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -532,7 +532,7 @@ border: 2px solid black;
 }
 
 #lbl_question_option_1{
-border: 2px solid black;
+border: 2px solid #eee;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -540,7 +540,7 @@ border: 2px solid black;
 }
 
 #lbl_question_option_2{
-border: 2px solid black;
+border: 2px solid #eee;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -548,7 +548,7 @@ border: 2px solid black;
 }
 
 #lbl_question_option_3{
-border: 2px solid black;
+border: 2px solid #eee;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -556,7 +556,7 @@ border: 2px solid black;
 }
 
 #lbl_question_option_4{
-border: 2px solid black;
+border: 2px solid #eee;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -564,7 +564,7 @@ border: 2px solid black;
 }
 
 #lbl_question_option_5{
-border: 2px solid black;
+border: 2px solid #eee;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
@@ -578,7 +578,7 @@ border: 2px solid black;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  background-color: black;
+  
 }
 
 #lbl_question_option_1:hover{
@@ -586,7 +586,7 @@ border: 2px solid black;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  background-color: black;
+  
 }
 
 #lbl_question_option_2:hover{
@@ -594,7 +594,7 @@ border: 2px solid black;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  background-color: black;
+  
 }
 
 #lbl_question_option_3:hover{
@@ -602,7 +602,7 @@ border: 2px solid black;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  background-color: black;
+  
 }
 
 #lbl_question_option_4:hover{
@@ -610,7 +610,7 @@ border: 2px solid black;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  background-color: black;
+  
 }
 
 #lbl_question_option_5:hover{
@@ -618,7 +618,7 @@ border: 2px solid black;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  background-color: black;
+  
 }
 
 
@@ -627,7 +627,7 @@ border: 2px solid black;
 .optionSelected {
   transition: 0.2s;
   color: white;
-  background-color: grba(0, 0, 0, 0.8);
+  background-color: black;
   cursor: pointer;
   padding: 2px;
 
