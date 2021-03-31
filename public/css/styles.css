@@ -106,10 +106,12 @@ button {
   cursor: pointer;
   transition: 0.2s;
 }
-#front: hover {
+/*
+#card #front: hover {
   cursor: pointer;
   background: rgba(170, 0, 43, 0.5);
 }
+*/
 #card #back {
   -webkit-transform: rotateY( 180deg );
   -moz-transform: rotateY( 180deg );
@@ -117,7 +119,12 @@ button {
   transform: rotateY( 180deg );
 }
 .container:first-child #card #front {
+  transition: 0.2s;
   background: #eee;
+}
+.container:first-child #card #front: hover {
+  transition: 0.2s;
+  background: rgba(170, 0, 43, 0.6);
 }
 .container:first-child #card #back {
   background: #eee;
