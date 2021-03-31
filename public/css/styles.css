@@ -103,14 +103,16 @@ button {
   text-align: center;
 }
 #card #front {
-  display: inline-block;
+display: block;
   cursor: pointer;
   transition: o.2s;
 }
+/*
 #front: hover {
   cursor: pointer;
   background: rgba(170, 0, 43, 0.5);
 }
+*/
 #card #back {
   -webkit-transform: rotateY( 180deg );
   -moz-transform: rotateY( 180deg );
