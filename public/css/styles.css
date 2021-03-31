@@ -1,17 +1,17 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700);
 
 body {
-  font-family: 'Quicksand', serif;
+  font-family: "Quicksand", serif;
   font-weight: 300;
   font-size: 16px;
-  
+
   color: #333;
   background: #eee;
 }
 
 input,
 button {
-  font-family: 'Quicksand', serif;
+  font-family: "Quicksand", serif;
   font-weight: 300;
   font-size: 16px;
   border: 0;
@@ -41,7 +41,7 @@ button {
   width: 48%;
   height: 500px;
   margin: 10px 10px 10px 4%;
-  background: #fff;/*verde*/
+  background: #fff; /*verde*/
   /* Set the depth of the elements */
   -webkit-perspective: 800px;
   -moz-perspective: 800px;
@@ -74,10 +74,10 @@ button {
 }
 
 #card.flipped {
-  -webkit-transform: rotateY( 180deg );
-  -moz-transform: rotateY( 180deg );
-  -o-transform: rotateY( 180deg );
-  transform: rotateY( 180deg );
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
 
 #card #front,
@@ -103,21 +103,18 @@ button {
   text-align: center;
 }
 #card #front {
-display: block;
   cursor: pointer;
   transition: o.2s;
 }
-/*
 #front: hover {
   cursor: pointer;
   background: rgba(170, 0, 43, 0.5);
 }
-*/
 #card #back {
-  -webkit-transform: rotateY( 180deg );
-  -moz-transform: rotateY( 180deg );
-  -o-transform: rotateY( 180deg );
-  transform: rotateY( 180deg );
+  -webkit-transform: rotateY(180deg);
+  -moz-transform: rotateY(180deg);
+  -o-transform: rotateY(180deg);
+  transform: rotateY(180deg);
 }
 .container:first-child #card #front {
   background: #eee;
@@ -132,22 +129,22 @@ display: block;
   text-align: left;
 }
 
-#logo{
+#logo {
   position: absolute;
   bottom: 8px;
-  right: 16px;  
+  right: 16px;
 }
 
-#area1AnswersDiv{
+#area1AnswersDiv {
   text-align: center;
-  font-family: 'Quicksand';
+  font-family: "Quicksand";
   font-size: 16px;
   width: 100%;
 }
 
-#area1QuestionsDiv{
+#area1QuestionsDiv {
   text-align: center;
-  font-family: 'Quicksand';
+  font-family: "Quicksand";
   font-size: 16px;
   width: 100%;
 }
@@ -163,22 +160,20 @@ display: block;
   margin: 10px;
 }
 
-
-
-#area1Table{
+#area1Table {
   text-align: center;
-  font-family: 'Quicksand';
+  font-family: "Quicksand";
   font-size: 16px;
   table-layout: fixed;
-  border:none !important;
+  border: none !important;
 }
 
-#area2Table{
+#area2Table {
   text-align: center;
-  font-family: 'Quicksand';
+  font-family: "Quicksand";
   font-size: 16px;
   table-layout: fixed;
-  border:none !important;
+  border: none !important;
 }
 
 #area2QuestionColumn {
@@ -186,29 +181,33 @@ display: block;
   text-align: right;
   margin: 10px;
 }
-#area2LblQuestion {}
-#area2QuestionsDiv {}
+#area2LblQuestion {
+}
+#area2QuestionsDiv {
+}
 
 #area2AnswersColumn {
   width: 100%;
   text-align: left;
   margin: 10px;
 }
-#area2LblAnswers {}
-#area2AnswersDiv {}
+#area2LblAnswers {
+}
+#area2AnswersDiv {
+}
 
-#nameInput{
+#nameInput {
   text-align: center;
-  font-family: 'Quicksand';
+  font-family: "Quicksand";
   font-size: 16px;
   border-radius: 15px;
   border: 2px solid #555555;
   transition: 0.3s;
   width: 180px;
 }
-#surnameInput{
+#surnameInput {
   text-align: center;
-  font-family: 'Quicksand';
+  font-family: "Quicksand";
   font-size: 16px;
   border-radius: 15px;
   border: 2px solid #555555;
@@ -217,17 +216,17 @@ display: block;
 }
 
 #teamInfo {
-  font-family: 'Quicksand', serif;
+  font-family: "Quicksand", serif;
   display: none;
 }
 
 #teamInfo2 {
-  font-family: 'Quicksand', serif;
+  font-family: "Quicksand", serif;
   display: none;
   color: black;
   background-color: rgba(255, 255, 255, 0.5);
   text-align: center;
-  margin-left: auto; 
+  margin-left: auto;
   margin-right: auto;
   position: relative;
   z-index: 1;
@@ -239,17 +238,17 @@ display: block;
   box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.3);
 }
 
-#teamName{
+#teamName {
   text-align: center;
-  font-family: 'Quicksand';
+  font-family: "Quicksand";
   font-size: 16px;
   border-radius: 15px;
   border: 2px solid #555555;
   transition: 0.3s;
   width: 180px;
 }
-#joinTeam{
-  font-family: 'Quicksand';
+#joinTeam {
+  font-family: "Quicksand";
   font-size: 16px;
   background-color: white;
   color: black;
@@ -260,7 +259,7 @@ display: block;
   width: 196px;
 }
 #joinTeam:hover {
-  font-family: 'Quicksand';
+  font-family: "Quicksand";
   font-size: 16px;
   background-color: #555555;
   color: white;
@@ -270,19 +269,19 @@ display: block;
   width: 90px;
 }
 
-#welcomeText{
+#welcomeText {
   text-align: center;
 }
-#teamsInfo{
+#teamsInfo {
   text-align: center;
 }
-#congratulationsText{
+#congratulationsText {
   text-align: center;
 }
 #area3 {
   text-align: center;
   font-color: #000;
-  margin-left: auto; 
+  margin-left: auto;
   margin-right: auto;
   display: block;
   position: relative;
@@ -292,19 +291,18 @@ display: block;
   width: 50%;
   /*background-color: #c43f56;*/
 }
-#spinner{
-  width:40%;
+#spinner {
+  width: 40%;
   cursor: pointer;
-  width:617px;
-  height:617px;
+  width: 617px;
+  height: 617px;
   transition: 0.3s;
 }
 /*------------------------------------*/
 
-
 #lblWheelInfo {
-text-transform: uppercase;
-color: #000;
+  text-transform: uppercase;
+  color: #000;
   margin-right: 2%;
   padding-bottom: 70px;
   border-width: 3px;
@@ -315,23 +313,21 @@ color: #000;
 
 #gameInfo {
   background-color: white;
-  font-family: 'Quicksand', serif;
+  font-family: "Quicksand", serif;
   display: none;
   position: absolute;
   z-index: 1;
   left: 88%;
   text-align: right;
   opacity: 0.5;
-
-
 }
 #area1 {
   display: none;
-  font-family: 'Quicksand', serif;
+  font-family: "Quicksand", serif;
   color: black;
-  
+
   text-align: center;
-  margin-left: auto; 
+  margin-left: auto;
   margin-right: auto;
   position: relative;
   z-index: 1;
@@ -370,11 +366,11 @@ color: #000;
 
 #area2 {
   display: none;
-  font-family: 'Quicksand', serif;
+  font-family: "Quicksand", serif;
   color: black;
 
   text-align: center;
-  margin-left: auto; 
+  margin-left: auto;
   margin-right: auto;
   position: relative;
   z-index: 1;
@@ -396,7 +392,7 @@ button.btnSend {
   font-weight: bold;
   text-transform: uppercase;
   text-align: center;
-  color: #03446A;
+  color: #03446a;
   background: #fff;
   border: 0;
   border-radius: 3;
@@ -412,22 +408,21 @@ button.btnSend {
   top: 50%;
   left: 50%;
   margin-right: -50%;
-  transform: translate(-50%, -50%)
+  transform: translate(-50%, -50%);
 }
 #restartBtn {
   width: 20%;
 }
 
-
 #rulesLink {
   position: right;
-  font-family: 'Quicksand', serif;
+  font-family: "Quicksand", serif;
   color: #a48f8c;
-  text-decoration:none;
+  text-decoration: none;
 }
 
 .voteLeaderBtn {
-font-family: 'Quicksand';
+  font-family: "Quicksand";
   font-size: 16px;
   background-color: white;
   color: black;
@@ -439,7 +434,7 @@ font-family: 'Quicksand';
 }
 
 .voteLeaderBtn:hover {
-  font-family: 'Quicksand';
+  font-family: "Quicksand";
   font-size: 16px;
   background-color: #555555;
   color: white;
@@ -456,10 +451,7 @@ font-family: 'Quicksand';
   padding-bottom: 5%;
 }
 
-.lblOption {}
-.lblOptionFinal {
-  color: white;
-  background-color: black;
+.lblOption {
 }
 
 .topic {
@@ -469,8 +461,6 @@ font-family: 'Quicksand';
   color: black;
 }
 
-
-
 .inputRadioOption {
   cursor: pointer;
   transition: 0.2s;
@@ -478,18 +468,13 @@ font-family: 'Quicksand';
 
 .inputRadioOption:hover {
   background: black;
-  
 }
-
-
-
 
 .otherAnswers {
   position: absolute;
 }
 
 #question {
-
 }
 
 .lblScore {
@@ -497,14 +482,8 @@ font-family: 'Quicksand';
 }
 
 .lblResponse {
-transform: italic;
+  transform: italic;
 }
-
-
-
-
-
-
 
 #beforeBtnDivArea1 {
   cursor: pointer;
@@ -514,7 +493,6 @@ transform: italic;
   color: red;
 }
 
-
 #nextBtnDivArea1 {
   cursor: pointer;
   transition: 0.2s;
@@ -522,7 +500,6 @@ transform: italic;
 #nextBtnDivArea1:hover {
   color: red;
 }
-
 
 #nextBtnDivArea2 {
   cursor: pointer;
@@ -532,7 +509,6 @@ transform: italic;
   color: red;
 }
 
-
 #nextBtnDivArea3 {
   cursor: pointer;
   transition: 0.2s;
@@ -541,52 +517,47 @@ transform: italic;
   color: red;
 }
 
-
-
-
-#lbl_question_option_0{
+#lbl_question_option_0 {
   transition: 0.2s;
 }
-#lbl_question_option_0:hover{
+#lbl_question_option_0:hover {
   color: red;
 }
 
-#lbl_question_option_1{
+#lbl_question_option_1 {
   transition: 0.2s;
 }
-#lbl_question_option_1:hover{
+#lbl_question_option_1:hover {
   color: red;
 }
 
-#lbl_question_option_2{
+#lbl_question_option_2 {
   transition: 0.2s;
 }
-#lbl_question_option_2:hover{
+#lbl_question_option_2:hover {
   color: red;
 }
 
-#lbl_question_option_3{
+#lbl_question_option_3 {
   transition: 0.2s;
 }
-#lbl_question_option_3:hover{
+#lbl_question_option_3:hover {
   color: red;
 }
 
-#lbl_question_option_4{
+#lbl_question_option_4 {
   transition: 0.2s;
 }
-#lbl_question_option_4:hover{
+#lbl_question_option_4:hover {
   color: red;
 }
 
-#lbl_question_option_5{
+#lbl_question_option_5 {
   transition: 0.2s;
 }
-#lbl_question_option_5:hover{
+#lbl_question_option_5:hover {
   color: red;
 }
-
-
 
 .optionSelected {
   background-color: grba(255, 255, 255, 0.8);
@@ -594,101 +565,108 @@ transform: italic;
   padding: 2px;
 }
 
-.optionNoSelected {}
+.optionNoSelected {
+}
 
-
-
-
-#question_option_0{
+#question_option_0 {
   cursor: pointer;
   transition: 0.2s;
 }
 
-#question_option_0:hover{
+#question_option_0:hover {
   background: red;
 }
 
-#question_option_1{
+#question_option_1 {
   cursor: pointer;
   transition: 0.2s;
 }
 
-#question_option_1:hover{
+#question_option_1:hover {
   background: red;
 }
 
-#question_option_2{
+#question_option_2 {
   cursor: pointer;
   transition: 0.2s;
 }
 
-#question_option_3:hover{
+#question_option_3:hover {
   background: red;
 }
 
-#question_option_4{
+#question_option_4 {
   cursor: pointer;
   transition: 0.2s;
 }
 
-#question_option_4:hover{
+#question_option_4:hover {
   background: red;
 }
 
-#question_option_5{
+#question_option_5 {
   cursor: pointer;
   transition: 0.2s;
 }
 
-#question_option_5:hover{
+#question_option_5:hover {
   background: red;
 }
 
-
-
-
-#lblArea{
+#lblArea {
   font-size: 300%;
   color: #000;
-  
+
   text-decoration: none;
   text-transform: uppercase;
-  
+
   display: inline-block;
   position: relative;
-  
-  -webkit-mask-image: linear-gradient(-75deg, rgba(0,0,0,.3) 30%, #000 50%, rgba(0,0,0,.3) 70%);
+
+  -webkit-mask-image: linear-gradient(
+    -75deg,
+    rgba(0, 0, 0, 0.3) 30%,
+    #000 50%,
+    rgba(0, 0, 0, 0.3) 70%
+  );
   -webkit-mask-size: 200%;
   animation: shine 2s linear infinite;
 }
 
 @keyframes shine {
-  from { -webkit-mask-position: 150%; }
-  to { -webkit-mask-position: -50%; }
+  from {
+    -webkit-mask-position: 150%;
+  }
+  to {
+    -webkit-mask-position: -50%;
+  }
 }
 
-
-
-
-
-#lblLightBoxArea1Header{
+#lblLightBoxArea1Header {
   text-decoration: none;
   text-transform: uppercase;
   padding-bottom: 10px;
   display: inline-block;
   position: relative;
-  
-  -webkit-mask-image: linear-gradient(-75deg, rgba(255,255,255,.4) 30%, #eee 50%, rgba(255,255,255,.4) 70%);
+
+  -webkit-mask-image: linear-gradient(
+    -75deg,
+    rgba(255, 255, 255, 0.4) 30%,
+    #eee 50%,
+    rgba(255, 255, 255, 0.4) 70%
+  );
   -webkit-mask-size: 200%;
   animation: shine 2s linear infinite;
 }
 
 @keyframes shine {
-  from { -webkit-mask-position: 150%; }
-  to { -webkit-mask-position: -50%; }
+  from {
+    -webkit-mask-position: 150%;
+  }
+  to {
+    -webkit-mask-position: -50%;
+  }
 }
-
-
 
 .area1 .tooltiptext {
   visibility: hidden;
@@ -698,7 +676,7 @@ transform: italic;
   text-align: center;
   border-radius: 6px;
   padding: 5px 0;
-  
+
   /* Position the tooltip */
   position: absolute;
   z-index: 1;
@@ -706,22 +684,28 @@ transform: italic;
   right: 105%;
 }
 
-
-
-#circleText{
+#circleText {
   text-decoration: none;
   text-transform: uppercase;
-  
+
   display: inline-block;
   position: relative;
-  
-  -webkit-mask-image: linear-gradient(-75deg, rgba(255,255,255,.4) 30%, #eee 50%, rgba(255,255,255,.4) 70%);
+
+  -webkit-mask-image: linear-gradient(
+    -75deg,
+    rgba(255, 255, 255, 0.4) 30%,
+    #eee 50%,
+    rgba(255, 255, 255, 0.4) 70%
+  );
   -webkit-mask-size: 200%;
   animation: shine 2s linear infinite;
 }
 
 @keyframes shine {
-  from { -webkit-mask-position: 150%; }
-  to { -webkit-mask-position: -50%; }
+  from {
+    -webkit-mask-position: 150%;
+  }
+  to {
+    -webkit-mask-position: -50%;
+  }
 }
-
