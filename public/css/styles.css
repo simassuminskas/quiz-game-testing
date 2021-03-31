@@ -647,7 +647,7 @@ display: none;
 
 }
 .optionSelected:hover {
-  color: white;
+  color: black;
   border: 2px solid black;
   padding: 4px;
   border-radius: 4px;
@@ -655,7 +655,7 @@ display: none;
   
 }
 .optionNoSelected:hover {
-  color: white;
+  color: black;
   cursor: pointer;
   border: 2px solid black;
   padding: 4px;
