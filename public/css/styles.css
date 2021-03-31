@@ -122,12 +122,10 @@ button {
   transition: 0.2s;
   background: #eee;
 }
-.container:first-child #card #front: hover {
-  transition: 0.2s;
-  background: rgba(170, 0, 43, 0.6);
-}
+
+
 .container:first-child #card #back {
-  background: #eee;
+  background-image: url(card back.jpg);
 }
 
 .content {
