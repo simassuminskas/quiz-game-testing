@@ -349,9 +349,8 @@ function showBeforeStep()
             var html = '';
             for (var i = 0; i < options.length; i++)
             {
-                //html += '<label class="lblOption" id="lbl_question_option_' + i + '">' + options[i]['option'] + '</label><br>' + options[i]['score'] + ' ' + options[i]['response'] + '<br>';
-                html += '<label class="lblOption" id="lbl_question_option_' + i + '">' + options[i]['option'] + '<br>' + '<br></label>' + '<br>' + '<label class="lblScore">' + options[i]['score'] + '</label>' + '<label class="lblResponse">' + options[i]['response'] + '</label>';
-            }
+                    html += '<div class="lblOptionFinal" id="lbl_question_option_' + i + '">' + options[i]['option'] + '<br>' + '<label class="lblScore">' + options[i]['score'] + '</label>' + ' ' + '<label class="lblResponse">' + options[i]['response'] + '</label>' + '<br>(final answer)<br></div>';
+                }
             html += '<label class="topic">' + topic + '<br><br></label>';
             document.getElementById('personalEvaluation').innerHTML = html;
             document.getElementById('nextBtnDivArea1').style.display = 'block';
@@ -556,7 +555,22 @@ socket.on('detailedExplanationOfAnswers', (data) => {
         var html = '';
         for (var i = 0; i < data['options'].length; i++)
         {
-            html += '<label class="lblOption" id="lbl_question_option_' + i + '">' + data['options'][i]['option'] + '<br>' + '<label class="lblScore">' + data['options'][i]['score'] + '</label>' + '<br>' + '<label class="lblResponse">' + data['options'][i]['response'] + '</label>' + '<br><br></label>';
+            if (data['options'][i]['option'] == finalAnswer)
+            {
+                html += '<div class="lblOptionFinal" id="lbl_question_option_' + i + '">' + data['options'][i]['option'] + '<br>' + '<label class="lblScore">' + data['options'][i]['score'] + '</label>' + ' ' + '<label class="lblResponse">' + data['options'][i]['response'] + '</label>' + '<br>(final answer)<br></div>';
+            }
+            else
+            {
+                html += '<div class="lblOption" id="lbl_question_option_' + i + '">' + data['options'][i]['option'] + '<br>' + '<label class="lblScore">' + data['options'][i]['score'] + '</label>' + ' ' + '<label class="lblResponse">' + data['options'][i]['response'] + '</label>' + '<br></div>';
+            }
+        }
+        if ('no mutual agreement' == finalAnswer)
+        {
+            html += '<div class="lblOptionFinal" id="lbl_question_option_' + (data['options'].length) + '">no mutual agreement<br>' + '<label class="lblScore">-600</label><br>(final answer)<br></div>';
+        }
+        else
+        {
+            html += '<div class="lblOption" id="lbl_question_option_' + (data['options'].length) + '">no mutual agreement<br>' + '<label class="lblScore">-600</label><br></div>';
         }
         html += '<label class="topic">' + data['topic'] + '<br><br></label>';
         document.getElementById('personalEvaluation').innerHTML = html;
