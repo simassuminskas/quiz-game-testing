@@ -103,6 +103,7 @@ button {
   text-align: center;
 }
 #card #front {
+  display: inline-block;
   cursor: pointer;
   transition: o.2s;
 }
