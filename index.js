@@ -17,7 +17,7 @@ server.listen(port, () => {
 app.use(express.static(path.join(__dirname, 'public')));
 io.on('connection', (socket) => {
   //console.log(socket.id);
-  var addedUser = false;
+	var addedUser = false;
   socket.on('adminLogin', (data) => {
     var message = JSON.parse(data);
     if (message['password'] == 'Password123')
@@ -46,9 +46,9 @@ io.on('connection', (socket) => {
       //console.log(socket.id);
     }
   });
-  socket.on('update', (data) => {
-    login.update(data, socket);
-  });
+	socket.on('update', (data) => {
+		login.update(data, socket);
+	});
   socket.on('voteLeader', (data) => {
     voting.voteLeader(socket, data);
   });
@@ -179,7 +179,7 @@ io.on('connection', (socket) => {
   });
   socket.on('disconnect', () => {//Pendiente reiniciar cuando se van todos los de un mismo equipo.
     disconnections.disconnect(socket);
-  });
+	});
   socket.on('showSpinner', (data) => {
     wheel.showWheel(data, socket);
   });
