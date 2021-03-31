@@ -536,7 +536,7 @@ border: 2px solid #fff;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.4s;
 }
 
 #lbl_question_option_1{
@@ -544,7 +544,7 @@ border: 2px solid #fff;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.4s;
 }
 
 #lbl_question_option_2{
@@ -552,7 +552,7 @@ border: 2px solid #fff;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.4s;
 }
 
 #lbl_question_option_3{
@@ -560,7 +560,7 @@ border: 2px solid #fff;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.4s;
 }
 
 #lbl_question_option_4{
@@ -568,7 +568,7 @@ border: 2px solid #fff;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.4s;
 }
 
 #lbl_question_option_5{
@@ -576,7 +576,7 @@ border: 2px solid #fff;
   padding: 4px;
   border-radius: 4px;
   cursor: pointer;
-  transition: 0.2s;
+  transition: 0.4s;
 }
 
 
@@ -637,7 +637,7 @@ display: none;
 
 
 .optionSelected {
-  transition: 0.2s;
+  transition: 0.4s;
   color: white;
   background-color: black;
   border: 2px solid black;
@@ -647,7 +647,8 @@ display: none;
 
 }
 .optionSelected:hover {
-  color: black;
+  transition: 0.4s;
+  color: white;
   border: 2px solid black;
   padding: 4px;
   border-radius: 4px;
@@ -655,6 +656,7 @@ display: none;
   
 }
 .optionNoSelected:hover {
+  transition: 0.4s;
   color: black;
   cursor: pointer;
   border: 2px solid black;
