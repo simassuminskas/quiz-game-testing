@@ -811,3 +811,45 @@ input:focus {
 .voteLeaderBtn {
   display: inline-block !important;
 }
+
+#area2Table {
+  flex-wrap: wrap;
+}
+
+#area2QuestionColumn {
+  text-align: left;
+  background: #ccc;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+#area2LblAnswers {
+  display: block;
+  margin-bottom: 10px;
+}
+
+#question {
+  color: #000;
+  font-weight: bold;
+}
+
+.area2AnswersDiv > div {
+  display: inline-block;
+  margin-bottom: 12px;
+  padding: 8px 14px !important;
+  border-color: #ccc !important;
+}
+
+.area2AnswersDiv > div:hover {
+  background: #2196f3;
+  color: #fff;
+  border-color: #167bcc !important;
+}
+
+.optionSelected {
+  background: #4caf50;
+}
+
+.lblScore {
+  color: #ff9800;
+}
