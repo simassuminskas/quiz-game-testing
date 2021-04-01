@@ -765,12 +765,10 @@ button.btnSend {
 
 .overInfo {
   position: static !important;
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #f9f9f9;
-  border: 1px solid #333;
+  background-color: rgb(243 243 243);
   border-radius: 4px;
   font-size: 14px;
-  padding: 6px 12px;
+  padding: 16px 12px;
   font-weight: 100;
 }
 
