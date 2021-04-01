@@ -871,14 +871,15 @@ input:focus {
   margin-bottom: 12px;
   padding: 8px 14px !important;
   border-color: #ccc !important;
+  width: 90%;
 }
 
 #area1AnswersDiv > div:hover,
 #area2AnswersDiv > div:hover,
 #area3AnswersDiv > div:hover {
-  background: #2196f3;
+  /* background: #2196f3;
   color: #fff;
-  border-color: #167bcc !important;
+  border-color: #167bcc !important; */
 }
 
 .optionSelected {
