@@ -138,9 +138,10 @@ button {
 }
 
 #logo {
-  position: absolute;
+  /* position: absolute;
   bottom: 8px;
-  right: 16px;
+  right: 16px; */
+  margin-top: 60px;
 }
 
 #area1QuestionsDiv {
@@ -768,6 +769,9 @@ element.style {
   position: static;
 }
 
+#beforeBtnDivArea1,
+#beforeBtnDivArea2,
+#beforeBtnDivArea3,
 #nextBtnDivArea1,
 #nextBtnDivArea2,
 #nextBtnDivArea3 {
@@ -784,6 +788,9 @@ element.style {
   margin-top: 25px;
 }
 
+#beforeBtnDivArea1:hover,
+#beforeBtnDivArea2:hover,
+#beforeBtnDivArea3:hover,
 #nextBtnDivArea1:hover,
 #nextBtnDivArea2:hover,
 #nextBtnDivArea3:hover {
@@ -791,12 +798,18 @@ element.style {
   /* background: #0f77ca; */
 }
 
+#beforeBtnDivArea1 i,
+#beforeBtnDivArea2 i,
+#beforeBtnDivArea3 i,
 #nextBtnDivArea1 i,
 #nextBtnDivArea2 i,
 #nextBtnDivArea3 i {
-  font-size: 24px;
+  /* font-size: 24px; */
 }
 
+#beforeBtnDivArea1 span,
+#beforeBtnDivArea2 span,
+#beforeBtnDivArea3 span,
 #nextBtnDivArea1 span,
 #nextBtnDivArea2 span,
 #nextBtnDivArea3 span {
@@ -844,7 +857,6 @@ input:focus {
 #area2LblAnswers,
 #area3LblAnswers {
   display: block;
-  margin-bottom: 10px;
 }
 
 #question {
@@ -852,18 +864,18 @@ input:focus {
   font-weight: bold;
 }
 
-.area1AnswersDiv > div,
-.area2AnswersDiv > div,
-.area3AnswersDiv > div {
+#area1AnswersDiv > div,
+#area2AnswersDiv > div,
+#area3AnswersDiv > div {
   display: inline-block;
   margin-bottom: 12px;
   padding: 8px 14px !important;
   border-color: #ccc !important;
 }
 
-.area1AnswersDiv > div:hover,
-.area2AnswersDiv > div:hover,
-.area3AnswersDiv > div:hover {
+#area1AnswersDiv > div:hover,
+#area2AnswersDiv > div:hover,
+#area3AnswersDiv > div:hover {
   background: #2196f3;
   color: #fff;
   border-color: #167bcc !important;
@@ -875,4 +887,28 @@ input:focus {
 
 .lblScore {
   color: #ff9800;
+}
+
+#area1,
+#area2,
+#area3 {
+  max-width: 800px;
+}
+
+#area1LblQuestion,
+#area2LblQuestion,
+#area3LblQuestion,
+#area1LblAnswers,
+#area2LblAnswers,
+#area3LblAnswers {
+  text-align: left;
+  margin-left: 12px;
+  margin-top: 15px;
+}
+
+.personalEvaluation .lblOption,
+.personalEvaluation .lblOptionFinal {
+  text-align: left;
+  padding: 15px !important;
+  margin: 10px 0;
 }
