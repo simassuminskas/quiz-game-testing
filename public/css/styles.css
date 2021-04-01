@@ -371,6 +371,10 @@ button {
 #nextBtnDivArea1 {
   width: 100%;
 }
+#area2Info{
+  font-size: 200%;
+}
+
 
 #area2 {
   display: none;
