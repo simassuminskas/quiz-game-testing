@@ -65,7 +65,7 @@ socket.on('update', (data) => {console.log(data);
         if (((data['userName'] == userName) && (data['userSurname'] == userSurname)) || 
             ((teamName != undefined) && (data['teamName'] == teamName))
         )
-        {console.log(started);
+        {
             scoreArea1 = data['scoreArea1'];
             scoreArea2 = data['scoreArea2'];
             scoreArea3 = data['scoreArea3'];
@@ -435,7 +435,7 @@ function showNextStep()
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('area1LabelsTable').style.display = 'none';
-            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' PONTS?<br><br>Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
+            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>ARE WE ACTING LIKE THIS TODAY?<br> ' + ' Compare to the highest scoring response<br><br>Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
             beforeStep = 'showFinalAnswer';
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('beforeBtnDivArea1').style.display = 'block';
