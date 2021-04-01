@@ -284,7 +284,7 @@ socket.on('question', (data) => {
                         document.getElementById('nextBtnDivArea2').style.display = 'block';
                         //document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                         //alert();
-                        document.getElementById('area2Info').innerHTML = '<br><br>NOW PLEASE CHOOSE THE RIGHT ANSWER';
+                        document.getElementById('area2Info').innerHTML = '<br><br>PLEASE ANSWER THE QUESTION ABOUT CGI<br> BY CHOOSING 1 OF 3 POSSIBLE ANSWERS';
                         dataUserName = data['userName'];
                         dataUserSurname = data['userSurname'];
                         nextStep = 'area2Question';
@@ -435,7 +435,7 @@ function showNextStep()
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('area1LabelsTable').style.display = 'none';
-            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>ARE WE ACTING LIKE THIS TODAY?<br> ' + ' Compare to the highest scoring response<br><br>Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
+            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>ARE WE ACTING LIKE THIS TODAY?<br> ' + ' Compare to the highest scoring response<br>1 = No, not at all<br>5 = Yes, definitely<br><br>1 <input type="range" id="personalEvaluationRange" min="0" max="4"> 5';
             beforeStep = 'showFinalAnswer';
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('beforeBtnDivArea1').style.display = 'block';
@@ -622,7 +622,7 @@ socket.on('leaderVotation', (data) => {
             document.getElementById('area1Table').style.display = 'flex';
             document.getElementById('area1').style.display = 'block';
             document.getElementById('area1').style.backgroundColor = "#fff";
-            document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE MOST APPROPIATE ANSWER WITH THE TEAM<br>& LEADER WILL SUBMIT THE FINAL DECISSION.';
+            document.getElementById('lblLightBoxArea1Header').innerHTML = ' AFTER A GROUP DISCUSSION PLEASE AGREE ON A COMMON ANSWER<br> THE LEADER MUST SUBMIT THE ANSWER';
             step = 'selectingFinalAnswer';
             document.getElementById('area1QuestionColumn').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
             question = data['question']['question'];

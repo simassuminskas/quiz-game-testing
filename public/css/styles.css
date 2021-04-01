@@ -376,6 +376,10 @@ button {
 #nextBtnDivArea1 {
   width: 100%;
 }
+#area2Info{
+  font-size: 120%;
+}
+
 
 #area2 {
   display: none;
@@ -843,11 +847,11 @@ input:focus {
   outline: none;
   border-color: #0f77ca;
 }
-
+/*
 .voteLeaderBtn {
   display: inline-block !important;
 }
-
+*/
 #area1Table,
 #area2Table,
 #area3Table {
