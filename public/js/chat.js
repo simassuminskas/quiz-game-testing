@@ -65,7 +65,7 @@ socket.on('update', (data) => {console.log(data);
         if (((data['userName'] == userName) && (data['userSurname'] == userSurname)) || 
             ((teamName != undefined) && (data['teamName'] == teamName))
         )
-        {
+        {console.log(started);
             scoreArea1 = data['scoreArea1'];
             scoreArea2 = data['scoreArea2'];
             scoreArea3 = data['scoreArea3'];
@@ -78,8 +78,8 @@ socket.on('update', (data) => {console.log(data);
                 showTeamInfo(data['newLeader'], 'teamInfo2');
             }
         }
-        //console.log('Teams:');
-        //console.log(teams);
+        console.log('Teams:');
+        console.log(teams);
     }
 });
 socket.on('continueNewLeader', (data) => {
@@ -284,7 +284,7 @@ socket.on('question', (data) => {
                         document.getElementById('nextBtnDivArea2').style.display = 'block';
                         //document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                         //alert();
-                        document.getElementById('area2Info').innerHTML = '<br><br>PLEASE ANSWER THE QUESTION ABOUT CGI<br> BY CHOOSING 1 OF 3 POSSIBLE ANSWERS';
+                        document.getElementById('area2Info').innerHTML = '<br><br>NOW PLEASE CHOOSE THE RIGHT ANSWER';
                         dataUserName = data['userName'];
                         dataUserSurname = data['userSurname'];
                         nextStep = 'area2Question';
@@ -336,7 +336,7 @@ function showBeforeStep()
         case 'showFinalAnswer':
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('personalEvaluation').innerHTML = `
-                THE FINAL TEAM ANSWER IS:<br>
+                THE FINAL TEAM LEADER ANSWER WAS:<br>
                 ` + finalAnswer + `<br><br>
                 THE SCORE FOR THE ANSWER:<br>
                 ` + '<label class="lblScore">' + score + '</label>' + `<br>`;
@@ -435,7 +435,7 @@ function showNextStep()
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('area1LabelsTable').style.display = 'none';
-            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>ARE WE ACTING LIKE THIS TODAY?<br> ' + ' Compare to the highest scoring response<br>1 = No, not at all<br>5 = Yes, definitely<br><br>1 <input type="range" id="personalEvaluationRange" min="0" max="4"> 5';
+            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' PONTS?<br><br>Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
             beforeStep = 'showFinalAnswer';
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('beforeBtnDivArea1').style.display = 'block';
@@ -621,8 +621,8 @@ socket.on('leaderVotation', (data) => {
             document.getElementById('personalEvaluation').innerHTML = '';
             document.getElementById('area1Table').style.display = 'flex';
             document.getElementById('area1').style.display = 'block';
-            document.getElementById('area1').style.backgroundColor = "#fff";
-            document.getElementById('lblLightBoxArea1Header').innerHTML = ' AFTER A GROUP DISCUSSION PLEASE AGREE ON A COMMON ANSWER<br> THE LEADER MUST SUBMIT THE ANSWER';
+            document.getElementById('area1').style.backgroundColor = "#ac0034";
+            document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE BEST MOST APPROPIATE ANSWER WITH THE TEAM & LEADER WILL SUBMIT THE FINAL DECISSION.';
             step = 'selectingFinalAnswer';
             document.getElementById('area1QuestionColumn').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
             question = data['question']['question'];
@@ -673,7 +673,7 @@ socket.on('personalEvaluation', (data) => {
             beforeStep = 'showFinalAnswer';
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('personalEvaluation').style.display = 'block';
-            document.getElementById('lblLightBoxArea1Header').innerHTML = 'EVALUATION<br>ARE WE ACTING LIKE THIS TODAY?<br>(Compare to the highest scoring response)';
+            document.getElementById('lblLightBoxArea1Header').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' POINTS';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('area1LabelsTable').style.display = 'none';
 
@@ -703,7 +703,7 @@ socket.on('ro', (data) => {
             if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
             {
                 userPlay = true;
-                document.getElementById('front').innerHTML = 'CLICK ON THE CARD<br>TO TRY YOUR LUCK!';
+                document.getElementById('front').innerHTML = '<br><br>NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
                 flip('front');
                 dataUserName = data['userName'];
                 dataUserSurname = data['userSurname'];
@@ -713,7 +713,7 @@ socket.on('ro', (data) => {
                 userPlay = true;
                 flip('front');
                 userPlay = false;
-                document.getElementById('front').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL OPEN THE CARD<br>TO TRY THE LUCK!';
+                document.getElementById('front').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL OPEN THE<br>CARD<br>&<br>SEE THE RESULT';
             }
             showGameInfo();
         }
