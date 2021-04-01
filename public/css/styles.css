@@ -474,7 +474,7 @@ button.btnSend {
 .topic {
   text-align: right;
   font-family: Quicksand, serif;
-  font-size: 100%;
+  font-size: 200%;
   color: black;
 }
 
@@ -907,7 +907,10 @@ input:focus {
 
 #area1LblQuestion,
 #area2LblQuestion,
-#area3LblQuestion,
+#area3LblQuestionP{
+  text-align: left;
+  margin-top: 15px;
+}
 #area1LblAnswers,
 #area2LblAnswers,
 #area3LblAnswers {
