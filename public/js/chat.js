@@ -621,8 +621,8 @@ socket.on('leaderVotation', (data) => {
             document.getElementById('personalEvaluation').innerHTML = '';
             document.getElementById('area1Table').style.display = 'flex';
             document.getElementById('area1').style.display = 'block';
-            document.getElementById('area1').style.backgroundColor = "#ac0034";
-            document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE BEST MOST APPROPIATE ANSWER WITH THE TEAM & LEADER WILL SUBMIT THE FINAL DECISSION.';
+            document.getElementById('area1').style.backgroundColor = "#fff";
+            document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE MOST APPROPIATE ANSWER WITH THE TEAM<br>& LEADER WILL SUBMIT THE FINAL DECISSION.';
             step = 'selectingFinalAnswer';
             document.getElementById('area1QuestionColumn').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
             question = data['question']['question'];
@@ -673,7 +673,7 @@ socket.on('personalEvaluation', (data) => {
             beforeStep = 'showFinalAnswer';
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('personalEvaluation').style.display = 'block';
-            document.getElementById('lblLightBoxArea1Header').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' POINTS';
+            document.getElementById('lblLightBoxArea1Header').innerHTML = 'EVALUATION<br>ARE WE ACTING LIKE THIS TODAY?<br>(Compare to the highest scoring response)';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('area1LabelsTable').style.display = 'none';
 
@@ -703,7 +703,7 @@ socket.on('ro', (data) => {
             if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
             {
                 userPlay = true;
-                document.getElementById('front').innerHTML = 'NOW OPEN THE CARD<br>&<br>SEE THE RESULT';
+                document.getElementById('front').innerHTML = 'CLICK ON THE CARD<br>TO SEE WHAT IS HIDING THERE!;
                 flip('front');
                 dataUserName = data['userName'];
                 dataUserSurname = data['userSurname'];
@@ -713,7 +713,7 @@ socket.on('ro', (data) => {
                 userPlay = true;
                 flip('front');
                 userPlay = false;
-                document.getElementById('front').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL OPEN THE<br>CARD<br>&<br>SEE THE RESULT';
+                document.getElementById('front').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL OPEN THE<br>CARD TO<br>TRY THE LUCK!';
             }
             showGameInfo();
         }
@@ -834,7 +834,7 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, userIndex, user
     {
         for (var i = 0; i < users.length; i++)
         {
-            document.getElementById('vl_' + i).style.display = 'block';
+            //document.getElementById('vl_' + i).style.display = 'block';
             document.getElementById('vl_' + i).innerHTML = 'VOTE FOR LEADER';
             if (i == userIndex)
             {
