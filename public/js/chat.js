@@ -834,7 +834,7 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, userIndex, user
     {
         for (var i = 0; i < users.length; i++)
         {
-            //document.getElementById('vl_' + i).style.display = 'block';
+            document.getElementById('vl_' + i).style.display = 'block';
             document.getElementById('vl_' + i).innerHTML = 'VOTE FOR LEADER';
             if (i == userIndex)
             {
