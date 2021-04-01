@@ -82,12 +82,14 @@ button {
   -moz-transform: rotateY(180deg);
   -o-transform: rotateY(180deg);
   transform: rotateY(180deg);
+  background-image: url("./../img/card back.jpg");
 }
 
 #card #front,
 #card #back {
   display: block;
   text-align: center;
+  padding-bottom: 20px;
   /* position: absolute; */
   -webkit-backface-visibility: hidden;
   -moz-backface-visibility: hidden;
@@ -122,11 +124,11 @@ button {
 }
 .container:first-child #card #front {
   transition: 0.2s;
-  background: #eee;
+  /* background: #eee; */
 }
 
 .container:first-child #card #back {
-  background-image: url("./../img/card back.jpg");
+  /* background-image: url("./../img/card back.jpg"); */
 }
 
 .content {
@@ -304,12 +306,15 @@ button {
 #lblWheelInfo {
   text-transform: uppercase;
   color: #000;
-  margin-right: 2%;
-  padding-bottom: 70px;
   border-width: 3px;
   border-color: #771929;
   background-color: rgba(255, 255, 255, 0.3);
-  z-index: -1;
+  width: 100%;
+  padding: 15px;
+  display: inline-block;
+  margin-top: 15px;
+  line-height: 10px;
+  padding-bottom: 25px;
 }
 
 #gameInfo {
@@ -774,16 +779,16 @@ element.style {
   margin: 0px auto;
   padding: 10px 4px;
   border-radius: 6px;
-  background: #0f77ca;
-  color: #fff;
+  /* background: #0f77ca; */
+  color: #000;
   margin-top: 25px;
 }
 
 #nextBtnDivArea1:hover,
 #nextBtnDivArea2:hover,
 #nextBtnDivArea3:hover {
-  color: #fff;
-  background: #0f77ca;
+  color: red;
+  /* background: #0f77ca; */
 }
 
 #nextBtnDivArea1 i,
