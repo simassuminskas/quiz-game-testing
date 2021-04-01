@@ -65,10 +65,10 @@ socket.on('update', (data) => {console.log(data);
         if (((data['userName'] == userName) && (data['userSurname'] == userSurname)) || 
             ((teamName != undefined) && (data['teamName'] == teamName))
         )
-        {
-            scoreArea1 = data['scoreArea1'];
+        {console.log(started);
+            /*scoreArea1 = data['scoreArea1'];
             scoreArea2 = data['scoreArea2'];
-            scoreArea3 = data['scoreArea3'];
+            scoreArea3 = data['scoreArea3'];*/
             if (!started)
             {
                 showTeamInfo(data['newLeader']);
@@ -834,7 +834,7 @@ function voteLeader(userNameVoting, userSurnameVoting, roomCode, userIndex, user
     {
         for (var i = 0; i < users.length; i++)
         {
-            document.getElementById('vl_' + i).style.display = 'block';
+            //document.getElementById('vl_' + i).style.display = 'block';
             document.getElementById('vl_' + i).innerHTML = 'VOTE FOR LEADER';
             if (i == userIndex)
             {
