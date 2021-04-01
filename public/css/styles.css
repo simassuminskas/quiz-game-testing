@@ -763,6 +763,8 @@ element.style {
   position: static;
 }
 
+#nextBtnDivArea1,
+#nextBtnDivArea2,
 #nextBtnDivArea3 {
   transition: 0.5s;
   display: flex;
@@ -777,15 +779,21 @@ element.style {
   margin-top: 25px;
 }
 
+#nextBtnDivArea1:hover,
+#nextBtnDivArea2:hover,
 #nextBtnDivArea3:hover {
   color: #fff;
   background: #0f77ca;
 }
 
+#nextBtnDivArea1 i,
+#nextBtnDivArea2 i,
 #nextBtnDivArea3 i {
   font-size: 24px;
 }
 
+#nextBtnDivArea1 span,
+#nextBtnDivArea2 span,
 #nextBtnDivArea3 span {
   font-size: 20px;
   margin-right: 8px;
@@ -812,18 +820,24 @@ input:focus {
   display: inline-block !important;
 }
 
-#area2Table {
+#area1Table,
+#area2Table,
+#area3Table {
   flex-wrap: wrap;
 }
 
-#area2QuestionColumn {
+#area1QuestionColumn,
+#area2QuestionColumn,
+#area3QuestionColumn {
   text-align: left;
   background: #ccc;
   padding: 15px;
   border-radius: 4px;
 }
 
-#area2LblAnswers {
+#area1LblAnswers,
+#area2LblAnswers,
+#area3LblAnswers {
   display: block;
   margin-bottom: 10px;
 }
@@ -833,14 +847,18 @@ input:focus {
   font-weight: bold;
 }
 
-.area2AnswersDiv > div {
+.area1AnswersDiv > div,
+.area2AnswersDiv > div,
+.area3AnswersDiv > div {
   display: inline-block;
   margin-bottom: 12px;
   padding: 8px 14px !important;
   border-color: #ccc !important;
 }
 
-.area2AnswersDiv > div:hover {
+.area1AnswersDiv > div:hover,
+.area2AnswersDiv > div:hover,
+.area3AnswersDiv > div:hover {
   background: #2196f3;
   color: #fff;
   border-color: #167bcc !important;
