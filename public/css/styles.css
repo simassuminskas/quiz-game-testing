@@ -142,6 +142,7 @@ button {
   bottom: 8px;
   right: 16px; */
   margin-top: 60px;
+  text-align: right;
 }
 
 #area1QuestionsDiv {
@@ -871,7 +872,7 @@ input:focus {
   margin-bottom: 12px;
   padding: 8px 14px !important;
   border-color: #ccc !important;
-  width: 90%;
+  width: 96%;
 }
 
 #area1AnswersDiv > div:hover,
@@ -880,6 +881,7 @@ input:focus {
   /* background: #2196f3;
   color: #fff;
   border-color: #167bcc !important; */
+  border-color: #000 !important;
 }
 
 .optionSelected {
