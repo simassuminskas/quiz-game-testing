@@ -465,6 +465,8 @@ button.btnSend {
 }
 
 .lblOption {
+  display: inline-block;
+  width: 96%;
 }
 .lblOptionFinal {
   color: white;
@@ -907,7 +909,7 @@ input:focus {
 
 #area1LblQuestion,
 #area2LblQuestion,
-#area3LblQuestionP{
+#area3LblQuestionP {
   text-align: left;
   margin-top: 15px;
 }
@@ -931,6 +933,7 @@ input:focus {
 #area3AnswersColumn > div {
   display: flex;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 #area3 .cards #card #back {
@@ -942,5 +945,24 @@ input:focus {
 }
 
 #area3 .cards #card.flipped #back {
-  display: block;
+  display: inline;
+  width: 100%;
+}
+
+#card.flipped {
+  background-image: none !important;
+  box-shadow: none;
+}
+
+#area3 .cards #card.flipped #back {
+  display: inline;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0px auto;
+  background-image: url("./../img/card back.jpg");
+  max-width: 300px;
+  box-shadow: 3px 5px 10px 2px rgb(0 0 0 / 25%);
+  border-radius: 6px;
 }
