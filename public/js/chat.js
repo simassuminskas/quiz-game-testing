@@ -65,7 +65,7 @@ socket.on('update', (data) => {console.log(data);
         if (((data['userName'] == userName) && (data['userSurname'] == userSurname)) || 
             ((teamName != undefined) && (data['teamName'] == teamName))
         )
-        {
+        {console.log(started);
             scoreArea1 = data['scoreArea1'];
             scoreArea2 = data['scoreArea2'];
             scoreArea3 = data['scoreArea3'];
@@ -435,7 +435,7 @@ function showNextStep()
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('area1LabelsTable').style.display = 'none';
-            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' PONTS?<br><br>Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
+            document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>ARE WE ACTING LIKE THIS TODAY?<br>(compare to the highest scoring response)'<br><br>Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
             beforeStep = 'showFinalAnswer';
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('beforeBtnDivArea1').style.display = 'block';
@@ -622,7 +622,7 @@ socket.on('leaderVotation', (data) => {
             document.getElementById('area1Table').style.display = 'flex';
             document.getElementById('area1').style.display = 'block';
             document.getElementById('area1').style.backgroundColor = "#fff";
-            document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE MOST APPROPIATE ANSWER WITH THE TEAM'<br>'& LEADER WILL SUBMIT THE FINAL DECISSION.';
+            document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE MOST APPROPIATE ANSWER WITH THE TEAM<br>& LEADER WILL SUBMIT THE FINAL DECISSION.';
             step = 'selectingFinalAnswer';
             document.getElementById('area1QuestionColumn').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
             question = data['question']['question'];
@@ -673,7 +673,7 @@ socket.on('personalEvaluation', (data) => {
             beforeStep = 'showFinalAnswer';
             document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('personalEvaluation').style.display = 'block';
-            document.getElementById('lblLightBoxArea1Header').innerHTML = 'EVALUATION'<br>'ARE WE ACTING LIKE THIS TODAY?'<br>'(Compare to the highest scoring response)';
+            document.getElementById('lblLightBoxArea1Header').innerHTML = 'EVALUATION<br>ARE WE ACTING LIKE THIS TODAY?<br>(Compare to the highest scoring response)';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('area1LabelsTable').style.display = 'none';
 
@@ -703,7 +703,7 @@ socket.on('ro', (data) => {
             if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
             {
                 userPlay = true;
-                document.getElementById('front').innerHTML = 'CLICK ON THE CARD'<br>'TO TRY YOUR LUCK!';
+                document.getElementById('front').innerHTML = 'CLICK ON THE CARD<br>TO TRY YOUR LUCK!';
                 flip('front');
                 dataUserName = data['userName'];
                 dataUserSurname = data['userSurname'];
@@ -713,7 +713,7 @@ socket.on('ro', (data) => {
                 userPlay = true;
                 flip('front');
                 userPlay = false;
-                document.getElementById('front').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL OPEN THE CARD'<br>'TO TRY THE LUCK!';
+                document.getElementById('front').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL OPEN THE CARD<br>TO TRY THE LUCK!';
             }
             showGameInfo();
         }
