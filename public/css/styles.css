@@ -900,7 +900,10 @@ input:focus {
 
 #area1LblQuestion,
 #area2LblQuestion,
-#area3LblQuestion,
+#area3LblQuestionP{
+  text-align: left;
+  margin-top: 15px;
+}
 #area1LblAnswers,
 #area2LblAnswers,
 #area3LblAnswers {
