@@ -336,7 +336,7 @@ function showBeforeStep()
         case 'showFinalAnswer':
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('personalEvaluation').innerHTML = `
-                THE FINAL TEAM LEADER ANSWER WAS:<br>
+                THE FINAL TEAM ANSWER IS:<br>
                 ` + finalAnswer + `<br><br>
                 THE SCORE FOR THE ANSWER:<br>
                 ` + '<label class="lblScore">' + score + '</label>' + `<br>`;
