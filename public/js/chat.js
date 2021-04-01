@@ -284,7 +284,7 @@ socket.on('question', (data) => {
                         document.getElementById('nextBtnDivArea2').style.display = 'block';
                         //document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                         //alert();
-                        document.getElementById('area2Info').innerHTML = '<br><br>NOW PLEASE CHOOSE THE RIGHT ANSWER';
+                        document.getElementById('area2Info').innerHTML = '<br><br>PLEASE ANSWER THE QUESTION ABOUT CGI<br> BY CHOOSING 1 OF 3 POSSIBLE ANSWERS';
                         dataUserName = data['userName'];
                         dataUserSurname = data['userSurname'];
                         nextStep = 'area2Question';
