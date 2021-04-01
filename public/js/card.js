@@ -22,7 +22,7 @@ function flip(next = "back", showBtn = true) {
         document.getElementById("backContent").innerHTML =
           "<br><br>" +
           text +
-          '<div id="score-wrapper" class="w3-animate-zoom"><span>SCORE</span><label class="lblScore">' +
+          '<div id="score-wrapper" class="w3-animate-opacity"><span>SCORE</span><label class="lblScore">' +
           score +
           "</label></div>";
         nextStep = "showSpinner";

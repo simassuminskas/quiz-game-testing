@@ -759,7 +759,12 @@ button.btnSend {
 }
 
 /*New style*/
+.w3-animate-opacity {
+  animation: opac 2s;
+}
+
 .overInfo {
+  position: static I !important;
   background-color: rgba(0, 0, 0, 0.5);
   color: #f9f9f9;
   border: 1px solid #333;

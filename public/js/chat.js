@@ -230,7 +230,7 @@ socket.on("showResultArea2", (data) => {
           document.getElementById("area2Info").innerHTML =
             "<br><br>YOUR ANSWER IS " +
             r +
-            '!<br>YOUR SCORE:<br><label class="lblScore w3-animate-zoom">' +
+            '!<br>YOUR SCORE:<br><label class="lblScore w3-animate-opacity">' +
             score +
             "</label>";
           nextStep = "showSpinner";
@@ -244,7 +244,7 @@ socket.on("showResultArea2", (data) => {
             data["userSurname"] +
             " ANSWER IS " +
             r +
-            '!<br>YOUR SCORE:<br><label class="lblScore w3-animate-zoom">' +
+            '!<br>YOUR SCORE:<br><label class="lblScore w3-animate-opacity">' +
             data["score"] +
             "</label>";
         }

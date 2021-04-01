@@ -95,7 +95,7 @@ function showTeamInfo(newLeader = false, element = "teamInfo") {
 function showGameInfo() {
   document.getElementById("gameInfo").style.display = "block";
   document.getElementById("gameInfo").innerHTML =
-    '<div id="scores" class="w3-animate-right">DILEMMAS:<br>' +
+    '<div id="scores" class="w3-animate-opacity">DILEMMAS:<br>' +
     scoreArea1 +
     "<br><br>KNOWLEDGE ABOUT US:<br>" +
     scoreArea2 +
@@ -108,7 +108,7 @@ function gameFinished() {
     for (var j = 0; j < teams.length; j++) {
       if (teams[j]["teamName"] == teamName) {
         document.getElementById("gameInfo").innerHTML =
-          '<div id="scores" class="w3-animate-right">DILEMMAS:<br>' +
+          '<div id="scores" class="w3-animate-opacity">DILEMMAS:<br>' +
           scoreArea1 +
           "<br><br>KNOWLEDGE ABOUT US:<br>" +
           scoreArea2 +
@@ -170,6 +170,6 @@ $(function () {
   $("#divLogin").hide();
   setTimeout(() => {
     $("#divLogin").show();
-    $("#divLogin").addClass("w3-animate-top");
+    $("#divLogin").addClass("w3-animate-opacity");
   }, 500);
 });
