@@ -1,205 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/png" href="img/favicon.png" />
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="img/favicon.png"/>
     <title>The Value Game</title>
-    <link rel="stylesheet" type="text/css" href="./css/styles.css" />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
-      crossorigin="anonymous"
-    />
-    <!--<style>@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap');</style>-->
-    <link rel="preconnect" href="https://fonts.gstatic.com" />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap"
-      rel="stylesheet"
-    />
-    <script
-      crossorigin
-      src="https://unpkg.com/react@17/umd/react.production.min.js"
-    ></script>
-    <script
-      crossorigin
-      src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"
-    ></script>
-  </head>
-  <body
-    id="body"
-    style="background-image: url('./img/1.png'); background-size: cover"
-    onload="document.getElementById('rulesLink').href = location + 'rules/';document.getElementById('area3').style.height = (document.documentElement.clientHeight * 0.6) + 'px';"
-  >
+    <link rel="stylesheet" type="text/css" href="./css/styles.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet">
+</head>
+<body id="body" style="background-image: url('./img/1.png');background-size: cover;" onload="document.getElementById('rulesLink').href = location + 'rules/';document.getElementById('area3').style.height = (document.documentElement.clientHeight * 0.6) + 'px';">
     <!--<img id="spinnerArrow" src="./img/Asset 2.png" style="position: absolute; left: 10%; width: 3%;">
     document.getElementById('spinnerArrow').style.left = document.getElementById('spinner').offsetLeft;-->
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <div id="right-sidebar">
-      <div id="gameInfo"></div>
-      <label
-        id="lblWheelInfo"
-        class="w3-animate-opacity"
-        style="font-family: 'Quicksand', serif"
-      ></label>
-      <div id="tool-tips"></div>
-    </div>
-    <br />
-    <a
-      href=""
-      id="rulesLink"
-      target="_blank"
-      style="
-        position: right;
-        padding-left: 20px;
-        font-family: 'Quicksand', serif;
-        color: #a48f8c;
-        text-decoration: none;
-      "
-      >RULES</a
-    >
+    <div id="gameInfo"></div>
+    <br>
+    <a href="" id="rulesLink" target="_blank" style="position: right; padding-left: 20px; font-family: 'Quicksand', serif; color: #a48f8c; text-decoration:none;">RULES</a>
     <div id="divLogin">
-      <div id="welcomeText">
-        <br />
-        <label style="font-family: 'Quicksand', serif; font-size: 400%"
-          >WELCOME<br />TO THE VALUE GAME<br
-        /></label>
-        <label
-          id="lblPlease"
-          style="font-family: 'Quicksand', serif; font-size: 100%"
-          >PLEASE JOIN THE TEAM<br /><br /><br /><br /><br /><br
-        /></label>
-      </div>
-      <center id="loginFields" style="font-family: 'Quicksand', serif">
-        <label id="lblName">NAME</label><br />
-        <input
-          id="nameInput"
-          type="text"
-          aria-describedby="basic-addon1"
-          maxlength="768"
-        />
-        <br />
-        <label id="lblSurname">SURNAME</label><br />
-        <input
-          id="surnameInput"
-          type="text"
-          aria-describedby="basic-addon1"
-          maxlength="768"
-        />
-        <br />
-        <label id="lblSurname">TEAM NAME</label><br />
-        <input type="text" id="teamName" />
-        <br /><br /><br />
-        <button id="joinTeam" onclick="login();">JOIN</button>
-      </center>
+        <div id="welcomeText">
+            <br>
+            <label style="font-family: 'Quicksand', serif; font-size: 400%;">WELCOME<br>TO THE VALUE GAME<br></label>
+            <label id="lblPlease" style="font-family: 'Quicksand', serif; font-size: 100%;">PLEASE JOIN THE TEAM<br><br><br><br><br><br></label>
+        </div>
+        <center id="loginFields" style="font-family: 'Quicksand', serif;">
+            <label id="lblName">NAME</label><br>
+            <input id="nameInput" type="text" aria-describedby="basic-addon1" maxlength="768">
+            <br>
+            <label id="lblSurname">SURNAME</label><br>
+            <input id="surnameInput" type="text" aria-describedby="basic-addon1" maxlength="768">
+            <br>
+            <label id="lblSurname">TEAM NAME</label><br>
+            <input type="text" id="teamName">
+            <br><br><br>
+            <button id="joinTeam" onclick="login();">JOIN</button>
+        </center>
     </div>
-    <center id="teamInfo" class="w3-animate-opacity"></center>
-    <center id="teamInfo2" class="w3-animate-opacity"></center>
+    <center id="teamInfo"></center>
+    <center id="teamInfo2"></center>
     <div id="teamScore"></div>
-    <center>
-      <label id="lblArea" style="font-family: 'Quicksand', serif"></label>
-    </center>
-    <center>
-      <div
-        id="spinner"
-        class="w3-animate-opacity"
-        style="font-family: 'Quicksand'; font-size: 110%; display: none"
-      ></div>
-    </center>
-    <center id="area1" class="w3-animate-opacity">
-      <div id="area1Info"></div>
-      <label id="lblLightBoxArea1Header"></label>
-      <hr />
-      <div id="area1LabelsTable"></div>
-      <div id="area1Table">
-        <div id="area1LblQuestion">QUESTION</div>
-        <div id="area1QuestionColumn"></div>
-        <div id="area1LblAnswers">ANSWERS</div>
-        <table id="area1AnswersColumn"></table>
-      </div>
-      <div id="personalEvaluation"></div>
-      <div id="area1BtnsTable">
-        <div id="beforeBtnDivArea1">
-          <i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>
+    <center><label id="lblArea" style="font-family: 'Quicksand', serif;"></label></center>
+    <center><label id="lblWheelInfo" style="font-family: 'Quicksand', serif;"></label></center>
+    <center><div id="spinner" style="font-family: 'Quicksand'; font-size: 110%; display: none;"></div></center>
+    <center id="area1">
+        <div id="area1Info"></div>
+        <label id="lblLightBoxArea1Header"></label><hr>
+        <div id="area1LabelsTable">
+            <div id="area1LblQuestion">QUESTION</div>
+            <div id="area1LblAnswers">ANSWERS</div>
         </div>
-        <div id="nextBtnDivArea1">
-          <i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>
+        <div id="area1Table">
+            <div id="area1QuestionColumn"></div>
+            <table id="area1AnswersColumn"></table>
         </div>
-      </div>
-    </center>
-    <center id="area2" class="w3-animate-opacity">
-      <div id="area2Info"></div>
-      <div id="area2Table" class="w3-animate-opacity" style="display: none">
-        <div id="area2QuestionColumn">
-          <label id="area2LblQuestion">QUESTION</label><br />
-          <div id="area2QuestionsDiv"></div>
-        </div>
-        <div id="area2AnswersColumn">
-          <label id="area2LblAnswers">ANSWERS</label><br />
-          <div id="area2AnswersDiv"></div>
-        </div>
-      </div>
-      <div
-        id="nextBtnDivArea2"
-        style="padding-left: 90%; padding-bottom: 1%; display: none"
-      >
-        <i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>
-      </div>
-    </center>
-    <center id="area3" class="w3-animate-opacity">
-      <div id="area3Info"></div>
-      <div class="wrapper cards">
-        <div class="container">
-          <div id="card">
-            <div id="front" onclick="flip('back')"></div>
-            <div id="back">
-              <div id="backContent"></div>
-              <div id="nextBtnDivArea3">
-                <span>Next</span>
-                <i
-                  class="fas fa-angle-right fa-2x"
-                  onclick="showNextStep();"
-                ></i>
-              </div>
+        <div id="personalEvaluation"></div>
+        <div id="area1BtnsTable">
+            <div id="beforeBtnDivArea1">
+                <i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>
             </div>
-          </div>
+            <div id="nextBtnDivArea1">
+                <i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>
+            </div>
         </div>
-      </div>
-      <div id="emptySpace"></div>
     </center>
-
-    <div id="divGameFinished" style="display: none">
-      <div id="congratulationsText">
-        <h1>CONGRATULATIONS!</h1>
-        <h3>
-          Thank you for your active participation!<br />Best of luck with
-          implementing CGI values in your daily routine!
-        </h3>
-      </div>
+    <center id="area2">
+        <div id="area2Info"></div>
+        <div id="area2Table" style="display: none;">
+            <div id="area2QuestionColumn">
+                <label id="area2LblQuestion">QUESTION</label><br>
+                <div id="area2QuestionsDiv"></div>
+            </div>
+            <div id="area2AnswersColumn">
+                <label id="area2LblAnswers">ANSWERS</label><br>
+                <div id="area2AnswersDiv"></div>
+            </div>
+        </div>
+        <div id="nextBtnDivArea2" style="padding-left: 90%; padding-bottom: 1%; display: none;"><i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i></div>
+    </center>
+    <center id="area3">
+        <div id="area3Info"></div>
+        <div class="wrapper cards">
+            <div class="container">
+                <div id="card">
+                    <div id="front" onclick="flip('back')"></div>
+                    <div id="back">
+                        <div id="backContent"></div>
+                        <div id="nextBtnDivArea3" style="padding-left: 90%; padding-bottom: 1%;"><i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="emptySpace"></div>
+    </center>
+    
+    
+    <div id="divGameFinished" style="display: none;">
+        <div id="congratulationsText">
+            <h1>CONGRATULATIONS! YOU</h1>
+            <h1>FINISHED THE GAME!</h1>
+        </div>
     </div>
     <div id="restartPopup">
-      <label id="lblUserDisconnected"></label>
-      You have been disconnected.<br />
-      Click to reload page!<br />
-      <img id="restartBtn" src="./img/refresh white.png" onclick="restart();" />
+        <label id="lblUserDisconnected"></label>
+        You have been disconnected.<br>
+        Click to reload page!<br>
+        <img id="restartBtn" src="./img/refresh white.png" onclick="window.location = window.location;">
     </div>
     <div id="logo">
-      <img src="img/logo-white.png" alt="Change Partners" />
+        <img src="img/logo-white.png" alt="Change Partners">
     </div>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="js/complete.ly.1.0.1.min.js"></script>
     <script src="js/jquery-2.1.3.min.js"></script>
-    <script src="js/jquery-ui.min.js"></script>
-    <script src="js/jquery.easing.min.js"></script>
-    <script src="js/jquery.linkify.min.js"></script>
-    <script src="js/ripples.min.js"></script>
     <script src="js/chat.js"></script>
+    <script src="js/disconnections.js"></script>
     <script src="js/script.js"></script>
     <script src="js/spinner.js"></script>
     <script src="js/card.js"></script>
     <script src="js/questions.js"></script>
     <script src="js/hoverInfo.js"></script>
-    <!--<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>-->
-  </body>
+</body>
 </html>
