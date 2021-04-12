@@ -1,175 +1,153 @@
-function showTeamInfo(newLeader = false, element = "teamInfo") {
-  if (element == "teamInfo") {
-    document.getElementById("lblArea").innerHTML = "";
-  }
-  document.getElementById(element).style.display = "block";
-  var html = "";
-  var tmp = [];
-  //var userInTeamIndex = -1;
-  console.log(users);
-  //if (users.length)
-  {
-    /*for (var j = 0; j < teams.length; j++)
+function showTeamInfo(newLeader = false, element = 'teamInfo')
+{
+    if (element == 'teamInfo')
+    {
+        document.getElementById('lblArea').innerHTML = '';
+    }
+    document.getElementById(element).style.display = 'block';
+    document.getElementById(element).innerHTML = '';
+    var html = '';
+    var tmp = [];
+    console.log(users);
+    html += '<label>TEAM<br>"' + teamName + '"<br></label>';
+    var indexLeaderElected = -1;
+    for (var k = 0; k < users.length; k++)
+    {
+        if (users[k]['leader'])
         {
-            for (var k = 0; k < teams[j]['users'].length; k++)
+            indexLeaderElected = k;
+        }
+    }
+    if (element == 'teamInfo')
+    {
+        if (users.length == 1)
+        {
+            document.getElementById('lblPlease').innerHTML = '<br><br><br>';
+        }
+        if (users.length > 1)
+        {
+            document.getElementById('lblPlease').innerHTML = 'PLEASE CHOOSE YOUR LEADER<br><br><br>';
+            showGameInfo();
+        }
+    }
+    for (var k = 0; k < users.length; k++)
+    {
+        html += '<br>' + users[k]['userName'] + ' ' + users[k]['userSurname'];
+        if ((users[k]['userName'] == userName) && 
+            (users[k]['userSurname'] == userSurname))
+        {
+            if (!users[k]['vote'])
             {
-                if ((teams[j]['users'][k]['userName'] == userName) && 
-                    (teams[j]['users'][k]['userSurname'] == userSurname))
-                {
-                    userInTeamIndex = j;
-                }
+                vote = false;
             }
-        }*/
-    //if (userInTeamIndex != -1)
-    {
-      console.log("Line 40.");
-      html += '<label>TEAM<br>"' + teamName + '"<br></label>';
-      var indexLeaderElected = -1;
-      for (var k = 0; k < users.length; k++) {
-        if (users[k]["leader"]) {
-          indexLeaderElected = k;
-          /*if (users[k]['status'] == 'waitingAnsweringQuestionArea1')
-                    {
-                        document.getElementById('area1').style.display = 'none';
-                        document.getElementById('area2').style.display = 'none';
-                        document.getElementById('area3').style.display = 'none';
-                    }*/
+            html += ' (you)';
         }
-      }
-      if (element == "teamInfo") {
-        if (users.length == 1) {
-          document.getElementById("lblPlease").innerHTML = "<br><br><br>";
+        if (users[k]['leader'])
+        {
+            html += ' (leader)';
+        }console.log(users.length, indexLeaderElected, users[k]['vote']);
+        if ((users.length > 1) && (indexLeaderElected == -1) && (!users[k]['vote']))
+        {//Se debe habilitar la elección de lider.
+            html += '<br><button class="voteLeaderBtn" id="vl_' + k + '" onclick="voteLeader(userName, userSurname, ' + k + ', \'' + users[k]['userName'] + '\', \'' + users[k]['userSurname'] + '\', ' + newLeader + ');">VOTE FOR LEADER</button>';
         }
-        if (users.length > 1) {
-          document.getElementById("lblPlease").innerHTML =
-            "PLEASE CHOOSE YOUR LEADER<br><br><br>";
-          showGameInfo();
-        }
-      }
-      for (var k = 0; k < users.length; k++) {
-        html += "<br>" + users[k]["userName"] + " " + users[k]["userSurname"];
-        if (
-          users[k]["userName"] == userName &&
-          users[k]["userSurname"] == userSurname
-        ) {
-          if (!users[k]["voteLeader"]) {
-            vote = false;
-          }
-          html += " (you)";
-        }
-        //if (k == indexLeaderElected)
-        if (users[k]["leader"]) {
-          html += " (leader)";
-        }
-        if (users.length > 1 && indexLeaderElected == -1 && !vote) {
-          //Se debe habilitar la elección de lider.
-          //Pendiente ver por qué no aparece el botón para votar al u2 en el u3.
-          //document.getElementById('lblChooseLeader').innerHTML = 'PLASE CHOSE YOUR LEADER';
-          html +=
-            '<br><button class="voteLeaderBtn" id="vl_' +
-            k +
-            '" onclick="voteLeader(userName, userSurname, roomCode, ' +
-            k +
-            ", '" +
-            users[k]["userName"] +
-            "', '" +
-            users[k]["userSurname"] +
-            "', " +
-            newLeader +
-            ');">VOTE FOR LEADER</button>';
-        }
-      }
-      html += "</div>";
     }
-  }
-  document.getElementById(element).innerHTML = html;
-  if (element == "teamInfo2") {
-    $("#area1").prop("disabled", true);
-    $("#area2").prop("disabled", true);
-    $("#area3").prop("disabled", true);
-    document.getElementById(element).innerHTML =
-      "<br>PLEASE CHOOSE YOUR LEADER<br><br>" +
-      document.getElementById(element).innerHTML;
-  }
+    html += '</div>';
+    document.getElementById(element).innerHTML = html;
+    /*if (element == 'teamInfo2')
+    {//Pendiente ver si es necesario usar esto.
+        $("#area1").prop('disabled', true);
+        $("#area2").prop('disabled', true);
+        $("#area3").prop('disabled', true);
+        document.getElementById(element).innerHTML = '<br>PLEASE CHOOSE YOUR LEADER<br><br>' + document.getElementById(element).innerHTML;
+    }*/
 }
-function showGameInfo() {
-  document.getElementById("gameInfo").style.display = "block";
-  document.getElementById("gameInfo").innerHTML =
-    '<div id="scores" class="w3-animate-opacity">DILEMMAS:<br>' +
-    scoreArea1 +
-    "<br><br>KNOWLEDGE ABOUT US:<br>" +
-    scoreArea2 +
-    "<br><br>RISKS & OPPORTUNITIES:<br>" +
-    scoreArea3 +
-    "</div>";
+function showGameInfo()
+{
+    document.getElementById('gameInfo').style.display = 'block';
+    document.getElementById('gameInfo').innerHTML = '<div id="scores">DILEMMAS:<br>' + scoreArea1 + '<br><br>KNOWLEDGE ABOUT US:<br>' + scoreArea2 + '<br><br>RISKS & OPPORTUNITIES:<br>' + scoreArea3 + '</div>';
 }
-function gameFinished() {
-  if (teams != undefined) {
-    for (var j = 0; j < teams.length; j++) {
-      if (teams[j]["teamName"] == teamName) {
-        document.getElementById("gameInfo").innerHTML =
-          '<div id="scores" class="w3-animate-opacity">DILEMMAS:<br>' +
-          scoreArea1 +
-          "<br><br>KNOWLEDGE ABOUT US:<br>" +
-          scoreArea2 +
-          "<br><br>RISKS & OPPORTUNITIES:<br>" +
-          scoreArea3 +
-          "</div>";
-      }
-    }
-  }
-}
-var data2;
-function restart() {
-  window.location = window.location;
-  /*document.getElementById('lblArea').innerHTML = '';
-    pickedArea = undefined;
-    document.getElementById('body').style.backgroundColor = "white";
-    document.getElementById('body').style.backgroundImage = "url('./img/2.png')";
-    document.getElementById('restartPopup').style.display = 'none';
-    if (data2['status'] == 'newLeader')
+var status = 'starting';
+function voteLeader(userNameVoting, userSurnameVoting, userIndex, userNameVoted, userSurnameVoted, newLeader = false)
+{console.log('newLeader == ' + newLeader);
+    console.log('vl_' + userIndex);
+    console.log(document.getElementById('vl_' + userIndex).innerHTML);
+    if (document.getElementById('vl_' + userIndex).innerHTML.toLowerCase() != 'vote for leader')
     {
-        socket.emit('showTeamInfo', JSON.stringify({
-            "userName" : userName, 
-            "userSurname" : userSurname, 
-            "teamName" : data2['teamName'], 
-            "roomCode" : data2['roomCode'], 
-            'status': data2['status'], 
-            'rooms': data2['rooms']
-        }));
-        vote = false;
-        showTeamInfo(true);
+        for (var i = 0; i < users.length; i++)
+        {
+            document.getElementById('vl_' + i).style.display = 'none';
+        }
+        vote = true;
+        socket.emit('voteLeader', {
+            newLeader: newLeader,
+            status: status,
+            userNameVoted: userNameVoted, 
+            userSurnameVoted: userSurnameVoted, 
+            userNameVoting: userNameVoting, 
+            userSurnameVoting: userSurnameVoting, 
+            teamName: teamName
+        });
     }
     else
     {
-        if (data2['status'] != 'oneUser')
+        for (var i = 0; i < users.length; i++)
         {
-            socket.emit('showSpinner', JSON.stringify({
-                "teamName" : data2['teamName'], 
-                "roomCode" : data2['roomCode']
-            }));
+            document.getElementById('vl_' + i).innerHTML = 'VOTE FOR LEADER';
+            if (i == userIndex)
+            {
+                document.getElementById('vl_' + i).innerHTML = 'CONFIRM';
+            }
         }
-        else
-        {
-            document.getElementById('divLogin').style.display = 'block';
-            showTeamInfo();
-        }
-    }*/
-}
-function getTeams(rooms) {
-  for (var i = 0; i < rooms.length; i++) {
-    if (rooms[i]["roomCode"] == roomCode) {
-      return rooms[i]["teams"];
     }
-  }
-  return [];
 }
+function login()
+{
+    if (!connected)
+    {
+        auxUserName = document.getElementById('nameInput').value;
+        auxUserSurname = document.getElementById('surnameInput').value;
+        if (auxUserName.length && auxUserSurname.length)
+        {
+            userName = $('#nameInput').val().replace(regex, ' ').trim();
+            userSurname = $('#surnameInput').val().replace(regex, ' ').trim();
+            socket.emit('userConnected', {
+                'userName' : userName, 
+                'userSurname' : userSurname, 
+                'teamName' : document.getElementById('teamName').value
+            });
+        }
+    }
+}
+function showSpinner(data)
+{
+    step = 'wheel';
+    document.getElementById('lblWheelInfo').innerHTML = '<br>' + data['userName'] + ' ' + data['userSurname'] + ' spins the wheel';
+    pickedArea = undefined;
+    if ((data['userName'] == userName) && 
+        (data['userSurname'] == userSurname))
+    {
+        lockWheel = false;
+    }
+    else
+    {
+        if ((data['status'] == undefined) || (data['status'] != 'onlyWheel'))
+        {
+            lockWheel = true;
+        }
+    }
+    document.getElementById('divLogin').style.display = 'none';
+    document.getElementById('lblArea').innerHTML = '';
+    //document.getElementById('statusInfo').innerHTML = data['status'];
+    started = true;
+    //updateUsersInfo();
+    document.getElementById('restartPopup').style.display = 'none';
+    document.getElementById('body').style.backgroundColor = "#eee";
+    document.getElementById('body').style.backgroundImage = "url('./img/3.2.png')";
+    document.getElementById('area3').style.display = 'none';
+    document.getElementById('area2').style.display = 'none';
+    document.getElementById('area1').style.display = 'none';
+    document.getElementById('spinner').style.display = 'block';
 
-/*animation */
-$(function () {
-  $("#divLogin").hide();
-  setTimeout(() => {
-    $("#divLogin").show();
-    $("#divLogin").addClass("w3-animate-opacity");
-  }, 500);
-});
+    document.getElementById('teamInfo').style.display = 'none';
+    showGameInfo();
+}
