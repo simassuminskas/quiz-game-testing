@@ -1,11 +1,9 @@
-function showTeamInfo(newLeader = false, element = 'teamInfo')
+var newLeader;
+var element;
+function showTeamInfo(newLeader = false, init = false)
 {
-    if (element == 'teamInfo')
-    {
-        document.getElementById('lblArea').innerHTML = '';
-    }
-    document.getElementById(element).style.display = 'block';
-    document.getElementById(element).innerHTML = '';
+    document.getElementById('teamInfo').style.display = 'block';
+    document.getElementById('teamInfo').innerHTML = '';
     var html = '';
     var tmp = [];
     console.log(users);
@@ -18,8 +16,9 @@ function showTeamInfo(newLeader = false, element = 'teamInfo')
             indexLeaderElected = k;
         }
     }
-    if (element == 'teamInfo')
+    if (init)
     {
+        document.getElementById('lblArea').innerHTML = '';
         if (users.length == 1)
         {
             document.getElementById('lblPlease').innerHTML = '<br><br><br>';
@@ -46,13 +45,14 @@ function showTeamInfo(newLeader = false, element = 'teamInfo')
         {
             html += ' (leader)';
         }console.log(users.length, indexLeaderElected, users[k]['vote']);
-        if ((users.length > 1) && (indexLeaderElected == -1) && (!users[k]['vote']))
+        //if ((users.length > 1) && (indexLeaderElected == -1) && (!users[k]['vote']))
+        if ((users.length > 1) && (indexLeaderElected == -1))
         {//Se debe habilitar la elección de lider.
             html += '<br><button class="voteLeaderBtn" id="vl_' + k + '" onclick="voteLeader(userName, userSurname, ' + k + ', \'' + users[k]['userName'] + '\', \'' + users[k]['userSurname'] + '\', ' + newLeader + ');">VOTE FOR LEADER</button>';
         }
     }
     html += '</div>';
-    document.getElementById(element).innerHTML = html;
+    document.getElementById('teamInfo').innerHTML = html;
     /*if (element == 'teamInfo2')
     {//Pendiente ver si es necesario usar esto.
         $("#area1").prop('disabled', true);
@@ -73,10 +73,7 @@ function voteLeader(userNameVoting, userSurnameVoting, userIndex, userNameVoted,
     console.log(document.getElementById('vl_' + userIndex).innerHTML);
     if (document.getElementById('vl_' + userIndex).innerHTML.toLowerCase() != 'vote for leader')
     {
-        for (var i = 0; i < users.length; i++)
-        {
-            document.getElementById('vl_' + i).style.display = 'none';
-        }
+        document.getElementById('vl_' + userIndex).style.opacity = 0.5;
         vote = true;
         socket.emit('voteLeader', {
             newLeader: newLeader,
@@ -92,6 +89,7 @@ function voteLeader(userNameVoting, userSurnameVoting, userIndex, userNameVoted,
     {
         for (var i = 0; i < users.length; i++)
         {
+            document.getElementById('vl_' + i).style.opacity = 1;
             document.getElementById('vl_' + i).innerHTML = 'VOTE FOR LEADER';
             if (i == userIndex)
             {
@@ -106,15 +104,39 @@ function login()
     {
         auxUserName = document.getElementById('nameInput').value;
         auxUserSurname = document.getElementById('surnameInput').value;
-        if (auxUserName.length && auxUserSurname.length)
+        auxTeamName = document.getElementById('teamName').value;
+        if (auxUserName.length && auxUserSurname.length && auxTeamName.length)
         {
+            document.getElementById('loginErrorLbl').innerHTML = '';
             userName = $('#nameInput').val().replace(regex, ' ').trim();
             userSurname = $('#surnameInput').val().replace(regex, ' ').trim();
             socket.emit('userConnected', {
                 'userName' : userName, 
                 'userSurname' : userSurname, 
-                'teamName' : document.getElementById('teamName').value
+                'teamName' : auxTeamName
             });
+        }
+        else
+        {
+            if ((!auxUserName.length) && (!auxUserSurname.length))
+            {
+                document.getElementById('loginErrorLbl').innerHTML = 'Name and surname empty.';
+            }
+            else
+            {
+                if (!auxUserName.length)
+                {
+                    document.getElementById('loginErrorLbl').innerHTML = 'Name empty.';
+                }
+                if (!auxUserSurname.length)
+                {
+                    document.getElementById('loginErrorLbl').innerHTML = 'Surname empty.';
+                }
+            }
+            if (!auxTeamName.length)
+            {
+                document.getElementById('loginErrorLbl').innerHTML = 'Team name empty.';
+            }
         }
     }
 }
@@ -130,16 +152,14 @@ function showSpinner(data)
     }
     else
     {
-        if ((data['status'] == undefined) || (data['status'] != 'onlyWheel'))
+        if (data['status'] == undefined)
         {
             lockWheel = true;
         }
     }
     document.getElementById('divLogin').style.display = 'none';
     document.getElementById('lblArea').innerHTML = '';
-    //document.getElementById('statusInfo').innerHTML = data['status'];
     started = true;
-    //updateUsersInfo();
     document.getElementById('restartPopup').style.display = 'none';
     document.getElementById('body').style.backgroundColor = "#eee";
     document.getElementById('body').style.backgroundImage = "url('./img/3.2.png')";

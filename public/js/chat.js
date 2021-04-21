@@ -14,7 +14,9 @@ var options;
 var scoreArea1 = 0;
 var scoreArea2 = 0;
 var scoreArea3 = 0;
-socket.on('userConnected', (data) => {console.log(data);
+//socket.on('userConnected', (data) => {console.log(data);
+function newUserConnected(data)
+{console.log(data);    
     if ((data['userName'] != undefined) && (data['userSurname'] != undefined) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
         if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
@@ -38,40 +40,38 @@ socket.on('userConnected', (data) => {console.log(data);
                 users = data['users'];
             }
         }
-        //for (var j = 0; j < teams.length; j++)
+        for (var k = 0; k < users.length; k++)
         {
-            //if ((teams[j]['teamName'] == data['teamName']) && (data['teamName'] == teamName))
-            {
-                //var leader = false;
-                //for (var k = 0; k < teams[j]['users'].length; k++)
-                for (var k = 0; k < users.length; k++)
-                {
-                    if ((users[k]['userName'] == userName) && 
-                        (users[k]['userSurname'] == userSurname) && 
-                        (!users[k]['vote']) && 
-                        (!users[k]['leader']))
-                    {//Ver que no sea el lider.
-                        vote = false;
-                    }
-                }
+            if ((users[k]['userName'] == userName) && 
+                (users[k]['userSurname'] == userSurname) && 
+                (!users[k]['vote']) && 
+                (!users[k]['leader']))
+            {//Ver que no sea el lider.
+                vote = false;
             }
         }
         if (((data['userName'] == userName) && (data['userSurname'] == userSurname)) || 
             ((teamName != undefined) && (data['teamName'] == teamName))
         )
         {
-            scoreArea1 = data['scoreArea1'];
-            scoreArea2 = data['scoreArea2'];
-            scoreArea3 = data['scoreArea3'];
             if (!started)
-            {
+            {//Pendiente ver si aparece data['newLeader'] en el backend antes de llegar a esta parte.
                 showTeamInfo(data['newLeader']);
             }
             else
             {
-                showTeamInfo(data['newLeader'], 'teamInfo2');
+                showTeamInfo(data['newLeader'], true);
             }
         }
+    }
+}
+socket.on('loginError', (data) => {console.log(data);
+    if ((data['teamName'] == teamName) && (data['userName'] == userName) && (data['userSurname'] == userSurname) && (document.getElementById('divGameFinished').style.display == 'none'))
+    {
+        document.getElementById('loginErrorLbl').innerHTML = data['msg'];
+        userName = '';
+        userSurname = '';
+        teamName = '';
     }
 });
 socket.on('continueNewLeader', (data) => {
@@ -90,10 +90,11 @@ var started = false;
 socket.on('showSpinner', (data) => {
     if ((data['teamName'] == teamName) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
+        document.getElementById('teamInfo').style.display = 'none';
         showSpinner(data);
     }
 });
-socket.on('startSpin', (data) => {
+socket.on('startSpin', (data) => {//console.log(data);
     if ((data['teamName'] == teamName) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
         if ((data['userName'] != userName) || (data['userSurname'] != userSurname))
@@ -108,6 +109,7 @@ socket.on('showArea1PartialResult', (data) => {//console.log(data);
         area = data['area'];
         if ((data['teamName'] == teamName) && (data['area'] == 1))
         {
+            document.getElementById('teamInfo').style.display = 'none';
             document.getElementById('area3').style.display = 'none';
             document.getElementById('area2').style.display = 'none';
             document.getElementById('area1').style.display = 'block';
@@ -146,6 +148,7 @@ var beforeStep;
 socket.on('showResultArea2', (data) => {console.log('data == ' + JSON.stringify(data));
     if ((data['teamName'] == teamName) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
+        document.getElementById('teamInfo').style.display = 'none';
         document.getElementById('area2Table').style.display = 'none';
         var r = 'INCORRECT';
         if (data['score']> 0)
@@ -162,7 +165,8 @@ socket.on('showResultArea2', (data) => {console.log('data == ' + JSON.stringify(
         {
             document.getElementById('area2Info').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' ANSWER IS ' + r + '!<br>YOUR SCORE:<br><label class="lblScore">' + data['score'] + '</label>';
         }
-        scoreArea2 += data['score'];
+        //scoreArea2 += data['score'];
+        scoreArea2 += data['scoreArea2'];
         showGameInfo();
     }
 });
@@ -171,6 +175,7 @@ var dataUserSurname;
 socket.on('question', (data) => {
     if ((data['teamName'] == teamName) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
+        document.getElementById('teamInfo').style.display = 'none';
         document.getElementById('lblWheelInfo').innerHTML = '';
         document.getElementById('spinner').style.display = 'none';
         document.getElementById('area' + data['area']).style.top = (parseInt(document.getElementById('lblArea').offsetTop) + 35) + 'px';
@@ -228,8 +233,9 @@ socket.on('question', (data) => {
     }
 });
 socket.on('area2Question', (data) => {
-    if ((data['teamName'] == teamName) && (data['userName'] != userName) && (data['userSurname'] != userSurname) && (document.getElementById('divGameFinished').style.display == 'none'))
+    if ((data['teamName'] == teamName) && ((data['userName'] != userName) || (data['userSurname'] != userSurname)) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
+        document.getElementById('teamInfo').style.display = 'none';
         document.getElementById('area2Info').innerHTML = data['userName'] + ' ' + data['userSurname'] + ' IS ANSWERING THE QUESTION :';
         document.getElementById('area2Table').style.display = 'flex';
         document.getElementById('area2QuestionsDiv').innerHTML = '<label id="question">' + data['question'] + '</label>';
@@ -242,9 +248,10 @@ socket.on('area2Question', (data) => {
         document.getElementById('area2AnswersDiv').innerHTML = html;
     }
 });
-socket.on('area3Card', (data) => {
-    if ((data['teamName'] == teamName) && (data['userName'] != userName) && (data['userSurname'] != userSurname) && (document.getElementById('divGameFinished').style.display == 'none'))
+socket.on('area3Card', (data) => {console.log(data);//Ver por qué no voltea para los otros usuarios.
+    if ((data['teamName'] == teamName) && ((data['userName'] != userName) || (data['userSurname'] != userSurname)) && (document.getElementById('divGameFinished').style.display == 'none'))
     {console.log(data['userName'] + ' ' + data['userSurname']);
+        document.getElementById('teamInfo').style.display = 'none';
         userPlay = true;
         flip('back', false);
         userPlay = false;
@@ -433,6 +440,7 @@ var bestAnswerScore;
 socket.on('detailedExplanationOfAnswers', (data) => {
     if ((data['teamName'] == teamName) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
+        document.getElementById('teamInfo').style.display = 'none';
         document.getElementById('lblLightBoxArea1Header').innerHTML = 'DETAILED EXPLANATION OF ANSWERS';
         document.getElementById('area1Table').style.display = 'none';
         document.getElementById('area1LabelsTable').style.display = 'none';
@@ -444,6 +452,7 @@ socket.on('detailedExplanationOfAnswers', (data) => {
         bestAnswerScore = data['bestAnswerScore'];
         options = data['options'];
         topic = data['topic'];
+        scoreArea1 = data['scoreArea1'];
 
         var html = '';
         for (var i = 0; i < data['options'].length; i++)
@@ -469,11 +478,13 @@ socket.on('detailedExplanationOfAnswers', (data) => {
         document.getElementById('personalEvaluation').innerHTML = html;
         document.getElementById('nextBtnDivArea1').style.display = 'block';
         document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
+        showGameInfo();
     }
 });
 socket.on('leaderVotation', (data) => {
     if ((data['teamName'] == teamName) && (document.getElementById('divGameFinished').style.display == 'none'))
-    {
+    {console.log(data);
+        document.getElementById('teamInfo').style.display = 'none';
         document.getElementById('personalEvaluation').innerHTML = '';
         document.getElementById('area1Table').style.display = 'flex';
         document.getElementById('area1').style.display = 'block';
@@ -527,6 +538,7 @@ var userPlay = false;
 socket.on('area3Ro', (data) => {
     if ((data['teamName'] == teamName) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
+        document.getElementById('teamInfo').style.display = 'none';
         document.getElementById('lblWheelInfo').innerHTML = '';
         document.getElementById('spinner').style.display = 'none';
         document.getElementById('area3').style.top = (parseInt(document.getElementById('lblArea').offsetTop) + 35) + 'px';
@@ -585,11 +597,22 @@ socket.on('showTeamInfo', (data) => {
         showTeamInfo(true);
     }
 });
-socket.on("connect_error", () => {
-  document.getElementById('restartPopup').style.display = 'block';
-  setTimeout(() => {
-    socket.connect();
-    document.getElementById('restartPopup').style.display = 'none';
-  }, 1000);
-});
-socket.on("disconnect", () => {});
+/*socket.on("disconnect", () => {
+    document.getElementById('restartPopup').style.display = 'block';
+    $("#area1").prop('disabled', false);
+    $("#area2").prop('disabled', false);
+    $("#area3").prop('disabled', false);
+    setTimeout(() => {
+        socket.connect();
+        document.getElementById('restartPopup').style.display = 'none';
+    }, 1000);
+});*/
+socket.on("connect_error", () => {disconnected();});
+socket.on("disconnect", () => {disconnected();});
+function disconnected()
+{
+    document.getElementById('restartPopup').style.display = 'block';
+    $("#area1").prop('disabled', true);
+    $("#area2").prop('disabled', true);
+    $("#area3").prop('disabled', true);
+}

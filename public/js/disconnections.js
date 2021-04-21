@@ -1,7 +1,7 @@
 socket.on('userDisconnected', (data) => {console.log(data);
     if ((data['teamName'] == teamName) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
-        status = data['status'];
+        //status = data['status'];
         users = data['users'];
         /*if (status == 'newLeader')
         {
@@ -9,19 +9,18 @@ socket.on('userDisconnected', (data) => {console.log(data);
         }*/
         if (started)
         {
-            /*if (users.length >= 2){}else{//Un sólo usuario}*/
-            if (status == 'oneUser')
-            {//Pendiente ver qué hacer en este caso.
-                //window.location = window.location;
+            if (data['status'] == 'oneUser')
+            {
+                window.location = window.location;
             }
             else
             {
-                if (status == 'newLeader')
+                if (data['newLeader'])
                 {
-                    showTeamInfo(true, 'teamInfo');
+                    showTeamInfo(true, true);
                 }
                 else
-                {//Se desconectó uno que no es el líder y quedan 2.
+                {//Se desconectó uno que no es el líder y quedan 2 o más.
                     //
                 }
             }
@@ -29,7 +28,7 @@ socket.on('userDisconnected', (data) => {console.log(data);
         }
         else
         {
-            showTeamInfo(false, 'teamInfo');
+            showTeamInfo(false, true);
         }
         /*if (status == 'oneUser')
         {

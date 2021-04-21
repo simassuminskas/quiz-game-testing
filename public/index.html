@@ -34,11 +34,11 @@
             <label id="lblSurname">TEAM NAME</label><br>
             <input type="text" id="teamName">
             <br><br><br>
-            <button id="joinTeam" onclick="login();">JOIN</button>
+            <button id="joinTeam" onclick="login();">JOIN</button><br>
+            <label id="loginErrorLbl"></label>
         </center>
     </div>
     <center id="teamInfo"></center>
-    <center id="teamInfo2"></center>
     <div id="teamScore"></div>
     <center><label id="lblArea" style="font-family: 'Quicksand', serif;"></label></center>
     <center><label id="lblWheelInfo" style="font-family: 'Quicksand', serif;"></label></center>
@@ -93,8 +93,6 @@
         </div>
         <div id="emptySpace"></div>
     </center>
-    
-    
     <div id="divGameFinished" style="display: none;">
         <div id="congratulationsText">
             <h1>CONGRATULATIONS! YOU</h1>
@@ -114,6 +112,7 @@
     <script src="js/jquery-2.1.3.min.js"></script>
     <script src="js/chat.js"></script>
     <script src="js/disconnections.js"></script>
+    <script src="js/reconnections.js"></script>
     <script src="js/script.js"></script>
     <script src="js/spinner.js"></script>
     <script src="js/card.js"></script>
