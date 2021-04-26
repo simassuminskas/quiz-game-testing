@@ -14,6 +14,7 @@ var options;
 var scoreArea1 = 0;
 var scoreArea2 = 0;
 var scoreArea3 = 0;
+var lastArea;
 //socket.on('userConnected', (data) => {console.log(data);
 function newUserConnected(data)
 {console.log(data);    
@@ -160,6 +161,7 @@ socket.on('showResultArea2', (data) => {console.log('data == ' + JSON.stringify(
             document.getElementById('area2Info').innerHTML = '<br><br>YOUR ANSWER IS ' + r + '!<br>YOUR SCORE:<br><label class="lblScore">' + data['score'] + '</label>';
             nextStep = 'showSpinner';
             document.getElementById('nextBtnDivArea2').style.display = 'block';
+            document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
         }
         else
         {
@@ -193,16 +195,11 @@ socket.on('question', (data) => {
             options = data['question']['options'];
             for (var j = 0; j < data['question']['options'].length; j++)
             {
-                //html += '<tr>';
-                //html += '<td><input type="radio" id="question_option_' + j + '" name="answer" onchange="document.getElementById(\'nextBtnDivArea1\').style.display = \'block\';"></td>';
-                //html += '<td><label onclick="optionSelected(1, ' + j + ');" id="lbl_question_option_' + j + '" for=question_option_' + j + '">' + data['question']['options'][j]['option'] + '</label></td>';
                 html += '<div class="optionNoSelected" id="lbl_question_option_' + j + '" onclick="optionSelected(1, ' + j + ');">' + data['question']['options'][j]['option'] + '<br></div><br>';
-                //html += '</tr><tr></tr>';
             }
             document.getElementById('area1AnswersColumn').innerHTML = html;
-            //document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
-            document.getElementById('nextBtnDivArea1').style.display = 'none';
-            document.getElementById('beforeBtnDivArea1').style.display = 'none';
+            document.getElementById('nextBtnDivArea1').innerHTML = '';
+            document.getElementById('beforeBtnDivArea1').innerHTML = '';
             document.getElementById('lblArea').innerHTML = 'DILEMMAS';
             document.getElementById('lblLightBoxArea1Header').innerHTML = 'READ THE DILEMMA & CHOOSE THE BEST ANSWER INDIVIDUALLY.';
             nextStep = 'allUsersVotation';
@@ -218,7 +215,7 @@ socket.on('question', (data) => {
             if ((data['userName'] == userName) && (data['userSurname'] == userSurname))
             {
                 document.getElementById('nextBtnDivArea2').style.display = 'block';
-                //document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
+                document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
                 document.getElementById('area2Info').innerHTML = '<br><br>NOW PLEASE CHOOSE THE RIGHT ANSWER';
                 dataUserName = data['userName'];
                 dataUserSurname = data['userSurname'];
@@ -226,7 +223,7 @@ socket.on('question', (data) => {
             }
             else
             {
-                document.getElementById('nextBtnDivArea2').style.display = 'none';
+                document.getElementById('nextBtnDivArea2').innerHTML = '';
                 document.getElementById('area2Info').innerHTML = '<br><br>' + data['userName'] + ' ' + data['userSurname'] + ' WILL CHOOSE THE ANSWER';
             }
         }
@@ -255,13 +252,10 @@ socket.on('area3Card', (data) => {console.log(data);//Ver por qué no voltea par
         userPlay = true;
         flip('back', false);
         userPlay = false;
-        document.getElementById('nextBtnDivArea3').style.display = 'none';
+        document.getElementById('nextBtnDivArea3').innerHTML = '';
         document.getElementById('backContent').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore">' + data['score'] + '</label>';
         scoreArea3 += score;
         showGameInfo();
-        //document.getElementById('back').innerHTML = '<br><br>' + data['text'] + '<br>' + 'SCORE: <label class="lblScore">' + data['score'] + '</label>';
-        /*document.getElementById('back').innerHTML += '<div id="nextBtnDivArea3" style="padding-left: 90%; padding-bottom: 1%;"><i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i></div>';
-        document.getElementById('nextBtnDivArea3').style.display = 'none';*/
     }
 });
 function showBeforeStep()
@@ -296,17 +290,17 @@ function showBeforeStep()
             }
             if ('no mutual agreement' == finalAnswer)
             {
-                html += '<div class="lblOptionFinal" id="lbl_question_option_' + (options.length) + '">no mutual agreement<br>' + '<label class="lblScore">-600</label><br>(final answer)<br></div>';
+                html += '<div class="lblOptionFinal" id="lbl_question_option_' + (options.length) + '">' + '<label class="lblScore">-600</label><br>(final answer)<br></div>';
             }
             else
             {
-                html += '<div class="lblOption" id="lbl_question_option_' + (options.length) + '">no mutual agreement<br>' + '<label class="lblScore">-600</label><br></div>';
+                html += '<div class="lblOption" id="lbl_question_option_' + (options.length) + '">' + '<label class="lblScore">-600</label><br></div>';
             }
             html += '<label class="topic">' + topic + '<br><br></label>';
             document.getElementById('personalEvaluation').innerHTML = html;
             document.getElementById('nextBtnDivArea1').style.display = 'block';
             document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
-            document.getElementById('beforeBtnDivArea1').style.display = 'none';
+            document.getElementById('beforeBtnDivArea1').innerHTML = '';
         
             nextStep = 'showFinalAnswer';
         break;
@@ -326,7 +320,6 @@ function showNextStep()
                 "answer" : answer, 
                 "area" : area
             });
-            //document.getElementById('nextBtnDivArea1').style.display = 'none';
             document.getElementById('nextBtnDivArea1').innerHTML = '';
             document.getElementById('beforeBtnDivArea1').innerHTML = '';
         break;
@@ -339,28 +332,29 @@ function showNextStep()
                 "answer" : answer, 
                 "area" : area
             });
-            document.getElementById('nextBtnDivArea1').style.display = 'none';
-            document.getElementById('beforeBtnDivArea1').style.display = 'none';
+            document.getElementById('nextBtnDivArea1').innerHTML = '';
+            document.getElementById('beforeBtnDivArea1').innerHTML = '';
         break;
         case 'personalEvaluation':
             nextStep = 'sendPersonalEvaluation';
             document.getElementById('nextBtnDivArea1').style.display = 'block';
+            document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
             
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('area1LabelsTable').style.display = 'none';
             document.getElementById('personalEvaluation').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' PONTS?<br><br>Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
             beforeStep = 'showFinalAnswer';
-            document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('beforeBtnDivArea1').style.display = 'block';
+            document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             showGameInfo();
         break;
         case 'sendPersonalEvaluation':
             document.getElementById('lblLightBoxArea1Header').innerHTML = '';
             document.getElementById('area1Table').style.display = 'none';
             document.getElementById('area1LabelsTable').style.display = 'none';
-            document.getElementById('nextBtnDivArea1').style.display = 'none';
-            document.getElementById('beforeBtnDivArea1').style.display = 'none';
+            document.getElementById('nextBtnDivArea1').innerHTML = '';
+            document.getElementById('beforeBtnDivArea1').innerHTML = '';
             var evaluation = parseInt(document.getElementById('personalEvaluationRange').value) + 1;
             document.getElementById('personalEvaluation').innerHTML = 'THANK FOR YOUR ENGAGEMENT<br>PLEASE TAKE TURNS IN SPINING A WHELL';
             socket.emit('personalEvaluation', {
@@ -380,8 +374,8 @@ function showNextStep()
                 THE SCORE FOR THE ANSWER:<br>
                 ` + '<label class="lblScore">' + score + '</label>' + `<br>`;
             nextStep = 'personalEvaluation';
-            document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             document.getElementById('beforeBtnDivArea1').style.display = 'block';
+            document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
             beforeStep = 'detailedExplanationOfAnswers';
             scoreArea1 = scoreTotal;
             showGameInfo();
@@ -395,7 +389,7 @@ function showNextStep()
                 "answer" : answer, 
                 "area" : area
             });
-            document.getElementById('nextBtnDivArea2').style.display = 'none';
+            document.getElementById('nextBtnDivArea2').innerHTML = '';
         break;
         case 'showSpinner':
             socket.emit('nextUserWheel', {
@@ -405,9 +399,9 @@ function showNextStep()
             });
             try
             {
-                document.getElementById('nextBtnDivArea1').style.display = 'none';
-                document.getElementById('beforetBtnDivArea1').style.display = 'none';
-                document.getElementById('nextBtnDivArea2').style.display = 'none';
+                document.getElementById('nextBtnDivArea1').innerHTML = '';
+                document.getElementById('beforeBtnDivArea1').innerHTML = '';
+                document.getElementById('nextBtnDivArea2').innerHTML = '';
             }catch{}
         break;
         case 'area2Question':
@@ -428,8 +422,7 @@ function showNextStep()
             }
             document.getElementById('area2AnswersDiv').innerHTML = html;
             nextStep = 'questionArea2';
-            //document.getElementById('nextBtnDivArea2').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
-            document.getElementById('nextBtnDivArea2').style.display = 'none';
+            document.getElementById('nextBtnDivArea2').innerHTML = '';
         break;
     }
 }
@@ -488,8 +481,8 @@ socket.on('leaderVotation', (data) => {
         document.getElementById('personalEvaluation').innerHTML = '';
         document.getElementById('area1Table').style.display = 'flex';
         document.getElementById('area1').style.display = 'block';
-        document.getElementById('area1').style.backgroundColor = "#ac0034";
-        document.getElementById('lblLightBoxArea1Header').innerHTML = 'NOW DISCUSS THE BEST MOST APPROPIATE ANSWER WITH THE TEAM & LEADER WILL SUBMIT THE FINAL DECISSION.';
+        document.getElementById('area1').style.backgroundColor = "#fff";
+        document.getElementById('lblLightBoxArea1Header').innerHTML = '!!!<br>NOW DISCUSS THE MOST APPROPIATE ANSWER WITH THE TEAM & LEADER WILL SUBMIT THE FINAL DECISSION.';
         step = 'selectingFinalAnswer';
         document.getElementById('area1QuestionColumn').innerHTML = '<label id="question">' + data['question']['question'] + '</label>';
         question = data['question']['question'];
@@ -508,10 +501,8 @@ socket.on('leaderVotation', (data) => {
         if ((data['leader']['userName'] == userName) && (data['leader']['userSurname'] == userSurname))
         {//Pendiente ver si funciona o si se puede optimizar optionSelected.
             html += '<div class="optionNoSelected" id="lbl_question_option_' + j + '" onclick="optionSelected(1, ' + j + ');">no mutual agreement</div><br>';
-            document.getElementById('nextBtnDivArea1').style.display = 'none';
-            document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
-            document.getElementById('beforeBtnDivArea1').style.display = 'none';
-            document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
+            document.getElementById('nextBtnDivArea1').innerHTML = '';
+            document.getElementById('beforeBtnDivArea1').innerHTML = '';
         }
         document.getElementById('area1AnswersColumn').innerHTML = html;
         nextStep = 'leaderVotation';
@@ -522,8 +513,10 @@ socket.on('personalEvaluation', (data) => {
     {
         var html = 'Distant <input type="range" id="personalEvaluationRange" min="0" max="4"> Firm';
         nextStep = 'personalEvaluation';
+        document.getElementById('nextBtnDivArea1').style.display = 'block';
         document.getElementById('nextBtnDivArea1').innerHTML = '<i class="fas fa-angle-right fa-2x" onclick="showNextStep();"></i>';
         beforeStep = 'showFinalAnswer';
+        document.getElementById('beforeBtnDivArea1').style.display = 'block';
         document.getElementById('beforeBtnDivArea1').innerHTML = '<i class="fas fa-angle-left fa-2x" onclick="showBeforeStep();"></i>';
         document.getElementById('personalEvaluation').style.display = 'block';
         document.getElementById('lblLightBoxArea1Header').innerHTML = 'EVALUATION<br>HOW IS YOUR REALITY CLOSE TO THE BEST ANSWER WITH ' + bestAnswerScore + ' POINTS';
@@ -570,18 +563,7 @@ socket.on('area3Ro', (data) => {
 socket.on('finishGame', (data) => {
     if ((data['teamName'] == teamName) && (document.getElementById('divGameFinished').style.display == 'none'))
     {
-        document.getElementById('body').style.backgroundColor = "white";
-        document.getElementById('body').style.backgroundImage = "url('./img/2.png')";
-        teams = getTeams(data['rooms']);
-        document.getElementById('teamInfo').style.display = 'none';
-        document.getElementById('gameInfo').style.display = 'none';
-        document.getElementById('lblWheelInfo').innerHTML = '';
-        document.getElementById('spinner').style.display = 'none';
-        document.getElementById('area1').style.display = 'none';
-        document.getElementById('area2').style.display = 'none';
-        document.getElementById('area3').style.display = 'none';
-        document.getElementById('divGameFinished').style.display = 'block';
-        showGameInfo();
+        finishGame();
     }
 });
 socket.on('showTeamInfo', (data) => {

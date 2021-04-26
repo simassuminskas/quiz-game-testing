@@ -1,5 +1,4 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700);
-@import url(./w3.css);
 
 body {
   font-family: "Quicksand", serif;
@@ -8,6 +7,20 @@ body {
 
   color: #333;
   background: #eee;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+#reddot{
+color: red;
+}
+
+.hr{
+  height:2px;
+  border-width:0;
+  color:white;
+  background-color:white
 }
 
 input,
@@ -57,6 +70,12 @@ button {
   /*padding-bottom: 10%;*/
 }
 
+#restartPopup {
+  background: #555555;
+  border-radius: 20px;
+  border: 2px solid #555555;
+}
+
 #card {
   width: 100%;
   position: absolute;
@@ -70,7 +89,7 @@ button {
   -o-transform-style: preserve-3d;
   transform-style: preserve-3d;
   padding: 35px 15px;
-  border-radius: 6px;
+  border-radius: 20px;
   box-shadow: 3px 5px 10px 2px rgb(0 0 0 / 25%);
 }
 
@@ -79,7 +98,7 @@ button {
 }
 
 #area3 .cards #card {
-  background-image: url("./../img/card back.jpg");
+  /*background-image: url("./../img/card back.jpg");*/
 }
 
 #card.flipped {
@@ -111,10 +130,14 @@ button {
 #card #front {
   display: block;
   cursor: pointer;
-  transition: o.2s;
+  transition: 0.2s;
   padding: 35px 15px 50px;
-  border-radius: 6px;
+  border-radius: 20px;
   font-size: 22px;
+}
+#front #back {
+width: 100%;
+  heigh: 100%;
 }
 /*
 #card #front: hover {
@@ -130,11 +153,12 @@ button {
 }
 .container:first-child #card #front {
   transition: 0.2s;
-  /* background: #eee; */
+  background: #eee;
 }
 
 .container:first-child #card #back {
-  /* background-image: url("./../img/card back.jpg"); */
+  
+  background-image: url("./../img/card back.jpg");
 }
 
 .content {
@@ -144,11 +168,11 @@ button {
 }
 
 #logo {
-  /* position: absolute;
+  position: fixed;
   bottom: 8px;
-  right: 16px; */
-  margin-top: 60px;
-  text-align: right;
+  right: 16px;
+  width: 10%;
+  height: auto;
 }
 
 #area1QuestionsDiv {
@@ -229,20 +253,15 @@ button {
 #teamInfo {
   font-family: "Quicksand", serif;
   display: none;
-}
-
-#teamInfo2 {
-  font-family: "Quicksand", serif;
-  display: none;
   color: black;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 1);
   text-align: center;
   margin-left: auto;
   margin-right: auto;
   position: relative;
   z-index: 1;
   padding: 2%;
-  border-radius: 5px;
+  border-radius: 20px;
   width: 50%;
   opacity: 0.9;
   border-width: 3px;
@@ -294,11 +313,12 @@ button {
   font-color: #000;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 0px;
   display: none;
   position: relative;
   z-index: 1;
   padding: 2%;
-  border-radius: 10px;
+  border-radius: 20px;
   width: 50%;
   /*background-color: #c43f56;*/
 }
@@ -314,39 +334,44 @@ button {
 #lblWheelInfo {
   text-transform: uppercase;
   color: #000;
-  border-width: 3px;
-  border-color: #771929;
-  background-color: rgba(255, 255, 255, 0.3);
+  line-height: 80%;
+  /*background-color: rgba(255, 255, 255, 0.5);*/
   width: 194px;
-  padding: 0 15px 15px;
+  padding: 0px;
   display: inline-block;
   margin-top: 15px;
-  line-height: 20px;
-  padding-bottom: 25px;
+  margin-right: 2%;
+  font-family: "Quicksand";
+  font-size: 24px;
+  color: black;
+  border-radius: 15px;
 }
 
 #gameInfo {
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.5);
   font-family: "Quicksand", serif;
   display: none;
   position: absolute;
+  top: 0px;
+  right: 0px;
   z-index: 1;
-  left: 88%;
+  width: 250px;
   text-align: right;
-  opacity: 0.5;
+  border-radius: 0px 0px 0px 20px;
+  
 }
 #area1 {
   display: none;
   font-family: "Quicksand", serif;
   color: black;
-
+  margin-top: 0px;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
   position: relative;
   z-index: 1;
   padding: 2%;
-  border-radius: 5px;
+  border-radius: 20px;
   width: 70%;
   background-color: #eee;
   opacity: 0.8;
@@ -360,10 +385,10 @@ button {
 }
 
 #area1LblQuestion {
-  width: 100%;
+  display: none;
 }
 #area1LblAnswers {
-  width: 100%;
+  display: none;
 }
 
 #area1BtnsTable {
@@ -377,22 +402,24 @@ button {
 #nextBtnDivArea1 {
   width: 100%;
 }
-#area2Info {
+#area2Info{
   font-size: 120%;
 }
+
 
 #area2 {
   display: none;
   font-family: "Quicksand", serif;
+  top: 0px;
   color: black;
-
+  margin-top: 0px;
   text-align: center;
   margin-left: auto;
   margin-right: auto;
   position: relative;
   z-index: 1;
   padding: 2%;
-  border-radius: 5px;
+  border-radius: 20px;
   width: 70%;
   background-color: #eee;
   opacity: 0.8;
@@ -412,7 +439,7 @@ button.btnSend {
   color: #03446a;
   background: #fff;
   border: 0;
-  border-radius: 3;
+  border-radius: 3px;
 }
 
 #restartPopup {
@@ -435,6 +462,13 @@ button.btnSend {
   position: right;
   font-family: "Quicksand", serif;
   color: #a48f8c;
+  text-decoration: none;
+  transition: 0.2s;
+}
+#rulesLink:hover {
+  position: right;
+  font-family: "Quicksand", serif;
+  color: black;
   text-decoration: none;
 }
 
@@ -462,20 +496,15 @@ button.btnSend {
 }
 
 #scores {
-  padding-right: 5%;
-  padding-left: 5%;
-  padding-top: 5%;
-  padding-bottom: 5%;
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  
+ 
 }
 
-.lblOption {
-  display: inline-block;
-  width: 96%;
-}
-.lblOptionFinal {
-  color: white;
-  background-color: black;
-}
+
 
 .topic {
   text-align: right;
@@ -484,7 +513,7 @@ button.btnSend {
   color: black;
 }
 
-.inputRadioOption {
+.inputRadio{
   cursor: pointer;
   transition: 0.2s;
 }
@@ -535,99 +564,40 @@ button.btnSend {
 #nextBtnDivArea3 {
   cursor: pointer;
   transition: 0.2s;
+  padding-right: 90%;
 }
 #nextBtnDivArea3:hover {
   color: red;
 }
 
-#lbl_question_option_0 {
-  border: 2px solid #fff;
-  padding: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: 0.4s;
-}
-
-#lbl_question_option_1 {
-  border: 2px solid #fff;
-  padding: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: 0.4s;
-}
-
-#lbl_question_option_2 {
-  border: 2px solid #fff;
-  padding: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: 0.4s;
-}
-
-#lbl_question_option_3 {
-  border: 2px solid #fff;
-  padding: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: 0.4s;
-}
-
-#lbl_question_option_4 {
-  border: 2px solid #fff;
-  padding: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: 0.4s;
-}
-
+#lbl_question_option_0,
+#lbl_question_option_1,
+#lbl_question_option_2,
+#lbl_question_option_3,
+#lbl_question_option_4,
 #lbl_question_option_5 {
-  border: 2px solid #fff;
-  padding: 4px;
-  border-radius: 4px;
+  background: white;
+  padding: 5px;
+  border-radius: 10px;
   cursor: pointer;
   transition: 0.4s;
+  width: 100%;
+  
 }
 
-#lbl_question_option_0:hover {
-  border: 2px solid black;
-  padding: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#lbl_question_option_1:hover {
-  border: 2px solid black;
-  padding: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#lbl_question_option_2:hover {
-  border: 2px solid black;
-  padding: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#lbl_question_option_3:hover {
-  border: 2px solid black;
-  padding: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-#lbl_question_option_4:hover {
-  border: 2px solid black;
-  padding: 4px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
+#lbl_question_option_0:hover,
+#lbl_question_option_1:hover,
+#lbl_question_option_2:hover,
+#lbl_question_option_3:hover,
+#lbl_question_option_4:hover,
 #lbl_question_option_5:hover {
-  border: 2px solid black;
-  padding: 4px;
-  border-radius: 4px;
+  background: white;
+  padding: 5px;
+  border-radius: 10px;
   cursor: pointer;
+  box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  
 }
 
 #lbl_question_option_6 {
@@ -636,29 +606,35 @@ button.btnSend {
 
 .optionSelected {
   transition: 0.4s;
-  color: white;
+  color: green;
   background-color: black;
-  border: 2px solid black;
-  padding: 4px;
-  border-radius: 4px;
+  padding: 5px;
+  border-radius: 10px;
   cursor: pointer;
+  box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  
 }
 .optionSelected:hover {
   transition: 0.4s;
-  color: white;
-  border: 2px solid black;
-  padding: 4px;
-  border-radius: 4px;
+  color: green;
+  padding: 5px;
+  border-radius: 10px;
   cursor: pointer;
+  box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.7);
+  width: 100%;
+  
 }
 .optionNoSelected:hover {
   transition: 0.4s;
-  color: black;
+  color: green;
   cursor: pointer;
-  border: 2px solid black;
-  padding: 4px;
-  border-radius: 4px;
+  padding: 5px;
+  border-radius: 10px;
   cursor: pointer;
+  box-shadow: 2px 2px 30px rgba(0, 0, 0, 0.3);
+  width: 100%;
+  
 }
 
 #lblArea {
@@ -731,6 +707,21 @@ button.btnSend {
   top: -5px;
   right: 105%;
 }
+#circle{
+  animation: glow 1s ease-in-out infinite alternate;
+}
+
+@-webkit-keyframes glow {
+  from {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+  }
+  
+  to {
+    text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+  }
+}
+
+
 
 #circleText {
   text-decoration: none;
@@ -759,21 +750,14 @@ button.btnSend {
 }
 
 /*New style*/
-.w3-animate-opacity {
-  animation: opac 2s;
-}
-
 .overInfo {
-  position: static !important;
-  background-color: rgb(243 243 243);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #f9f9f9;
+  border: 1px solid #333;
   border-radius: 4px;
   font-size: 14px;
-  padding: 16px 12px;
+  padding: 6px 12px;
   font-weight: 100;
-}
-
-#tool-tips {
-  margin-top: 15px;
 }
 
 div#right-sidebar {
@@ -784,9 +768,7 @@ div#right-sidebar {
 element.style {
   display: block;
 }
-#gameInfo {
-  position: static;
-}
+
 
 #beforeBtnDivArea1,
 #beforeBtnDivArea2,
@@ -840,12 +822,12 @@ element.style {
 
 label.lblScore {
   display: block;
-  width: 100%;
+  
 }
 
 #score-wrapper {
   display: block;
-  width: 100%;
+  
   margin: 25px 0;
 }
 
@@ -854,11 +836,11 @@ input:focus {
   outline: none;
   border-color: #0f77ca;
 }
-/*
+
 .voteLeaderBtn {
   display: inline-block !important;
 }
-*/
+
 #area1Table,
 #area2Table,
 #area3Table {
@@ -871,7 +853,7 @@ input:focus {
   text-align: left;
   background: #ccc;
   padding: 15px;
-  border-radius: 4px;
+  border-radius: 20px;
 }
 
 #area1LblAnswers,
@@ -915,12 +897,13 @@ input:focus {
 #area1,
 #area2,
 #area3 {
-  max-width: 800px;
+  max-width: 960px;
+  
 }
 
 #area1LblQuestion,
 #area2LblQuestion,
-#area3LblQuestionP {
+#area3LblQuestionP{
   text-align: left;
   margin-top: 15px;
 }
@@ -934,17 +917,24 @@ input:focus {
 
 .personalEvaluation .lblOption,
 .personalEvaluation .lblOptionFinal {
-  text-align: left;
-  padding: 15px !important;
-  margin: 10px 0;
+  
+  background: white;
+  padding: 4px;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: 0.4s;
+  max-width: 770px;
 }
 
-#area1AnswersColumn > div,
+#area1AnswersColumn > div {
+  display: flex;
+  width: 97%;
+}
 #area2AnswersColumn > div,
 #area3AnswersColumn > div {
   display: flex;
   width: 100%;
-  flex-wrap: wrap;
 }
 
 #area3 .cards #card #back {
@@ -956,25 +946,5 @@ input:focus {
 }
 
 #area3 .cards #card.flipped #back {
-  display: inline;
-  width: 100%;
-}
-
-#card.flipped {
-  background-image: none !important;
-  box-shadow: none;
-}
-
-#area3 .cards #card.flipped #back {
-  display: inline;
-  width: 100%;
-  position: absolute;
-  left: 0;
-  right: 0;
-  margin: 0px auto;
-  background-image: url("./../img/card back.jpg");
-  max-width: 300px;
-  box-shadow: 3px 5px 10px 2px rgb(0 0 0 / 25%);
-  border-radius: 6px;
-  padding: 8px 15px;
+  display: block;
 }

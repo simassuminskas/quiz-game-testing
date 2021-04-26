@@ -11,7 +11,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@700&display=swap" rel="stylesheet">
 </head>
-<body id="body" style="background-image: url('./img/1.png');background-size: cover;" onload="document.getElementById('rulesLink').href = location + 'rules/';document.getElementById('area3').style.height = (document.documentElement.clientHeight * 0.6) + 'px';">
+<body id="body" style="background-image: url('./img/1.png');" onload="document.getElementById('rulesLink').href = location + 'rules/';document.getElementById('area3').style.height = (document.documentElement.clientHeight * 0.6) + 'px';">
     <!--<img id="spinnerArrow" src="./img/Asset 2.png" style="position: absolute; left: 10%; width: 3%;">
     document.getElementById('spinnerArrow').style.left = document.getElementById('spinner').offsetLeft;-->
     <script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
@@ -47,8 +47,8 @@
         <div id="area1Info"></div>
         <label id="lblLightBoxArea1Header"></label><hr>
         <div id="area1LabelsTable">
-            <div id="area1LblQuestion">QUESTION</div>
-            <div id="area1LblAnswers">ANSWERS</div>
+            <div id="area1LblQuestion"></div>
+            <div id="area1LblAnswers"></div>
         </div>
         <div id="area1Table">
             <div id="area1QuestionColumn"></div>
@@ -95,8 +95,9 @@
     </center>
     <div id="divGameFinished" style="display: none;">
         <div id="congratulationsText">
-            <h1>CONGRATULATIONS! YOU</h1>
-            <h1>FINISHED THE GAME!</h1>
+            <br><br>
+            <h1>CONGRATULATIONS!</h1>
+            <h2>YOU FINISHED THE GAME!</h2>
         </div>
     </div>
     <div id="restartPopup">
